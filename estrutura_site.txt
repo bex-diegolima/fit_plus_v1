@@ -1,0 +1,58 @@
+1 - Estamos criando um site do zero. O nome do site e do projeto é Fit+ (Fit Plus)
+2 - Até o momento já concluímos as etapas 1, 2, 3, 4, 5, 6, 7 e 8 sendo:
+	Etapa 1 - Criação da Tela 01 - Cadastro
+	Etapa 2 - Criação do Banco de Dados, Integração do banco de dados com a Tela 01 para registro dos dados de cadastro
+	Etapa 3 - Desenvolvimento do modulo de validação de cadastro com envio de código por e-mail automaticamente.
+	Etapa 4 - Criação da Tela 02 - Login
+	Etapa 5 - Desenvolvimento da função de logar usando usuário e senha na tela 02
+	Etapa 6 - Criação da Tela 03 Recuperação de Senha
+	Etapa 7 - Criação das Funcionalidades para Recuperação de Senha
+	Etapa 8 - Tela Home Logada
+3 - Estamos usando somente ferramentas e programas gratuitos
+4 - Até o momento já usamos o VSCode, MySQL, Brevo e Node.js
+5 - Não vamos usar PHP.
+6 - O designe será sempre moderno, clean e bonito.
+7 - Todas as páginas devem seguir o mesmo estilo de designe.
+8 - Todo o projeto é feito dentro da pasta raiz fit_plus_v1
+9 - Estrutura atual:
+	Pasta raiz - "C:\Users\slima\Desktop\fit_plus_v1"
+	"C:\Users\slima\Desktop\fit_plus_v1\css"
+	"C:\Users\slima\Desktop\fit_plus_v1\css\style.css"
+	"C:\Users\slima\Desktop\fit_plus_v1\images"
+	"C:\Users\slima\Desktop\fit_plus_v1\images\logo_fit_plus.png"
+	"C:\Users\slima\Desktop\fit_plus_v1\images\user-pd.png"
+	"C:\Users\slima\Desktop\fit_plus_v1\js"
+	"C:\Users\slima\Desktop\fit_plus_v1\js\register.js"
+	"C:\Users\slima\Desktop\fit_plus_v1\js\login.js"
+	"C:\Users\slima\Desktop\fit_plus_v1\js\recovery.js"
+	"C:\Users\slima\Desktop\fit_plus_v1\js\home.js"
+	"C:\Users\slima\Desktop\fit_plus_v1\node_modules"
+	"C:\Users\slima\Desktop\fit_plus_v1\.env"
+	"C:\Users\slima\Desktop\fit_plus_v1\clean-server.bat"
+	"C:\Users\slima\Desktop\fit_plus_v1\db.js"
+	"C:\Users\slima\Desktop\fit_plus_v1\package.json"
+	"C:\Users\slima\Desktop\fit_plus_v1\register.html"
+	"C:\Users\slima\Desktop\fit_plus_v1\login.html"
+	"C:\Users\slima\Desktop\fit_plus_v1\home.html"
+	"C:\Users\slima\Desktop\fit_plus_v1\recovery.html"
+	"C:\Users\slima\Desktop\fit_plus_v1\server.js"
+
+Vou te enviar, um de cada vez, todo o conteúdo e códigos de cada arquivo. 
+Você deve avalia-los. 
+Vou enviar um de cada vez de todos os arquivos listados abaixo:
+	register.html
+	login.html
+	home.html
+	recovery.html
+	style.css
+	register.js
+	login.js
+	recovery.js
+	home.js
+	server.js
+	db.js
+	package.json
+	clean-server.bat
+	.env
+Você deve aguardar o envio de cada um dos conteúdos dos arquivos.
+Diga que me entendeu e aguarde instruções para prosseguir.

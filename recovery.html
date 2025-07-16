@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fit+ | Recuperação de Senha</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <img src="images/logo_fit_plus.png" alt="Fit+ Logo" class="logo">
+            <h1>Redefinir Senha</h1>
+        </header>
+
+        <form id="recoveryForm" class="form">
+            <!-- Campo E-mail -->
+            <div class="form-group">
+                <label for="recoveryEmail">E-mail</label>
+                <input type="email" id="recoveryEmail" name="email" placeholder="Digite seu e-mail cadastrado" required>
+                <span class="error-message" id="email-error"></span>
+            </div>
+
+            <!-- Botão para enviar código -->
+            <button type="button" id="sendCodeBtn" class="btn-login">Enviar Código de Validação</button>
+
+            <!-- Campos de senha (inicialmente ocultos) -->
+            <div id="passwordFields" style="display: none;">
+                <div class="form-group">
+                    <label for="newPassword">Nova Senha</label>
+                    <div class="password-input">
+                        <input type="password" id="newPassword" name="newPassword" placeholder="Digite sua nova senha" disabled>
+                        <i class="fas fa-eye-slash toggle-password"></i>
+                    </div>
+                    <div class="password-requirements">
+                        <p id="length" class="requirement">Mínimo 8 caracteres</p>
+                        <p id="uppercase" class="requirement">Pelo menos 1 letra maiúscula</p>
+                        <p id="number" class="requirement">Pelo menos 1 número</p>
+                        <p id="special" class="requirement">Pelo menos 1 caractere especial</p>
+                    </div>
+                    <span class="error-message" id="password-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmNewPassword">Confirme a Nova Senha</label>
+                    <div class="password-input">
+                        <input type="password" id="confirmNewPassword" name="confirmNewPassword" placeholder="Repita sua nova senha" disabled>
+                        <i class="fas fa-eye-slash toggle-password"></i>
+                    </div>
+                    <span class="error-message" id="confirmPassword-error"></span>
+                </div>
+
+                <button type="submit" id="resetBtn" class="btn-login" disabled>Redefinir Senha</button>
+            </div>
+
+            <!-- Botão Voltar -->
+            <div class="back-container">
+                <a href="login.html" class="btn-back">
+                    <i class="fas fa-chevron-left"></i> Voltar ao Login
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal de Validação (igual ao de cadastro) -->
+    <div id="validationModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Validação de E-mail</h2>
+            <p>Enviamos um código de 6 dígitos para <span id="userEmail"></span></p>
+            
+            <div class="form-group">
+                <label for="validationCode">Código de Validação</label>
+                <input type="text" id="validationCode" placeholder="Digite o código recebido" maxlength="6">
+                <span class="error-message" id="code-error"></span>
+            </div>
+            
+            <button id="validateBtn" class="btn-register">Validar</button>
+            <button id="resendBtn" class="btn-resend" disabled>Reenviar Código (<span id="countdown">60</span>s)</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/recovery.js"></script>
+</body>
+</html>

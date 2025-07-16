@@ -1,0 +1,25 @@
+# Node modules - não subir
+node_modules/
+
+# Variáveis de ambiente
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Diretórios de build (caso use)
+dist/
+build/
+
+# Sistemas operacionais
+.DS_Store
+Thumbs.db
+
+# Outros arquivos temporários
+*.tmp
+*.temp
+
+# Coverage - se usar testes
+coverage/

@@ -1,0 +1,23 @@
+{
+  "name": "fit_plus_v1",
+  "version": "1.0.0",
+  "description": "Sistema Fit+",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "express": "^4.21.2",
+    "multer": "^2.0.1",
+    "mysql2": "^3.6.0",
+    "pg": "^8.16.3",
+    "sib-api-v3-sdk": "^8.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
