@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!userEmail) return;
 
         try {
-            const response = await fetch(`http://localhost:3002/api/profile-pic?email=${encodeURIComponent(userEmail)}`);
+            const response = await fetch(`https://fit-plus-backend.onrender.com/api/profile-pic?email=${encodeURIComponent(userEmail)}`);
             if (response.ok) {
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append('email', userEmail);
 
         try {
-            const response = await fetch('http://localhost:3002/api/upload-profile-pic', {
+            const response = await fetch('https://fit-plus-backend.onrender.com/api/upload-profile-pic', {
                 method: 'POST',
                 body: formData
             });
@@ -102,7 +102,7 @@ async function fetchUserData() {
             throw new Error('E-mail do usuário não encontrado');
         }
 
-        const response = await fetch(`http://localhost:3002/api/get-user-data?email=${encodeURIComponent(userEmail)}`);
+        const response = await fetch(`https://fit-plus-backend.onrender.com/api/get-user-data?email=${encodeURIComponent(userEmail)}`);
         const result = await response.json();
 
         if (result.success) {

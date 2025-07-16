@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            const response = await fetch('http://localhost:3002/api/send-recovery-code', {
+            const response = await fetch('https://fit-plus-backend.onrender.com/api/send-recovery-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email })
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            const response = await fetch('http://localhost:3002/api/validate-recovery-code', {
+            const response = await fetch('https://fit-plus-backend.onrender.com/api/validate-recovery-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: currentUserEmail, code })
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            const response = await fetch('http://localhost:3002/api/reset-password', {
+            const response = await fetch('https://fit-plus-backend.onrender.com/api/reset-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: currentUserEmail, newPassword })
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             resendBtn.disabled = true;
-            const response = await fetch('http://localhost:3002/api/resend-recovery-code', {
+            const response = await fetch('https://fit-plus-backend.onrender.com/api/resend-recovery-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: currentUserEmail })

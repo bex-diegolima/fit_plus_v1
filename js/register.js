@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
 
         try {
-            const response = await fetch('http://localhost:3002/api/register', {
+            const response = await fetch('https://fit-plus-backend.onrender.com/api/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     try {
         console.log('Validando código...');
-        const response = await fetch('http://localhost:3002/api/validate', {
+        const response = await fetch('https://fit-plus-backend.onrender.com/api/validate', {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json',
@@ -293,7 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             resendBtn.disabled = true;
-            const response = await fetch('http://localhost:3002/api/resend-code', {
+            const response = await fetch('https://fit-plus-backend.onrender.com/api/resend-code', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: currentUserEmail })

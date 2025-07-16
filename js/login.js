@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = passwordInput.value;
 
         try {
-            const response = await fetch('http://localhost:3002/api/login', {
+            const response = await fetch('https://fit-plus-backend.onrender.com/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: username, password })
