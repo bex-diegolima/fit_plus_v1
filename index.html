@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fit+ | Seu parceiro de fitness</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -57,11 +58,27 @@
             
         </div>
     </div>
-
+    <div id="support-modal" class="support-modal support-hidden">
+        <div class="support-modal-content">
+            <span class="support-close-btn">&times;</span>
+            <h2>Suporte Fit+</h2>
+            <p>Em breve você poderá falar com nosso suporte por aqui!</p>
+        </div>
+    </div>
     <script>
-        // Evento para o botão de suporte (sem funcionalidade ainda)
-        document.querySelector('.btn-support').addEventListener('click', function() {
-            alert('Funcionalidade de suporte será implementada em breve!');
+        const supportModal = document.getElementById('support-modal');
+        const supportCloseBtn = document.querySelector('.support-close-btn');
+        const supportBtn = document.querySelector('.btn-support');
+        supportBtn.addEventListener('click', () => {
+            supportModal.classList.remove('support-hidden');
+        });
+        supportCloseBtn.addEventListener('click', () => {
+            supportModal.classList.add('support-hidden');
+        });
+        window.addEventListener('click', (event) => {
+            if (event.target === supportModal) {
+                supportModal.classList.add('support-hidden');
+            }
         });
     </script>
 </body>

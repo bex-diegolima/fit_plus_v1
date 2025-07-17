@@ -20,7 +20,7 @@ body {
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    margin-top: 30px;
+    margin-top: 70px; /* Ajustado para não sobrepor top-bar */
     margin-bottom: 30px;
 }
 
@@ -104,7 +104,7 @@ body {
     font-size: 18px;
 }
 
-/* Estilo para o ícone do olho com barra quando fechado */
+/* Ícone do olho com barra quando fechado */
 .toggle-password::after {
     content: '';
     position: absolute;
@@ -143,6 +143,7 @@ body {
     font-size: 12px;
     height: 14px;
     margin-top: 2px;
+    text-align: left; /* Adicionado para alinhamento melhor */
 }
 
 /* Botão de registro */
@@ -314,6 +315,7 @@ body {
 }
 
 .error-message {
+    /* Mantido para login e registro com estilo mais legível */
     color: #e74c3c;
     text-align: center;
     margin: 1px 0;
@@ -428,9 +430,7 @@ body {
 }
 
 /* Ajuste para o container principal (evitar sobreposição com a top-bar) */
-.container {
-    margin-top: 70px;
-}
+/* Já ajustado margin-top: 70px na .container acima */
 
 /* Estilos específicos para a página inicial */
 .index-container {
@@ -538,4 +538,42 @@ body {
     .index-features {
         grid-template-columns: 1fr;
     }
+}
+
+/* Modal suporte */
+.support-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.support-hidden {
+    display: none;
+}
+
+.support-modal-content {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    position: relative;
+}
+
+.support-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 16px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
 }
