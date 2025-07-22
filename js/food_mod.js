@@ -284,17 +284,138 @@ document.addEventListener('DOMContentLoaded', function() {
                     parseFloat(document.getElementById('foodCalories').value) || 0,
                     parseFloat(document.getElementById('foodBasePortion').value) || 100
                 ),
+
                 proteina_gr: calculateProportion(
                     parseFloat(document.getElementById('foodProteins').value) || 0,
                     parseFloat(document.getElementById('foodBasePortion').value) || 100
                 ),
+                carbo_gr: calculateProportion(
+                parseFloat(document.getElementById('foodCarbs').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                gorduras_totais_gr: calculateProportion(
+                parseFloat(document.getElementById('foodFats').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                gorduras_boas_gr: calculateProportion(
+                parseFloat(document.getElementById('foodGoodFats').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                gorduras_ruins_gr: calculateProportion(
+                parseFloat(document.getElementById('foodBadFats').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                omega_tres_mg: calculateProportion(
+                parseFloat(document.getElementById('foodOmega3').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                fibras_gr: calculateProportion(
+                parseFloat(document.getElementById('foodFiber').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                sodio_mg: calculateProportion(
+                parseFloat(document.getElementById('foodSodium').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                colesterol_mg: calculateProportion(
+                parseFloat(document.getElementById('foodCholesterol').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                acucares_gr: calculateProportion(
+                parseFloat(document.getElementById('foodSugar').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                indice_glicemico: calculateProportion(
+                parseFloat(document.getElementById('foodGlycemicIndex').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                carga_glicemica: calculateProportion(
+                parseFloat(document.getElementById('foodGlycemicLoad').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                calcio_mg: calculateProportion(
+                parseFloat(document.getElementById('foodCalcium').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                ferro_mg: calculateProportion(
+                parseFloat(document.getElementById('foodIron').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                potassio_mg: calculateProportion(
+                parseFloat(document.getElementById('foodPotassium').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                magnesio_mg: calculateProportion(
+                parseFloat(document.getElementById('foodMagnesium').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                zinco_mg: calculateProportion(
+                parseFloat(document.getElementById('foodZinc').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                vitamina_c_mg: calculateProportion(
+                parseFloat(document.getElementById('foodVitaminC').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                vitamina_a_mcg: calculateProportion(
+                parseFloat(document.getElementById('foodVitaminA').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                vitamina_d_mcg: calculateProportion(
+                parseFloat(document.getElementById('foodVitaminD').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                vitamina_b12_mcg: calculateProportion(
+                parseFloat(document.getElementById('foodVitaminB12').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                acido_folico_mcg: calculateProportion(
+                parseFloat(document.getElementById('foodFolicAcid').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                teor_alcoolico: calculateProportion(
+                parseFloat(document.getElementById('foodAlcohol').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                acucar_adicionados_gr: calculateProportion(
+                parseFloat(document.getElementById('foodSugaradd').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
+                vitamina_e_mcg: calculateProportion(
+                parseFloat(document.getElementById('foodVitaminE').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+
                 // ... (repetir para todos os campos nutricionais)
                 
                 // Bloco 3
                 categoria_nutricional: document.getElementById('foodCategory').value,
                 origem: document.getElementById('foodOrigin').value,
                 nivel_processamento: document.getElementById('foodProcessing').value,
-                glutem: document.getElementById('foodGluten').checked ? 1 : 0,
+                glutem: document.getElementById('foodGluten').value === 'true',
                 alergicos_comuns: document.getElementById('foodAllergens').value,
                 observacoes: document.getElementById('foodObservations').value.trim()
             };
@@ -334,6 +455,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 'foodPreparation': '/api/get-options?table=tbl_aux_modo_preparo',
                 'foodGroup': '/api/get-options?table=tbl_aux_grupo_alimentar',
                 'foodCategory': '/api/get-options?table=tbl_aux_categoria_nutri',
+                'foodOrigin': '/api/get-options?table=tbl_aux_origem_alimentar',
+                'foodProcessing': '/api/get-options?table=tbl_aux_processamento',
+                'foodAllergens': '/api/get-options?table=tbl_aux_alergicos',
                 // ... outros selects
             };
 
