@@ -343,7 +343,7 @@ app.post('/api/save-food', async (req, res) => {
             const queryText = `
                 INSERT INTO tbl_foods 
                 (item, user_registro, dt_registro, dt_atualizacao, status_registro) 
-                VALUES ($1, 'system', NOW(), NOW(), 'Ativo') 
+                VALUES ($1, 'system', NOW(), NOW(), 1) 
                 RETURNING id`;
             
             console.log('Executando query:', queryText); // Log de depuração
