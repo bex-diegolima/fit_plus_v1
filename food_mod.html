@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fit+ | Alimentos</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="top-bar">
+        <img src="images/logo_fit_plus.png" alt="Fit+ Logo" class="logo">
+        <button id="menuButton" class="menu-button">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
+    <!-- Painel do menu (inicialmente oculto) -->
+    <div id="menuPanel" class="menu-panel">
+        <div class="menu-content">
+            <!-- Foto de perfil -->
+            <img id="profilePic" src="images/user-pd.png" alt="Foto do usuário" class="profile-pic">
+            <!-- Botão para alterar foto -->
+            <button id="changePicBtn" class="btn-change-photo">Alterar Foto</button>
+            <input type="file" id="profilePicInput" accept="image/*" style="display:none;">
+            <!-- Mensagem de boas-vindas -->
+            <h3 id="welcomeMessage">Bem-vindo, <span id="userName">Usuário</span></h3>
+            <!-- Botão Sair -->
+            <button id="logoutBtn" class="btn-logout">Sair</button>
+        </div>
+    </div>
+
+    <!-- Container principal -->
+    <div class="food-mod-container">
+        <!-- Cabeçalho com busca -->
+        <div class="food-mod-header">
+            <div class="food-search-container">
+                <input type="text" class="food-search-input" placeholder="Pesquise o alimento desejado">
+                <button class="food-add-btn" title="Cadastre um novo alimento">
+                    <i class="fas fa-plus-circle"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Tabela de alimentos -->
+        <div class="food-table-container">
+            <table class="food-table">
+                <thead>
+                    <tr>
+                        <th class="text-left">Item Alimentício</th>
+                        <th class="text-left">Marca</th>
+                        <th class="text-left">Modo de Preparo</th>
+                        <th class="text-left">Grupo Alimentar</th>
+                        <th class="text-center">Porção</th>
+                        <th class="text-center">Kcal.</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Linhas serão preenchidas dinamicamente -->
+                </tbody>
+            </table>
+
+            <!-- Paginação -->
+            <div class="food-pagination">
+                <button class="pagination-btn" disabled>Anterior</button>
+                <span class="pagination-info">Página 1 de 0</span>
+                <button class="pagination-btn" disabled>Próximo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Detalhes -->
+    <div id="foodDetailModal" class="food-modal">
+        <div class="food-modal-content">
+            <span class="food-modal-close">&times;</span>
+            <div class="food-modal-body"></div>
+        </div>
+    </div>
+
+    <!-- Modal de Cadastro -->
+    <div id="foodAddModal" class="food-modal" style="display: none;">
+        
+        <div class="food-modal-content">
+            <span class="food-modal-close">&times;</span>
+            <h2 class="food-modal-title">Cadastro de um novo alimento</h2>
+            
+            <!-- Bloco 1: Informações Básicas -->
+            <div class="food-block" id="blockBasicInfo">
+            <div class="food-block-header">
+                <h3>Informações Básicas</h3>
+                <span class="food-block-toggle">▼</span>
+            </div>
+            <div class="food-block-content">
+                <!-- Campos do Bloco 1 -->
+                <div class="food-form-group">
+                <label for="foodItemName">Nome do Item <span class="required-field">*</span></label>
+                <input type="text" id="foodItemName" class="food-input" placeholder="Digite o nome do alimento" required>
+                </div>
+
+                <div class="food-form-group">
+                <label for="foodBrand">Marca</label>
+                <input type="text" id="foodBrand" class="food-input" placeholder="Digite a marca do alimento">
+                </div>
+
+                <div class="food-form-group">
+                <label for="foodPreparation">Modo de Preparo <span class="required-field">*</span></label>
+                <select id="foodPreparation" class="food-select" required>
+                    <option value="" disabled selected>Selecione o modo de preparo</option>
+                    <!-- Opções serão preenchidas via BD posteriormente -->
+                </select>
+                </div>
+
+                <div class="food-form-group">
+                <label for="foodGroup">Grupo Alimentar <span class="required-field">*</span></label>
+                <select id="foodGroup" class="food-select" required>
+                    <option value="" disabled selected>Selecione o grupo alimentar</option>
+                    <!-- Opções serão preenchidas via BD posteriormente -->
+                </select>
+                </div>
+
+                <div class="food-form-group">
+                <label for="foodBasePortion">Porção Base <span class="required-field">*</span></label>
+                <input type="number" id="foodBasePortion" class="food-input" step="0.01" value="100.00" required>
+                <span id="foodPortionUnit" class="food-unit">g</span>
+                </div>
+
+                <div class="food-form-group">
+                <label for="foodCalories">Kcal. <span class="required-field">*</span></label>
+                <input type="number" id="foodCalories" class="food-input" placeholder="Informe as calorias totais da porção base" required>
+                </div>
+
+                <div class="food-form-group">
+                <label for="foodProteins">Proteínas (g) <span class="required-field">*</span></label>
+                <input type="number" id="foodProteins" class="food-input" step="0.01" placeholder="Informe a quantidade de proteínas em g" required>
+                </div>
+
+                <div class="food-form-group">
+                <label for="foodCarbs">Carboidratos (g) <span class="required-field">*</span></label>
+                <input type="number" id="foodCarbs" class="food-input" step="0.01" placeholder="Informe a quantidade de carboidratos em g" required>
+                </div>
+
+                <div class="food-form-group">
+                <label for="foodFats">Gorduras Totais (g) <span class="required-field">*</span></label>
+                <input type="number" id="foodFats" class="food-input" step="0.01" placeholder="Informe a quantidade de gorduras em g" required>
+                </div>
+
+                <div class="food-form-group">
+                <label for="foodImage">Imagem</label>
+                <input type="file" id="foodImage" class="food-input-file" accept="image/*">
+                </div>
+            </div>
+            </div>
+
+            <!--AQUI ENTRAR O BLOCO 2-->
+            <!-- Bloco 2: Demais Informações Nutricionais -->
+            <div class="food-block" id="blockNutritionInfo">
+            <div class="food-block-header">
+                <h3>Demais Informações Nutricionais</h3>
+                <span class="food-block-toggle">▼</span>
+            </div>
+            <div class="food-block-content">
+                <!-- Linha 1 -->
+                <div class="food-row">
+                <div class="food-form-group">
+                    <label for="foodGoodFats">Gorduras Boas</label>
+                    <input type="number" id="foodGoodFats" class="food-input" step="0.01" placeholder="Informe gorduras boas em g (gramas)">
+                </div>
+                <div class="food-form-group">
+                    <label for="foodBadFats">Gorduras Ruins</label>
+                    <input type="number" id="foodBadFats" class="food-input" step="0.01" placeholder="Informe gorduras ruins em g (gramas)">
+                </div>
+                </div>
+
+                <!-- Linha 2 -->
+                <div class="food-row">
+                <div class="food-form-group">
+                    <label for="foodFiber">Fibras</label>
+                    <input type="number" id="foodFiber" class="food-input" step="0.01" placeholder="Informe fibras em g (gramas)">
+                </div>
+                <div class="food-form-group">
+                    <label for="foodSodium">Sódio</label>
+                    <input type="number" id="foodSodium" class="food-input" step="0.01" placeholder="Informe sódio em mg (miligramas)">
+                </div>
+                </div>
+
+                <!-- Linha 3 -->
+                <div class="food-row">
+
+                <div class="food-form-group">
+                    <label for="foodSugar">Açúcares Totais</label>
+                    <input type="number" id="foodSugar" class="food-input" step="0.01" placeholder="Informe açúcares em g (gramas)">
+                </div>
+                <div class="food-form-group">
+                    <label for="foodSugarAdd">Açúcares Adicionados</label>
+                    <input type="number" id="foodSugaradd" class="food-input" step="0.01" placeholder="Informe açúcares em g (gramas)">
+                </div>
+                </div>
+
+                <!-- Linha 4 -->
+                <div class="food-row">
+                <div class="food-form-group">
+                    <label for="foodGlycemicIndex">Índice Glicêmico</label>
+                    <input type="number" id="foodGlycemicIndex" class="food-input" placeholder="Informe o índice glicêmico (0-100)">
+                </div>
+                <div class="food-form-group">
+                    <label for="foodGlycemicLoad">Carga Glicêmica</label>
+                    <input type="number" id="foodGlycemicLoad" class="food-input" placeholder="Informe a carga glicêmica">
+                </div>
+                </div>
+
+                <!-- Linha 5 -->
+                <div class="food-row">
+                <div class="food-form-group">
+                    <label for="foodCholesterol">Colesterol</label>
+                    <input type="number" id="foodCholesterol" class="food-input" step="0.01" placeholder="Informe colesterol em mg (miligramas)">
+                </div>
+                <div class="food-form-group">
+                    <label for="foodCalcium">Cálcio</label>
+                    <input type="number" id="foodCalcium" class="food-input" step="0.01" placeholder="Informe cálcio em mg (miligramas)">
+                </div>
+
+                </div>
+
+                <!-- Linha 6 -->
+                <div class="food-row">
+                <div class="food-form-group">
+                    <label for="foodIron">Ferro</label>
+                    <input type="number" id="foodIron" class="food-input" step="0.01" placeholder="Informe ferro em mg (miligramas)">
+                </div>
+                <div class="food-form-group">
+                    <label for="foodPotassium">Potássio</label>
+                    <input type="number" id="foodPotassium" class="food-input" step="0.01" placeholder="Informe potássio em mg (miligramas)">
+                </div>
+
+                </div>
+
+                <!-- Linha 7 -->
+                <div class="food-row">
+                <div class="food-form-group">
+                    <label for="foodMagnesium">Magnésio</label>
+                    <input type="number" id="foodMagnesium" class="food-input" step="0.01" placeholder="Informe magnésio em mg (miligramas)">
+                </div>
+                <div class="food-form-group">
+                    <label for="foodZinc">Zinco</label>
+                    <input type="number" id="foodZinc" class="food-input" step="0.01" placeholder="Informe zinco em mg (miligramas)">
+                </div>
+
+                </div>
+
+                <!-- Linha 8 -->
+                <div class="food-row">
+
+                <div class="food-form-group">
+                    <label for="foodVitaminA">Vitamina A</label>
+                    <input type="number" id="foodVitaminA" class="food-input" step="0.01" placeholder="Informe vitamina A em mcg (microgramas)">
+                </div>
+                <div class="food-form-group">
+                    <label for="foodVitaminD">Vitamina D</label>
+                    <input type="number" id="foodVitaminD" class="food-input" step="0.01" placeholder="Informe vitamina D em mcg (microgramas)">
+                </div>
+                </div>
+
+                <!-- Linha 9 -->
+                <div class="food-row">
+                <div class="food-form-group">
+                    <label for="foodVitaminC">Vitamina C</label>
+                    <input type="number" id="foodVitaminC" class="food-input" step="0.01" placeholder="Informe vitamina C em mg (miligramas)">
+                </div>
+                <div class="food-form-group">
+                    <label for="foodVitaminB12">Vitamina B12</label>
+                    <input type="number" id="foodVitaminB12" class="food-input" step="0.01" placeholder="Informe vitamina B12 em mcg (microgramas)">
+                </div>
+                </div>
+
+
+                <!-- Linha 9 -->
+                <div class="food-row">
+                <div class="food-form-group">
+                    <label for="foodVitaminE">Vitamina E</label>
+                    <input type="number" id="foodVitaminE" class="food-input" step="0.01" placeholder="Informe vitamina B12 em mcg (microgramas)">
+                </div>
+                <div class="food-form-group">
+                    <label for="foodOmega3">Ômega 3</label>
+                    <input type="number" id="foodOmega3" class="food-input" step="0.01" placeholder="Informe ômega 3 em mg (miligramas)">
+                </div>
+                </div>
+
+                <!-- Linha 10 -->
+                <div class="food-row">
+                <div class="food-form-group">
+                    <label for="foodFolicAcid">Ácido Fólico</label>
+                    <input type="number" id="foodFolicAcid" class="food-input" step="0.01" placeholder="Informe ácido fólico em mcg (microgramas)">
+                </div>
+                <div class="food-form-group">
+                    <label for="foodAlcohol">Teor Alcoólico</label>
+                    <input type="number" id="foodAlcohol" class="food-input" step="0.01" placeholder="Informe teor alcoólico em % (percentual)" max="100">
+                </div>
+                </div>
+            </div>
+            </div>
+            <!--AQUI TERMINA O BLOCO 2-->
+            
+            <!--AQUI COMEÇA O BLOCO 3-->
+            <!-- Bloco 3: Detalhes -->
+            <div class="food-block" id="blockDetails">
+            <div class="food-block-header">
+                <h3>Detalhes</h3>
+                <span class="food-block-toggle">▼</span>
+            </div>
+            <div class="food-block-content">
+                <!-- Linha 1 -->
+                <div class="food-row">
+                <div class="food-form-group">
+                    <label for="foodCategory">Categoria Nutricional</label>
+                    <select id="foodCategory" class="food-select">
+                    <option value="" selected>Selecione a categoria nutricional</option>
+                    <!-- Opções serão preenchidas via BD -->
+                    </select>
+                </div>
+                <div class="food-form-group">
+                    <label for="foodOrigin">Origem Alimentícia</label>
+                    <select id="foodOrigin" class="food-select">
+                    <option value="" selected>Selecione a origem alimentícia</option>
+                    <!-- Opções serão preenchidas via BD -->
+                    </select>
+                </div>
+                </div>
+
+                <!-- Linha 2 -->
+                <div class="food-row">
+                <div class="food-form-group">
+                    <label for="foodProcessing">Nível de Processamento</label>
+                    <select id="foodProcessing" class="food-select">
+                    <option value="" selected>Selecione o nível de processamento</option>
+                    <!-- Opções serão preenchidas via BD -->
+                    </select>
+                </div>
+                <div class="food-form-group">
+                    <label for="foodGluten">Contém Glúten?</label>
+                    <select id="foodGluten" class="food-select">
+                    <option value="" selected>Selecione</option>
+                    <!-- Opções serão preenchidas via BD -->
+                    </select>
+                </div>
+                </div>
+
+                <!-- Linha 3 -->
+                <div class="food-row">
+                <div class="food-form-group full-width">
+                    <label for="foodAllergens">Alérgicos Comuns</label>
+                    <select id="foodAllergens" class="food-select-multiple" multiple>
+                    <!-- Opções serão preenchidas via BD -->
+                    </select>
+                </div>
+                </div>
+
+                <!-- Linha 4 -->
+                <div class="food-row">
+                <div class="food-form-group">
+                    <label for="foodAntioxidants">Carga Antioxidante</label>
+                    <input type="text" id="foodAntioxidants" class="food-input" placeholder="Informe a carga antioxidante">
+                </div>
+                </div>
+
+                <!-- Linha 5 -->
+                <div class="food-row">
+                <div class="food-form-group full-width">
+                    <label for="foodObservations">Observações</label>
+                    <textarea id="foodObservations" class="food-textarea" placeholder="Detalhes extras sobre esse alimento"></textarea>
+                </div>
+                </div>
+            </div>
+            </div>
+            <!--AQUI TERMINA O BLOCO 3-->
+
+            <!--ALTERAÇÕES CHAT GPT-->
+            
+            <!-- Botão Salvar -->
+            <button id="saveFoodBtn" class="btn-save-food">Salvar</button>
+            
+            <!--FIM ALTERAÇÕES CHAT GPT-->
+
+        </div>
+
+           
+
+    </div>
+    
+
+    <!-- Scripts -->
+    <script src="js/food_mod.js"></script>
+</body>
+</html>

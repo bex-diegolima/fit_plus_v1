@@ -577,3 +577,414 @@ body {
     color: #333;
     cursor: pointer;
 }
+
+/* ========== ESTILOS DO MÓDULO DE ALIMENTOS ========== */
+.food-mod-container {
+    width: 100%;
+    padding: 20px;
+    margin-top: 80px; /* Espaço para a top-bar */
+    box-sizing: border-box;
+}
+
+.food-mod-header {
+    margin-bottom: 20px;
+}
+
+.food-search-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.food-search-input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.food-add-btn {
+    background: none;
+    border: none;
+    color: #3498db;
+    font-size: 28px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.food-add-btn:hover {
+    transform: scale(1.1);
+}
+
+.food-table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.food-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.food-table th {
+    background-color: #f8f9fa;
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+}
+
+.food-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.food-table tr:hover {
+    background-color: #f5f5f5;
+    cursor: pointer;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.food-status-icon {
+    text-align: center;
+    width: 40px;
+}
+
+.status-icon {
+    width: 20px;
+    height: 20px;
+}
+
+.food-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.pagination-btn {
+    padding: 8px 16px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.pagination-btn:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    font-size: 14px;
+    color: #7f8c8d;
+}
+
+/* ========== MELHORIAS NA TABELA ========== */
+.food-table th.text-center,
+.food-table td.text-center {
+    text-align: center;
+}
+
+.food-table th.text-left,
+.food-table td.text-left {
+    text-align: left;
+}
+
+/* ========== ESTILOS DOS MODAIS ========== */
+.food-modal {
+    display: none;
+    position: fixed;
+    z-index: 1002;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    overflow-y: auto; /* Permite scroll se necessário */
+}
+
+.food-modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 60%;
+    max-width: 700px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.food-modal-close {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.food-modal-close:hover {
+    color: #333;
+}
+
+.food-modal-body {
+    padding: 20px 0;
+}
+
+/* ========== ESTILOS PARA TABELA VAZIA ========== */
+.food-table .empty-row td {
+    text-align: center;
+    padding: 30px;
+    color: #7f8c8d;
+    font-style: italic;
+}
+
+/* ========== MELHORIAS NA PAGINAÇÃO ========== */
+.food-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ========== NOVOS ESTILOS PARA OS MÓDULOS ========== */
+.module-cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.module-card {
+    width: 150px;
+    height: 150px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.module-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.module-icon {
+    font-size: 40px;
+    color: #3498db;
+    margin-bottom: 10px;
+}
+
+.module-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* ===== ESTILOS DO MODAL DE CADASTRO (BLOCO 1) ===== */
+.food-modal-title {
+  text-align: center;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+/* Bloco recolhível */
+.food-block {
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.food-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  background-color: #f8f9fa;
+  cursor: pointer;
+}
+
+.food-block-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #2c3e50;
+}
+
+.food-block-toggle {
+  font-size: 1rem;
+  transition: transform 0.3s;
+}
+
+.food-block-content {
+  padding: 15px;
+  background-color: #fff;
+}
+
+/* Campos do formulário */
+.food-form-group {
+  margin-bottom: 15px;
+}
+
+.food-form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.food-input, .food-select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.food-input:required:invalid, .food-select:required:invalid {
+  border-color: #e74c3c;
+}
+
+.food-input:focus, .food-select:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.food-unit {
+  margin-left: 5px;
+  color: #7f8c8d;
+}
+
+.food-input-file {
+  width: 100%;
+  padding: 8px 0;
+}
+
+.required-field {
+  color: #e74c3c;
+  font-weight: bold;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .food-modal-content {
+    width: 90%;
+  }
+}
+
+/* ===== ESTILOS DO BLOCO 2 ===== */
+.food-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.food-row .food-form-group {
+  flex: 1;
+}
+
+/* Ajuste para inputs numéricos */
+.food-input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.food-input[type="number"]::-webkit-outer-spin-button,
+.food-input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Espaçamento entre blocos */
+#blockBasicInfo {
+  margin-bottom: 20px;
+}
+
+/* ===== ESTILOS DO BLOCO 3 ===== */
+/* Select múltiplo */
+.food-select-multiple {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  min-height: 100px;
+}
+
+.food-select-multiple option {
+  padding: 5px;
+}
+
+/* Textarea */
+.food-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  min-height: 80px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+/* Campos full-width */
+.food-form-group.full-width {
+  flex: 0 0 100%;
+}
+
+/* Espaçamento entre blocos */
+#blockNutritionInfo {
+  margin-bottom: 20px;
+}
+
+/*ALTERAÇÕES CHAT GPT*/
+
+/* Botão Salvar do módulo de alimentos */
+.btn-save-food {
+    width: 100%;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    margin-top: 20px;
+}
+
+.btn-save-food:hover {
+    background-color: #2980b9;
+    transform: scale(1.02);
+}
+
+.btn-save-food:active {
+    background-color: #2471a3;
+    transform: scale(0.98);
+}
+
+
+/*FIM ALTERAÇÕES CHAT GPT*/

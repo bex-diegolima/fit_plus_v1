@@ -85,6 +85,28 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
+//ALTERAÇÕES CHAT GPT
+
+app.post('/api/food-add', async (req, res) => {
+    try {
+        const { item } = req.body;
+        if (!item) return res.status(400).json({ success: false, message: 'Nome do item obrigatório.' });
+
+        await pool.query(
+            'INSERT INTO tbl_foods (item) VALUES ($1)',
+            [item]
+        );
+
+        return res.json({ success: true, message: 'Item cadastrado com sucesso.' });
+    } catch (error) {
+        console.error('Erro ao cadastrar alimento:', error);
+        res.status(500).json({ success: false, message: 'Erro no servidor.' });
+    }
+});
+
+
+//FIM ALTERAÇÕES CHAT GPT
+
 app.post('/api/validate', async (req, res) => {
     try {
         const { email, code } = req.body;
