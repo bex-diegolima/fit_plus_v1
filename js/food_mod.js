@@ -430,7 +430,10 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 const response = await fetch('/api/save-food', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
                     body: JSON.stringify(formData)
                 });
 

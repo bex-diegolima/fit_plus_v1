@@ -321,20 +321,35 @@ app.get('/api/profile-pic', async (req, res) => {
 
 //ALTERAÇÕES DEEPSEEK
 
-// Rota para salvar alimento
-app.post('/api/save-food', async (req, res) => {
+// Middleware de autenticação (adicione no início do arquivo, antes das rotas)
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    if (!token) return res.status(401).json({ message: 'Token não fornecido' });
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) return res.status(403).json({ message: 'Token inválido' });
+        req.user = user;
+        next();
+    });
+};
+
+// Rota para salvar alimento (atualizada)
+app.post('/api/save-food', authenticateToken, async (req, res) => {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
 
-        // Debug: Verificar conexão
-        const connectionTest = await client.query('SELECT 1');
-        console.log('Teste de conexão:', connectionTest.rows);
+        // 1. Verificar se o usuário está autenticado
+        if (!req.user || !req.user.id) {
+            throw new Error('Usuário não autenticado');
+        }
 
-        // Converter valores para tipos corretos
+        // 2. Preparar valores
         const tipo_medida = [10, 11].includes(parseInt(req.body.grupo_alimentar)) ? 2 : 1;
         
-        // Query com todos os campos do payload
+        // 3. Query SQL
         const query = `
             INSERT INTO tbl_foods (
                 item, marca, modo_preparo, grupo_alimentar, porcao_base,
@@ -346,30 +361,69 @@ app.post('/api/save-food', async (req, res) => {
                 vitamina_b12_mcg, vitamina_e_mcg, omega_tres_mg, acido_folico_mcg,
                 teor_alcoolico, observacoes, glutem, alergicos_comuns,
                 categoria_nutricional, origem, nivel_processamento,
-                user_registro, tipo_medida_alimento
+                user_registro, tipo_medida_alimento, dt_registro, dt_atualizacao,
+                status_registro, tipo_registro_alimento
             ) VALUES (
                 $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
                 $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
                 $21, $22, $23, $24, $25, $26, $27, $28, $29, $30,
-                $31, $32, $33, $34, $35, $36, $37, $38, $39
+                $31, $32, $33, $34, $35, $36, $37, $38, $39, NOW(),
+                NOW(), 'Ativo', 'Alerta'
             )
             RETURNING id
         `;
 
+        // 4. Valores para a query
         const values = [
-            req.body.item, req.body.marca, req.body.modo_preparo, 
-            req.body.grupo_alimentar, req.body.porcao_base,
-            // Todos os valores numéricos convertidos
+            // Dados básicos
+            req.body.item || null,
+            req.body.marca || null,
+            req.body.modo_preparo || null,
+            req.body.grupo_alimentar || null,
+            100, // porcao_base fixo
+            
+            // Valores nutricionais (com tratamento)
             parseFloat(req.body.calorias_kcal) || 0,
             parseFloat(req.body.proteina_gr) || 0,
-            // ... (repetir para todos campos numéricos)
-            req.body.glutem, // Já vem como boolean
-            req.user.id, // ID do usuário logado
+            parseFloat(req.body.carbo_gr) || 0,
+            parseFloat(req.body.gorduras_totais_gr) || 0,
+            parseFloat(req.body.gorduras_boas_gr) || 0,
+            parseFloat(req.body.gorduras_ruins_gr) || 0,
+            parseFloat(req.body.fibras_gr) || 0,
+            parseFloat(req.body.sodio_mg) || 0,
+            parseFloat(req.body.acucares_gr) || 0,
+            parseFloat(req.body.acucar_adicionados_gr) || 0,
+            parseFloat(req.body.indice_glicemico) || 0,
+            parseFloat(req.body.carga_glicemica) || 0,
+            parseFloat(req.body.colesterol_mg) || 0,
+            parseFloat(req.body.calcio_mg) || 0,
+            parseFloat(req.body.ferro_mg) || 0,
+            parseFloat(req.body.potassio_mg) || 0,
+            parseFloat(req.body.magnesio_mg) || 0,
+            parseFloat(req.body.zinco_mg) || 0,
+            parseFloat(req.body.vitamina_a_mcg) || 0,
+            parseFloat(req.body.vitamina_d_mcg) || 0,
+            parseFloat(req.body.vitamina_c_mg) || 0,
+            parseFloat(req.body.vitamina_b12_mcg) || 0,
+            parseFloat(req.body.vitamina_e_mcg) || 0,
+            parseFloat(req.body.omega_tres_mg) || 0,
+            parseFloat(req.body.acido_folico_mcg) || 0,
+            parseFloat(req.body.teor_alcoolico) || 0,
+            
+            // Outros campos
+            req.body.observacoes || null,
+            req.body.glutem || false,
+            req.body.alergicos_comuns || null,
+            req.body.categoria_nutricional || null,
+            req.body.origem || null,
+            req.body.nivel_processamento || null,
+            
+            // Dados do sistema
+            req.user.id, // ID do usuário autenticado
             tipo_medida
         ];
 
-        console.log('Executando query com valores:', values.slice(0, 10)); // Log parcial
-
+        // 5. Executar query
         const result = await client.query(query, values);
         await client.query('COMMIT');
         
@@ -381,33 +435,38 @@ app.post('/api/save-food', async (req, res) => {
 
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Erro completo:', {
+        console.error('Erro na rota /api/save-food:', {
             message: error.message,
             stack: error.stack,
-            query: error.query,
-            parameters: error.parameters
+            body: req.body,
+            user: req.user
         });
         
-        // Envie o erro completo para o frontend
         res.status(500).json({
             success: false,
-            message: 'Erro no servidor',
-            error: error.message,
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+            message: 'Erro ao salvar alimento',
+            error: error.message
         });
     } finally {
         client.release();
     }
 });
 
-// Rota para carregar opções de selects
+// Rota para carregar opções de selects (mantida)
 app.get('/api/get-options', async (req, res) => {
     try {
         const { table } = req.query;
+        if (!table) {
+            return res.status(400).json({ error: 'Parâmetro "table" é obrigatório' });
+        }
+        
         const result = await pool.query(`SELECT id, nome FROM ${table} WHERE status = 'Ativo'`);
         res.json(result.rows);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ 
+            error: error.message,
+            suggestion: 'Verifique se o nome da tabela está correto'
+        });
     }
 });
 
