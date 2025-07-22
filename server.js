@@ -11,6 +11,22 @@ const SibApiV3Sdk = require('sib-api-v3-sdk');
 const multer = require('multer');
 const upload = multer();
 
+//AJUSTES DEEPSEEK
+
+const corsOptions = {
+  origin: 'https://fit-plus-frontend.onrender.com', // Substitua pelo domínio do seu frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
+
+app.use(cors(corsOptions));
+
+// Adicione também para lidar com requisições OPTIONS
+app.options('*', cors(corsOptions));
+
+//FIM AJUSTES DEEPSEEK
+
 const defaultClient = SibApiV3Sdk.ApiClient.instance;
 const apiKey = defaultClient.authentications['api-key'];
 apiKey.apiKey = process.env.BREVO_API_KEY;

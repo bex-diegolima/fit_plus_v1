@@ -433,6 +433,7 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 const response = await fetch(API_URL, {  // Use a URL absoluta
                 method: 'POST',
+                mode: 'cors', // Adicione esta linha
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
