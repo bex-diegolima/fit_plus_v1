@@ -259,41 +259,45 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //ALTERAÇÕES DEEPSEEK
 
-        // Função para salvar alimento
-        document.getElementById('saveFoodBtn').addEventListener('click', async function() {
-            const foodName = document.getElementById('foodItemName').value;
-            
-            if (!foodName) {
-                alert('Por favor, preencha o nome do item');
-                return;
-            }
+    document.getElementById('saveFoodBtn').addEventListener('click', async function() {
+    const foodName = document.getElementById('foodItemName').value;
+    
+    if (!foodName) {
+        alert('Por favor, preencha o nome do item');
+        return;
+    }
 
-            try {
-                const response = await fetch('/api/save-food', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        item: foodName
-                    })
-                });
-
-                const result = await response.json();
-                
-                if (result.success) {
-                    alert('Alimento salvo com sucesso!');
-                    // Fecha o modal após salvar
-                    document.getElementById('foodAddModal').style.display = 'none';
-                } else {
-                    alert('Erro ao salvar: ' + (result.message || 'Erro desconhecido'));
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                alert('Erro ao conectar com o servidor');
-            }
+    try {
+        const response = await fetch('/api/save-food', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                item: foodName
+            })
         });
 
+        const result = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(result.errorDetails || result.message || 'Erro desconhecido');
+        }
+        
+        if (result.success) {
+            alert(result.message || 'Alimento salvo com sucesso!');
+            document.getElementById('foodAddModal').style.display = 'none';
+            // Limpa o campo após salvar
+            document.getElementById('foodItemName').value = '';
+        } else {
+            throw new Error(result.message);
+        }
+    } catch (error) {
+        console.error('Erro completo:', error);
+        alert('Erro ao salvar: ' + error.message);
+    }
+});
+        
     //FIM ALTERAÇÕES DEEPSEEK
 
         // ========== INICIALIZAÇÃO ==========

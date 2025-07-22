@@ -322,36 +322,63 @@ app.get('/api/profile-pic', async (req, res) => {
 //ALTERAÇÕES DEEPSEEK
 
 app.post('/api/save-food', async (req, res) => {
+    console.log('Recebendo requisição para salvar alimento:', req.body); // Log de depuração
+    
     try {
         const { item } = req.body;
+        console.log('Dados recebidos:', { item }); // Log de depuração
 
         if (!item) {
+            console.log('Erro: Nome do item não fornecido'); // Log de depuração
             return res.status(400).json({ success: false, message: 'Nome do item é obrigatório' });
         }
 
         const client = await pool.connect();
+        console.log('Conexão com o banco estabelecida'); // Log de depuração
+        
         try {
             await client.query('BEGIN');
+            console.log('Transação iniciada'); // Log de depuração
             
-            const result = await client.query(
-                `INSERT INTO tbl_foods 
+            const queryText = `
+                INSERT INTO tbl_foods 
                 (item, user_registro, dt_registro, dt_atualizacao, status_registro) 
                 VALUES ($1, 'system', NOW(), NOW(), 'Ativo') 
-                RETURNING id`,
-                [item]
-            );
+                RETURNING id`;
+            
+            console.log('Executando query:', queryText); // Log de depuração
+            
+            const result = await client.query(queryText, [item]);
+            console.log('Resultado da query:', result.rows); // Log de depuração
 
             await client.query('COMMIT');
-            res.json({ success: true, id: result.rows[0].id });
+            console.log('Transação commitada'); // Log de depuração
+            
+            res.json({ 
+                success: true, 
+                id: result.rows[0].id,
+                message: 'Alimento salvo com sucesso!'
+            });
+            
         } catch (error) {
             await client.query('ROLLBACK');
+            console.error('Erro na transação:', error); // Log de erro detalhado
             throw error;
         } finally {
             client.release();
+            console.log('Conexão com o banco liberada'); // Log de depuração
         }
     } catch (error) {
-        console.error('Erro ao salvar alimento:', error);
-        res.status(500).json({ success: false, message: 'Erro ao salvar alimento' });
+        console.error('Erro ao salvar alimento:', {
+            error: error.message,
+            stack: error.stack
+        }); // Log de erro completo
+        
+        res.status(500).json({ 
+            success: false, 
+            message: 'Erro ao salvar alimento',
+            errorDetails: error.message // Envia detalhes do erro para o frontend
+        });
     }
 });
 
