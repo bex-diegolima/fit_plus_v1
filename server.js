@@ -326,50 +326,74 @@ app.post('/api/save-food', async (req, res) => {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
-        
-        // 1. Determinar tipo_medida_alimento (condicional)
-        const tipo_medida = [10, 11].includes(parseInt(req.body.grupo_alimentar)) ? 2 : 1;
 
-        // 2. Query de inserção
+        // Debug: Verificar conexão
+        const connectionTest = await client.query('SELECT 1');
+        console.log('Teste de conexão:', connectionTest.rows);
+
+        // Converter valores para tipos corretos
+        const tipo_medida = [10, 11].includes(parseInt(req.body.grupo_alimentar)) ? 2 : 1;
+        
+        // Query com todos os campos do payload
         const query = `
             INSERT INTO tbl_foods (
                 item, marca, modo_preparo, grupo_alimentar, porcao_base,
                 calorias_kcal, proteina_gr, carbo_gr, gorduras_totais_gr,
-                tipo_medida_alimento, user_registro, /*... outros campos...*/
-                status_registro, tipo_registro_alimento
+                gorduras_boas_gr, gorduras_ruins_gr, fibras_gr, sodio_mg,
+                acucares_gr, acucar_adicionados_gr, indice_glicemico, carga_glicemica,
+                colesterol_mg, calcio_mg, ferro_mg, potassio_mg, magnesio_mg,
+                zinco_mg, vitamina_a_mcg, vitamina_d_mcg, vitamina_c_mg,
+                vitamina_b12_mcg, vitamina_e_mcg, omega_tres_mg, acido_folico_mcg,
+                teor_alcoolico, observacoes, glutem, alergicos_comuns,
+                categoria_nutricional, origem, nivel_processamento,
+                user_registro, tipo_medida_alimento
             ) VALUES (
-                $1, $2, $3, $4, $5,
-                $6, $7, $8, $9,
-                $10, $11, /*...*/
-                1, 2  -- Valores fixos conforme regra
-            ) RETURNING id
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+                $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
+                $21, $22, $23, $24, $25, $26, $27, $28, $29, $30,
+                $31, $32, $33, $34, $35, $36, $37, $38, $39
+            )
+            RETURNING id
         `;
 
         const values = [
-            req.body.item,
-            req.body.marca,
-            req.body.modo_preparo,
-            req.body.grupo_alimentar,
-            req.body.porcao_base,
-            // ... outros valores
-            tipo_medida,
-            req.user.id // ID do usuário logado
+            req.body.item, req.body.marca, req.body.modo_preparo, 
+            req.body.grupo_alimentar, req.body.porcao_base,
+            // Todos os valores numéricos convertidos
+            parseFloat(req.body.calorias_kcal) || 0,
+            parseFloat(req.body.proteina_gr) || 0,
+            // ... (repetir para todos campos numéricos)
+            req.body.glutem, // Já vem como boolean
+            req.user.id, // ID do usuário logado
+            tipo_medida
         ];
+
+        console.log('Executando query com valores:', values.slice(0, 10)); // Log parcial
 
         const result = await client.query(query, values);
         await client.query('COMMIT');
         
         res.json({ 
             success: true,
-            id: result.rows[0].id
+            id: result.rows[0].id,
+            message: 'Alimento cadastrado com sucesso!'
         });
+
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Erro:', error);
-        res.status(500).json({ 
+        console.error('Erro completo:', {
+            message: error.message,
+            stack: error.stack,
+            query: error.query,
+            parameters: error.parameters
+        });
+        
+        // Envie o erro completo para o frontend
+        res.status(500).json({
             success: false,
             message: 'Erro no servidor',
-            error: error.message
+            error: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });
     } finally {
         client.release();
