@@ -427,15 +427,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Enviar para o servidor
+
+            const API_URL = 'https://seu-backend.onrender.com/api/save-food'; // URL completa
+
             try {
-                const response = await fetch('/api/save-food', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
-                    body: JSON.stringify(formData)
-                });
+                const response = await fetch(API_URL, {  // Use a URL absoluta
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(formData)
+            });
 
                 const result = await response.json();
                 
@@ -447,8 +450,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     throw new Error(result.message || 'Erro ao salvar');
                 }
             } catch (error) {
-                console.error('Erro:', error);
-                alert('Erro ao salvar: ' + error.message);
+                console.error('Erro completo:', {
+                    error,
+                    response: await response.text()  // Mostra a resposta crua do servidor
+                });
+                alert('Erro ao conectar com o servidor. Verifique o console (F12)');
             }
         });
 

@@ -434,12 +434,10 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        await client.query('ROLLBACK');
-        console.error('Erro na rota /api/save-food:', {
-            message: error.message,
-            stack: error.stack,
-            body: req.body,
-            user: req.user
+        console.error('Erro interno:', error);
+        res.status(500).json({  // Garanta que retorna JSON mesmo em erros
+            success: false,
+            message: 'Erro interno: ' + error.message
         });
         
         res.status(500).json({
