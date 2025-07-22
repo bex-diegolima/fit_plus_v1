@@ -258,46 +258,99 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     //ALTERAÇÕES DEEPSEEK
+    // Elementos do DOM
+        const saveBtn = document.getElementById('saveFoodBtn');
+        const foodAddModal = document.getElementById('foodAddModal');
+        
+        // Função para calcular proporção (regra de 3)
+        const calculateProportion = (value, basePortion) => {
+            return basePortion === 0 ? 0 : (value * 100) / basePortion;
+        };
 
-    document.getElementById('saveFoodBtn').addEventListener('click', async function() {
-    const foodName = document.getElementById('foodItemName').value;
-    
-    if (!foodName) {
-        alert('Por favor, preencha o nome do item');
-        return;
-    }
+        // Função para salvar alimento
+        saveBtn.addEventListener('click', async function() {
+            // Coletar dados do formulário
+            const formData = {
+                // Bloco 1
+                item: document.getElementById('foodItemName').value.trim(),
+                marca: document.getElementById('foodBrand').value.trim(),
+                modo_preparo: document.getElementById('foodPreparation').value,
+                grupo_alimentar: document.getElementById('foodGroup').value,
+                porcao_base: 100, // Valor fixo conforme regra
+                base_portion_original: parseFloat(document.getElementById('foodBasePortion').value) || 0,
+                
+                // Valores nutricionais (com cálculo proporcional)
+                calorias_kcal: calculateProportion(
+                    parseFloat(document.getElementById('foodCalories').value) || 0,
+                    parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+                proteina_gr: calculateProportion(
+                    parseFloat(document.getElementById('foodProteins').value) || 0,
+                    parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+                // ... (repetir para todos os campos nutricionais)
+                
+                // Bloco 3
+                categoria_nutricional: document.getElementById('foodCategory').value,
+                origem: document.getElementById('foodOrigin').value,
+                nivel_processamento: document.getElementById('foodProcessing').value,
+                glutem: document.getElementById('foodGluten').checked ? 1 : 0,
+                alergicos_comuns: document.getElementById('foodAllergens').value,
+                observacoes: document.getElementById('foodObservations').value.trim()
+            };
 
-    try {
-        const response = await fetch('/api/save-food', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                item: foodName
-            })
+            // Validar campos obrigatórios
+            if (!formData.item || !formData.marca || !formData.modo_preparo || !formData.grupo_alimentar) {
+                alert('Preencha todos os campos obrigatórios!');
+                return;
+            }
+
+            // Enviar para o servidor
+            try {
+                const response = await fetch('/api/save-food', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Alimento salvo com sucesso!');
+                    foodAddModal.style.display = 'none';
+                    // Limpar formulário ou recarregar dados
+                } else {
+                    throw new Error(result.message || 'Erro ao salvar');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao salvar: ' + error.message);
+            }
         });
 
-        const result = await response.json();
-        
-        if (!response.ok) {
-            throw new Error(result.errorDetails || result.message || 'Erro desconhecido');
+        // Carregar opções de selects (tabelas auxiliares)
+        async function loadSelectOptions() {
+            const selects = {
+                'foodPreparation': '/api/get-options?table=tbl_aux_modo_preparo',
+                'foodGroup': '/api/get-options?table=tbl_aux_grupo_alimentar',
+                // ... outros selects
+            };
+
+            for (const [id, url] of Object.entries(selects)) {
+                const response = await fetch(url);
+                const options = await response.json();
+                const select = document.getElementById(id);
+                
+                options.forEach(opt => {
+                    const option = document.createElement('option');
+                    option.value = opt.id;
+                    option.textContent = opt.nome;
+                    select.appendChild(option);
+                });
+            }
         }
-        
-        if (result.success) {
-            alert(result.message || 'Alimento salvo com sucesso!');
-            document.getElementById('foodAddModal').style.display = 'none';
-            // Limpa o campo após salvar
-            document.getElementById('foodItemName').value = '';
-        } else {
-            throw new Error(result.message);
-        }
-    } catch (error) {
-        console.error('Erro completo:', error);
-        alert('Erro ao salvar: ' + error.message);
-    }
-});
-        
+
+        loadSelectOptions();
     //FIM ALTERAÇÕES DEEPSEEK
 
         // ========== INICIALIZAÇÃO ==========

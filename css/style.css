@@ -984,3 +984,22 @@ body {
 }
 
 /*FIM ALTERAÇÕES DEEPSEEK*/
+
+/*ALTERAÇÕES DEEPSEEK 2*/
+
+/* Adicione ao style.css */
+.food-modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+/*FIM ALTERAÇÕES DEEPSEEK 2*/
