@@ -333,6 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const selects = {
                 'foodPreparation': '/api/get-options?table=tbl_aux_modo_preparo',
                 'foodGroup': '/api/get-options?table=tbl_aux_grupo_alimentar',
+                'foodCategory': '/api/get-options?table=tbl_aux_categoria_nutri',
                 // ... outros selects
             };
 
