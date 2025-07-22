@@ -17,40 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const welcomeMessage = document.getElementById('welcomeMessage');
     const userNameSpan = document.getElementById('userName');
 
-    //ALTERAÇÕES CHAT GPT
-        const saveFoodBtn = document.getElementById('saveFoodBtn');
-    if (saveFoodBtn) {
-        saveFoodBtn.addEventListener('click', async () => {
-            const foodItemName = document.getElementById('foodItemName').value.trim();
-
-            if (!foodItemName) {
-                alert('Por favor, preencha o Nome do Item.');
-                return;
-            }
-
-            try {
-                const response = await fetch('https://fit-plus-backend.onrender.com/api/food-add', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ item: foodItemName })
-                });
-
-                const result = await response.json();
-                if (result.success) {
-                    alert('Item cadastrado com sucesso!');
-                    document.getElementById('foodItemName').value = '';
-                } else {
-                    alert(result.message || 'Erro ao salvar item.');
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                alert('Erro ao conectar com o servidor.');
-            }
-        });
-    }
-
-    //FIM ALTERAÇÕES CHAT GPT
-
     // ========== FUNÇÕES DO MENU ==========
     // Alternar visibilidade do menu
     menuButton.addEventListener('click', function(e) {
@@ -215,86 +181,125 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Adicione esta função no seu arquivo:
-function clearModalFields() {
-    // Limpa todos os inputs
-    document.querySelectorAll('#foodAddModal .food-input').forEach(input => {
-        if (input.type !== 'file') { // Mantém o file input diferente
-            input.value = '';
+    function clearModalFields() {
+        // Limpa todos os inputs
+        document.querySelectorAll('#foodAddModal .food-input').forEach(input => {
+            if (input.type !== 'file') { // Mantém o file input diferente
+                input.value = '';
+            }
+        });
+        
+        // Reseta os selects
+        document.querySelectorAll('#foodAddModal .food-select').forEach(select => {
+            select.selectedIndex = 0;
+        });
+        
+        // Reseta o valor padrão da porção
+        const portionInput = document.getElementById('foodBasePortion');
+        if (portionInput) {
+            portionInput.value = '100.00';
+            document.getElementById('foodPortionUnit').textContent = 'g';
+        }
+        
+        // Limpa o input de arquivo (imagem)
+        const fileInput = document.getElementById('foodImage');
+        if (fileInput) {
+            fileInput.value = '';
+        }
+
+        // Limpa os campos do Bloco 2
+    const block2Inputs = [
+        'foodGoodFats', 'foodBadFats', 'foodFiber', 'foodSodium',
+        'foodCholesterol', 'foodSugar', 'foodGlycemicIndex', 'foodGlycemicLoad',
+        'foodCalcium', 'foodIron', 'foodPotassium', 'foodMagnesium',
+        'foodZinc', 'foodVitaminC', 'foodVitaminA', 'foodVitaminD',
+        'foodVitaminB12', 'foodOmega3', 'foodFolicAcid', 'foodAlcohol'
+    ];
+
+    block2Inputs.forEach(id => {
+        const input = document.getElementById(id);
+        if (input) input.value = '';
+    });
+
+    // Limpa os campos do Bloco 3
+    const block3Inputs = [
+        'foodCategory', 'foodOrigin', 'foodProcessing', 'foodGluten',
+        'foodAntioxidants', 'foodObservations'
+    ];
+
+    block3Inputs.forEach(id => {
+        const element = document.getElementById(id);
+        if (element) element.value = '';
+    });
+
+    // Limpa select múltiplo
+    const allergensSelect = document.getElementById('foodAllergens');
+    if (allergensSelect) {
+        Array.from(allergensSelect.options).forEach(option => {
+        option.selected = false;
+        });
+    }
+    }
+
+    // Atualize o evento de fechar o modal (substitua o existente):
+    closeButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            this.closest('.food-modal').style.display = 'none';
+            clearModalFields(); // Limpa os campos ao fechar
+        });
+    });
+
+    // Atualize também o clique fora do modal:
+    window.addEventListener('click', (event) => {
+        if (event.target.classList.contains('food-modal')) {
+            event.target.style.display = 'none';
+            clearModalFields(); // Limpa os campos ao fechar
         }
     });
-    
-    // Reseta os selects
-    document.querySelectorAll('#foodAddModal .food-select').forEach(select => {
-        select.selectedIndex = 0;
+
+    //ALTERAÇÕES DEEPSEEK
+
+        // Função para salvar alimento
+        document.getElementById('saveFoodBtn').addEventListener('click', async function() {
+            const foodName = document.getElementById('foodItemName').value;
+            
+            if (!foodName) {
+                alert('Por favor, preencha o nome do item');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/save-food', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        item: foodName
+                    })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Alimento salvo com sucesso!');
+                    // Fecha o modal após salvar
+                    document.getElementById('foodAddModal').style.display = 'none';
+                } else {
+                    alert('Erro ao salvar: ' + (result.message || 'Erro desconhecido'));
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                alert('Erro ao conectar com o servidor');
+            }
+        });
+
+    //FIM ALTERAÇÕES DEEPSEEK
+
+        // ========== INICIALIZAÇÃO ==========
+        loadUserData();
+        initializeEmptyTable();
+        setupCollapsibleBlocks();
+        setupPortionUnitToggle();
+        setupModalCleanup();
     });
-    
-    // Reseta o valor padrão da porção
-    const portionInput = document.getElementById('foodBasePortion');
-    if (portionInput) {
-        portionInput.value = '100.00';
-        document.getElementById('foodPortionUnit').textContent = 'g';
-    }
-    
-    // Limpa o input de arquivo (imagem)
-    const fileInput = document.getElementById('foodImage');
-    if (fileInput) {
-        fileInput.value = '';
-    }
-
-      // Limpa os campos do Bloco 2
-  const block2Inputs = [
-    'foodGoodFats', 'foodBadFats', 'foodFiber', 'foodSodium',
-    'foodCholesterol', 'foodSugar', 'foodGlycemicIndex', 'foodGlycemicLoad',
-    'foodCalcium', 'foodIron', 'foodPotassium', 'foodMagnesium',
-    'foodZinc', 'foodVitaminC', 'foodVitaminA', 'foodVitaminD',
-    'foodVitaminB12', 'foodOmega3', 'foodFolicAcid', 'foodAlcohol'
-  ];
-
-  block2Inputs.forEach(id => {
-    const input = document.getElementById(id);
-    if (input) input.value = '';
-  });
-
-  // Limpa os campos do Bloco 3
-  const block3Inputs = [
-    'foodCategory', 'foodOrigin', 'foodProcessing', 'foodGluten',
-    'foodAntioxidants', 'foodObservations'
-  ];
-
-  block3Inputs.forEach(id => {
-    const element = document.getElementById(id);
-    if (element) element.value = '';
-  });
-
-  // Limpa select múltiplo
-  const allergensSelect = document.getElementById('foodAllergens');
-  if (allergensSelect) {
-    Array.from(allergensSelect.options).forEach(option => {
-      option.selected = false;
-    });
-  }
-}
-
-// Atualize o evento de fechar o modal (substitua o existente):
-closeButtons.forEach(btn => {
-    btn.addEventListener('click', function() {
-        this.closest('.food-modal').style.display = 'none';
-        clearModalFields(); // Limpa os campos ao fechar
-    });
-});
-
-// Atualize também o clique fora do modal:
-window.addEventListener('click', (event) => {
-    if (event.target.classList.contains('food-modal')) {
-        event.target.style.display = 'none';
-        clearModalFields(); // Limpa os campos ao fechar
-    }
-});
-
-    // ========== INICIALIZAÇÃO ==========
-    loadUserData();
-    initializeEmptyTable();
-    setupCollapsibleBlocks();
-    setupPortionUnitToggle();
-    setupModalCleanup();
-});

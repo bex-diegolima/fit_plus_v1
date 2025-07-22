@@ -85,28 +85,6 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
-//ALTERAÇÕES CHAT GPT
-
-app.post('/api/food-add', async (req, res) => {
-    try {
-        const { item } = req.body;
-        if (!item) return res.status(400).json({ success: false, message: 'Nome do item obrigatório.' });
-
-        await pool.query(
-            'INSERT INTO tbl_foods (item) VALUES ($1)',
-            [item]
-        );
-
-        return res.json({ success: true, message: 'Item cadastrado com sucesso.' });
-    } catch (error) {
-        console.error('Erro ao cadastrar alimento:', error);
-        res.status(500).json({ success: false, message: 'Erro no servidor.' });
-    }
-});
-
-
-//FIM ALTERAÇÕES CHAT GPT
-
 app.post('/api/validate', async (req, res) => {
     try {
         const { email, code } = req.body;
@@ -340,6 +318,44 @@ app.get('/api/profile-pic', async (req, res) => {
         res.status(500).json({ success: false, message: 'Erro no servidor' });
     }
 });
+
+//ALTERAÇÕES DEEPSEEK
+
+app.post('/api/save-food', async (req, res) => {
+    try {
+        const { item } = req.body;
+
+        if (!item) {
+            return res.status(400).json({ success: false, message: 'Nome do item é obrigatório' });
+        }
+
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+            
+            const result = await client.query(
+                `INSERT INTO tbl_foods 
+                (item, user_registro, dt_registro, dt_atualizacao, status_registro) 
+                VALUES ($1, 'system', NOW(), NOW(), 'Ativo') 
+                RETURNING id`,
+                [item]
+            );
+
+            await client.query('COMMIT');
+            res.json({ success: true, id: result.rows[0].id });
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        } finally {
+            client.release();
+        }
+    } catch (error) {
+        console.error('Erro ao salvar alimento:', error);
+        res.status(500).json({ success: false, message: 'Erro ao salvar alimento' });
+    }
+});
+
+//FIM ALTERAÇÕES DEEPSEEK
 
 app.listen(PORT, async () => {
     console.log(`🚀 Servidor Fit+ rodando na porta ${PORT}`);

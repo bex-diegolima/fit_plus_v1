@@ -959,32 +959,28 @@ body {
   margin-bottom: 20px;
 }
 
-/*ALTERAÇÕES CHAT GPT*/
+/*ALTERAÇÕES DEEPSEEK*/
 
-/* Botão Salvar do módulo de alimentos */
-.btn-save-food {
-    width: 100%;
-    background-color: #3498db;
-    color: #fff;
+.btn-save {
+    background-color: #27ae60;
+    color: white;
     border: none;
-    padding: 15px;
-    border-radius: 8px;
+    padding: 12px 24px;
+    border-radius: 5px;
     font-size: 16px;
-    font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
+    transition: background-color 0.3s;
     margin-top: 20px;
+    width: 100%;
 }
 
-.btn-save-food:hover {
-    background-color: #2980b9;
-    transform: scale(1.02);
+.btn-save:hover {
+    background-color: #2ecc71;
 }
 
-.btn-save-food:active {
-    background-color: #2471a3;
-    transform: scale(0.98);
+.food-modal-footer {
+    margin-top: 30px;
+    text-align: center;
 }
 
-
-/*FIM ALTERAÇÕES CHAT GPT*/
+/*FIM ALTERAÇÕES DEEPSEEK*/
