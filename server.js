@@ -384,9 +384,11 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
         await client.query('BEGIN');
 
         // 1. Verificar se o usuário está autenticado
-        if (!req.user || !req.user.id) {
+        if (!req.user || !req.user.userId) {
             throw new Error('Usuário não autenticado');
         }
+
+        const userId = req.user.userId;
 
         // 2. Preparar valores
         const tipo_medida = [10, 11].includes(parseInt(req.body.grupo_alimentar)) ? 2 : 1;
