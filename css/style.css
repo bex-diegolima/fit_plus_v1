@@ -927,11 +927,12 @@ body {
 /* Select múltiplo */
 .food-select-multiple {
   width: 100%;
-  padding: 10px;
+  /*Ajuste DeepSeek #4 ant=10*/padding: 5px;
   border: 1px solid #ddd;
   border-radius: 4px;
   background-color: white;
-  min-height: 100px;
+  /*Ajuste DeepSeek #4*/height: auto;
+  /*Ajuste DeepSeek #4 ant=100*/min-height: 38px;
 }
 
 .food-select-multiple option {
@@ -1011,3 +1012,21 @@ body {
   font-size: 14px;
 }
 /*FIM ALTERAÇÕES DEEPSEEK 2*/
+
+/*Inicio DeepSeek #4*/
+.selected-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.selected-tag {
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+}
+/*Fim DeepSeek #4*/

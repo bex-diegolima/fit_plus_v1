@@ -533,30 +533,67 @@ document.addEventListener('DOMContentLoaded', function() {
         
 
         // Carregar opções de selects (tabelas auxiliares)
-        async function loadSelectOptions() {
-            const selects = {
-                'foodPreparation': '/api/get-options?table=tbl_aux_modo_preparo',
-                'foodGroup': '/api/get-options?table=tbl_aux_grupo_alimentar',
-                'foodCategory': '/api/get-options?table=tbl_aux_categoria_nutri',
-                'foodOrigin': '/api/get-options?table=tbl_aux_origem_alimentar',
-                'foodProcessing': '/api/get-options?table=tbl_aux_processamento',
-                'foodAllergens': '/api/get-options?table=tbl_aux_alergicos',
-                // ... outros selects
-            };
 
-            for (const [id, url] of Object.entries(selects)) {
-                const response = await fetch(url);
-                const options = await response.json();
-                const select = document.getElementById(id);
-                
-                options.forEach(opt => {
-                    const option = document.createElement('option');
-                    option.value = opt.id;
-                    option.textContent = opt.nome;
-                    select.appendChild(option);
-                });
+        //Inicio DeepSeek #4
+
+    async function loadSelectOptions() {
+        const selects = {
+            'foodPreparation': '/api/get-options?table=tbl_aux_modo_preparo',
+            'foodGroup': '/api/get-options?table=tbl_aux_grupo_alimentar',
+            'foodCategory': '/api/get-options?table=tbl_aux_categoria_nutri',
+            'foodOrigin': '/api/get-options?table=tbl_aux_origem_alimentar',
+            'foodProcessing': '/api/get-options?table=tbl_aux_processamento',
+            'foodAllergens': '/api/get-options?table=tbl_aux_alergicos',
+            // ... outros selects
+        };
+
+        for (const [id, url] of Object.entries(selects)) {
+            const response = await fetch(url);
+            const options = await response.json();
+            const select = document.getElementById(id);
+            
+            // Limpa opções existentes
+            select.innerHTML = '';
+            
+            options.forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt.id;
+                option.textContent = opt.nome;
+                select.appendChild(option);
+            });
+
+            // Adiciona funcionalidade especial apenas para o foodAllergens
+                if (id === 'foodAllergens') {
+                    // Cria container para mostrar seleções
+                    const container = document.createElement('div');
+                    container.id = 'selectedAllergens';
+                    container.className = 'selected-tags-container';
+                    select.parentNode.insertBefore(container, select.nextSibling);
+
+                    // Adiciona evento para mostrar seleções e limitar a 10
+                    select.addEventListener('change', function() {
+                        // Atualiza display
+                        container.innerHTML = '';
+                        Array.from(this.selectedOptions).forEach(opt => {
+                            const tag = document.createElement('div');
+                            tag.className = 'selected-tag';
+                            tag.textContent = opt.text;
+                            container.appendChild(tag);
+                        });
+
+                        // Limita a 10 seleções
+                        if (this.selectedOptions.length > 10) {
+                            alert('Máximo de 10 alérgenos permitidos');
+                            this.selectedOptions[this.selectedOptions.length-1].selected = false;
+                            // Atualiza novamente após remover o último
+                            container.lastChild?.remove();
+                        }
+                    });
+                }
             }
         }
+
+        //Fim DeepSeek #4
 
         loadSelectOptions();
     //FIM ALTERAÇÕES DEEPSEEK
