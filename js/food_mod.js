@@ -432,6 +432,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 observacoes: document.getElementById('foodObservations').value.trim()
             };
 
+            //Inicio Alteração DeepSeek 23-07 #3
+            const imageFile = document.getElementById('foodImage').files[0];
+            const formDataToSend = new FormData();
+            
+            if (imageFile) {
+                formDataToSend.append('foodImage', imageFile);
+            }
+            formDataToSend.append('foodData', JSON.stringify(formData));
+
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: formDataToSend  // Agora envia FormData multipart
+            });
+            //Fim Alteração DeepSeek 23-07 #3
+
             //Inicio Alterações GPT
                 // GARANTIR TOKEN
                 const token = localStorage.getItem('token');

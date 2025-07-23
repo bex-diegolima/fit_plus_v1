@@ -390,6 +390,15 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
 
         const userId = req.user.userId;
 
+        //Inicio Alterações DeepSeek 23-07 #3
+
+        // Obtenha os dados do JSON
+        const foodData = JSON.parse(req.body.foodData);
+        // Obtenha o buffer da imagem
+        const imageBuffer = req.file ? req.file.buffer : null;
+
+        //Fim Alterações DeepSeek 23-07 #3
+
         // 2. Preparar valores
         const tipo_medida = [10, 11].includes(parseInt(req.body.grupo_alimentar)) ? 2 : 1;
         
@@ -410,13 +419,13 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
                 teor_alcoolico, observacoes, glutem, alergicos_comuns,
                 categoria_nutricional, origem, nivel_processamento,
                 user_registro, tipo_medida_alimento, dt_registro, dt_atualizacao,
-                status_registro, tipo_registro_alimento,  carga_antioxidante
+                status_registro, tipo_registro_alimento,  carga_antioxidante, img_registro
             ) VALUES (
                 $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
                 $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
                 $21, $22, $23, $24, $25, $26, $27, $28, $29, $30,
                 $31, $32, $33, $34, $35, $36, $37, $38, $39, NOW(),
-                NOW(), $40, $41, $42
+                NOW(), $40, $41, $42, $43
             )
             RETURNING id
         `;
@@ -472,6 +481,7 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
             parseInt(req.body.status_registro) || 0,
             parseInt(req.body.tipo_registro_alimento) || 0,
             parseInt(req.body.carga_antioxidante) || 0,
+            imageBuffer,
         ];
 
         // 5. Executar query
