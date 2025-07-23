@@ -461,8 +461,8 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
             req.body.nivel_processamento || null,
             req.user.id, // ID do usuário autenticado
             tipo_medida,
-            dt_registro,
-            dt_atualizacao,
+            new Date(), // dt_registro
+            new Date(), // dt_atualizacao
             parseInt(req.body.status_registro) || 0,
             parseInt(req.body.tipo_registro_alimento) || 0
         ];
