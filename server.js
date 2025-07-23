@@ -461,6 +461,9 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
             req.body.categoria_nutricional || null,
             req.body.origem || null,
             req.body.nivel_processamento || null,
+
+            parseInt(req.body.status_registro) || 0,
+            parseInt(req.body.tipo_registro_alimento) || 0,
             
             // Dados do sistema
             req.user.id, // ID do usuário autenticado
