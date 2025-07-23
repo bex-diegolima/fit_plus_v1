@@ -536,24 +536,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
             //Inicio DeepSeek #4.1
             function setupMultiSelectBehavior() {
-            const allergensSelect = document.getElementById('foodAllergens');
-            if (!allergensSelect) return;
+                const allergensSelect = document.getElementById('foodAllergens');
+                if (!allergensSelect) return;
 
-            // Permite seleção múltipla com clique simples
-            allergensSelect.addEventListener('click', function(e) {
-                // Ignora se não for um option que foi clicado
-                if (e.target.tagName !== 'OPTION') return;
+                // Remove o event listener anterior para evitar duplicação
+                allergensSelect.removeEventListener('mousedown', handleMouseDown);
                 
-                // Mantém as seleções existentes
-                if (!e.ctrlKey && !e.shiftKey && !e.metaKey) {
-                    e.target.selected = !e.target.selected;
+                // Adiciona novo handler
+                allergensSelect.addEventListener('mousedown', handleMouseDown);
+                
+                function handleMouseDown(e) {
+                    // Ignora se não for um option que foi clicado
+                    if (e.target.tagName !== 'OPTION') return;
+                    
+                    // Permite comportamento normal com teclas modificadoras
+                    if (e.ctrlKey || e.shiftKey || e.metaKey) return;
+                    
+                    // Previne o comportamento padrão
                     e.preventDefault();
                     
+                    // Alterna o estado de seleção
+                    e.target.selected = !e.target.selected;
+                    
                     // Dispara o evento change manualmente
-                    const event = new Event('change');
-                    this.dispatchEvent(event);
+                    const changeEvent = new Event('change');
+                    allergensSelect.dispatchEvent(changeEvent);
                 }
-            });
             }
             //Inicio DeepSeek #4.1
 
@@ -614,7 +622,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
 
                     //Inicio DeepSeek #4.1
-                    setupMultiSelectBehavior();
+                    setTimeout(setupMultiSelectBehavior, 0); // Garante que o DOM esteja pronto
                     //Fim DeepSeek #4.1
 
                 }
