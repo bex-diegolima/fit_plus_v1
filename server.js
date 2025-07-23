@@ -478,8 +478,8 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
             tipo_medida,
             //new Date(), // dt_registro
             //new Date(), // dt_atualizacao
-            parseInt(req.body.status_registro) || 0,
-            parseInt(req.body.tipo_registro_alimento) || 0,
+            parseInt(req.body.status_registro) || 1,
+            parseInt(req.body.tipo_registro_alimento) || 2,
             parseInt(req.body.carga_antioxidante) || 0,
             imageBuffer,
         ];
