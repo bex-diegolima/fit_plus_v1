@@ -10,6 +10,7 @@ const SibApiV3Sdk = require('sib-api-v3-sdk');
 const multer = require('multer');
 const upload = multer();
 const jwt = require('jsonwebtoken');  // Já pode declarar aqui
+const SECRET_KEY = 'Cruciatu$145'; // apenas para testes
 
 const app = express();  // DECLARE APP ANTES de usar app.use()
 
@@ -188,6 +189,9 @@ app.post('/api/login', async (req, res) => {
             return res.status(403).json({ success: false, message: 'Conta inativa. Por favor, contate o suporte.' });
         }
 
+        // 🔐 Geração do token JWT
+        const token = jwt.sign({ userId: user.user_id, email }, SECRET_KEY, { expiresIn: '1h' });
+
         return res.json({ success: true, message: 'Login realizado com sucesso' });
     } catch (error) {
         return res.status(500).json({ success: false, message: 'Erro durante o login' });
@@ -362,7 +366,7 @@ const authenticateToken = (req, res, next) => {
     
     if (!token) return res.status(401).json({ message: 'Token não fornecido' });
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    jwt.verify(token, SECRET_KEY, (err, user) => {
         if (err) return res.status(403).json({ message: 'Token inválido' });
         req.user = user;
         next();
