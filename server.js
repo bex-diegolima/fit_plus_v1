@@ -58,8 +58,10 @@ function verifyToken(req, res, next) {
 
 const PORT = 3002;
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+//Inicio DeepSeek #3.1
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
+//Fim DeepSeek #3.1
 app.use(express.static(__dirname));
 //Fim Ajustes GPT
 

@@ -442,6 +442,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!file) return null;
                 
                 return new Promise((resolve) => {
+                //Inicio DeepSeek #3.1
+                if (file.size > 2 * 1024 * 1024) {
+                    compressImage(file, 0.5).then(resolve);
+                } else {
+                //Fim DeepSeek #3.1
                     const reader = new FileReader();
                     reader.readAsDataURL(file);
                     reader.onload = () => {
@@ -449,9 +454,29 @@ document.addEventListener('DOMContentLoaded', function() {
                         const base64Data = reader.result.split(',')[1]; 
                         resolve(base64Data);
                     };
+                }
                 });
             }
             //Fim DeepSeek #3
+
+            //Inicio DeepSeek #3.1
+            function compressImage(file, quality) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                img.onload = () => {
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    resolve(canvas.toDataURL('image/jpeg', quality).split(',')[1]);
+                };
+                
+                img.src = URL.createObjectURL(file);
+            });
+        }
+            //Fim DeepSeek #3.1
 
             //Inicio Alterações GPT
                 // GARANTIR TOKEN
