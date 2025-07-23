@@ -425,7 +425,6 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
             req.body.modo_preparo || null,
             req.body.grupo_alimentar || null,
             100, // porcao_base fixo
-            
             // Valores nutricionais (com tratamento)
             parseFloat(req.body.calorias_kcal) || 0,
             parseFloat(req.body.proteina_gr) || 0,
@@ -453,7 +452,6 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
             parseFloat(req.body.omega_tres_mg) || 0,
             parseFloat(req.body.acido_folico_mcg) || 0,
             parseFloat(req.body.teor_alcoolico) || 0,
-            
             // Outros campos
             req.body.observacoes || null,
             req.body.glutem || false,
@@ -461,13 +459,12 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
             req.body.categoria_nutricional || null,
             req.body.origem || null,
             req.body.nivel_processamento || null,
-
-            parseInt(req.body.status_registro) || 0,
-            parseInt(req.body.tipo_registro_alimento) || 0,
-            
-            // Dados do sistema
             req.user.id, // ID do usuário autenticado
-            tipo_medida
+            tipo_medida,
+            dt_registro,
+            dt_atualizacao,
+            parseInt(req.body.status_registro) || 0,
+            parseInt(req.body.tipo_registro_alimento) || 0
         ];
 
         // 5. Executar query
