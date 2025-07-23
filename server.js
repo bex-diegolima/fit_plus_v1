@@ -419,7 +419,7 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
 
         // 4. Valores para a query
         const values = [
-            // Dados básicos
+            // Dados básicoss
             req.body.item || null,
             req.body.marca || null,
             req.body.modo_preparo || null,
