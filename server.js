@@ -407,10 +407,10 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
                 colesterol_mg, calcio_mg, ferro_mg, potassio_mg, magnesio_mg,
                 zinco_mg, vitamina_a_mcg, vitamina_d_mcg, vitamina_c_mg,
                 vitamina_b12_mcg, vitamina_e_mcg, omega_tres_mg, acido_folico_mcg,
-                teor_alcoolico, observacoes, glutem, alergicos_comuns, carga_antioxidante,
+                teor_alcoolico, observacoes, glutem, alergicos_comuns,
                 categoria_nutricional, origem, nivel_processamento,
                 user_registro, tipo_medida_alimento, dt_registro, dt_atualizacao,
-                status_registro, tipo_registro_alimento
+                status_registro, tipo_registro_alimento,  carga_antioxidante
             ) VALUES (
                 $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
                 $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
@@ -460,7 +460,6 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
             req.body.observacoes || null,
             req.body.glutem || false,
             req.body.alergicos_comuns || null,
-            req.body.carga_antioxidante || null,
             req.body.categoria_nutricional || null,
             req.body.origem || null,
             req.body.nivel_processamento || null,
@@ -471,7 +470,8 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
             //new Date(), // dt_registro
             //new Date(), // dt_atualizacao
             parseInt(req.body.status_registro) || 0,
-            parseInt(req.body.tipo_registro_alimento) || 0
+            parseInt(req.body.tipo_registro_alimento) || 0,
+            req.body.carga_antioxidante || null,
         ];
 
         // 5. Executar query
