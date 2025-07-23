@@ -9,7 +9,7 @@ const { pool } = require('./db');
 const SibApiV3Sdk = require('sib-api-v3-sdk');
 const multer = require('multer');
 const upload = multer();
-const jwt = require('jsonwebtoken');  // Já pode declarar aqui
+const jwt = require('jsonwebtoken');  // Já pode declarar aquii
 const SECRET_KEY = 'Cruciatu$145'; // apenas para testes
 
 const app = express();  // DECLARE APP ANTES de usar app.use()
