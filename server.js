@@ -1,5 +1,4 @@
-// server.js adaptado para PostgreSQL (Neon)
-
+//Inicio Ajustes GPT
 process.on('SIGTERM', () => process.exit(0));
 process.on('SIGINT', () => process.exit(0));
 require('dotenv').config();
@@ -10,8 +9,11 @@ const { pool } = require('./db');
 const SibApiV3Sdk = require('sib-api-v3-sdk');
 const multer = require('multer');
 const upload = multer();
+const jwt = require('jsonwebtoken');  // Já pode declarar aqui
 
-//AJUSTES DEEPSEEK
+const app = express();  // DECLARE APP ANTES de usar app.use()
+
+// AJUSTES DEEPSEEK
 
 const corsOptions = {
   origin: 'https://fit-plus-frontend.onrender.com', // Substitua pelo domínio do seu frontend
@@ -25,7 +27,7 @@ app.use(cors(corsOptions));
 // Adicione também para lidar com requisições OPTIONS
 app.options('*', cors(corsOptions));
 
-//FIM AJUSTES DEEPSEEK
+// FIM AJUSTES DEEPSEEK
 
 const defaultClient = SibApiV3Sdk.ApiClient.instance;
 const apiKey = defaultClient.authentications['api-key'];
@@ -36,13 +38,29 @@ if (!apiKey.apiKey || apiKey.apiKey.length < 50) {
     process.exit(1);
 }
 
-const app = express();
+// Middleware para verificar token JWT
+function verifyToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) return res.status(401).json({ message: 'Token não fornecido' });
+
+  const token = authHeader.split(' ')[1]; // Bearer TOKEN
+
+  if (!token) return res.status(401).json({ message: 'Token inválido' });
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ message: 'Token inválido ou expirado' });
+
+    req.user = user;
+    next();
+  });
+}
+
 const PORT = 3002;
 
-app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
+//Fim Ajustes GPT
 
 function generateRandomCode() {
     const min = 100000;
@@ -454,12 +472,6 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
         res.status(500).json({  // Garanta que retorna JSON mesmo em erros
             success: false,
             message: 'Erro interno: ' + error.message
-        });
-        
-        res.status(500).json({
-            success: false,
-            message: 'Erro ao salvar alimento',
-            error: error.message
         });
     } finally {
         client.release();

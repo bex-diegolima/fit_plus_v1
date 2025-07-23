@@ -34,6 +34,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (result.success) {
                 localStorage.setItem('userEmail', document.getElementById('username').value.trim());
+                //Inicio ajuste GPT
+                localStorage.setItem("token", result.token);
+                //Fim ajuste GPT
                 window.location.href = 'home.html';
             } else {
                 errorContainer.textContent = result.message;

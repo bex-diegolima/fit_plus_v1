@@ -269,6 +269,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Função para salvar alimento
         saveBtn.addEventListener('click', async function() {
+
+            //Inicio ajustes GPT
+
+             // Capturar os valores selecionados do select múltiplo de alérgenos
+            const allergensSelect = document.getElementById('foodAllergens');
+            const alergicos_comuns = Array.from(allergensSelect.selectedOptions).map(opt => opt.value);
+
+            //Fim ajustes GPT
+
             // Coletar dados do formulário
             const formData = {
                 // Bloco 1
@@ -420,6 +429,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 observacoes: document.getElementById('foodObservations').value.trim()
             };
 
+            //Inicio Alterações GPT
+                // GARANTIR TOKEN
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('Usuário não autenticado. Faça login novamente.');
+                    return;  // para não continuar o envio
+                }
+            //Fim Alterações GPT
+
             // Validar campos obrigatórios
             if (!formData.item || !formData.marca || !formData.modo_preparo || !formData.grupo_alimentar) {
                 alert('Preencha todos os campos obrigatórios!');
@@ -428,21 +446,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Enviar para o servidor
 
+            //Inicio Alterações GPT
             const API_URL = 'https://seu-backend.onrender.com/api/save-food'; // URL completa
 
             try {
-                const response = await fetch(API_URL, {  // Use a URL absoluta
-                method: 'POST',
-                mode: 'cors', // Adicione esta linha
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: JSON.stringify(formData)
-            });
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify(formData)
+                });
 
                 const result = await response.json();
-                
+
                 if (result.success) {
                     alert('Alimento salvo com sucesso!');
                     foodAddModal.style.display = 'none';
@@ -451,13 +470,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     throw new Error(result.message || 'Erro ao salvar');
                 }
             } catch (error) {
-                console.error('Erro completo:', {
-                    error,
-                    response: await response.text()  // Mostra a resposta crua do servidor
-                });
+                // Verificar se response existe para evitar erro
+                if (error instanceof TypeError) {
+                    // Erro de rede ou CORS provavelmente
+                    console.error('Erro de rede ou CORS:', error);
+                } else {
+                    console.error('Erro inesperado:', error);
+                }
                 alert('Erro ao conectar com o servidor. Verifique o console (F12)');
             }
-        });
+            });
+            //FIm Alterações GPT
+
+        
 
         // Carregar opções de selects (tabelas auxiliares)
         async function loadSelectOptions() {
