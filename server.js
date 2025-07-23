@@ -390,14 +390,12 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
 
         const userId = req.user.userId;
 
-        //Inicio Alterações DeepSeek 23-07 #3
-
-        // Obtenha os dados do JSON
-        const foodData = JSON.parse(req.body.foodData);
-        // Obtenha o buffer da imagem
-        const imageBuffer = req.file ? req.file.buffer : null;
-
-        //Fim Alterações DeepSeek 23-07 #3
+        //Inicio DeepSeek #3
+        // 2. Converta a imagem de base64 para Buffer (se existir)
+        const imageBuffer = req.body.img_registro 
+            ? Buffer.from(req.body.img_registro, 'base64')
+            : null;
+        //Fim DeepSeek #3
 
         // 2. Preparar valores
         const tipo_medida = [10, 11].includes(parseInt(req.body.grupo_alimentar)) ? 2 : 1;

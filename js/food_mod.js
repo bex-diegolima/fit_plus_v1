@@ -429,30 +429,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 //Inicio DeepSeek 23-07 #2
                 carga_antioxidante: document.getElementById('foodAntioxidants').value.trim() || null,
                 //Fim DeepSeek 23-07 #2
-                observacoes: document.getElementById('foodObservations').value.trim()
+                observacoes: document.getElementById('foodObservations').value.trim(),
+
+                //Inicio DeepSeek #3
+                img_registro: await getImageBase64()  // ← Nova função para a imagem
+                //Fim Deep Seek #3
             };
 
-            //Inicio Alteração DeepSeek 23-07 #3
-            const imageFile = document.getElementById('foodImage').files[0];
-            const formDataToSend = new FormData();
-            
-            if (imageFile) {
-                formDataToSend.append('foodImage', imageFile);
+            //Inicio DeepSeek #3
+                async function getImageBase64() {
+                const file = document.getElementById('foodImage').files[0];
+                if (!file) return null;
+                
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.readAsDataURL(file);
+                    reader.onload = () => {
+                        // Remove o prefixo "data:image/...;base64,"
+                        const base64Data = reader.result.split(',')[1]; 
+                        resolve(base64Data);
+                    };
+                });
             }
-            formDataToSend.append('foodData', JSON.stringify(formData));
-
-            // #3.1
-            const API_URL = 'https://fit-plus-backend.onrender.com/api/save-food'; // URL completa
-            // #3.1
-
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                },
-                body: formDataToSend  // Agora envia FormData multipart
-            });
-            //Fim Alteração DeepSeek 23-07 #3
+            //Fim DeepSeek #3
 
             //Inicio Alterações GPT
                 // GARANTIR TOKEN
@@ -472,9 +471,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Enviar para o servidor
 
             //Inicio Alterações GPT
-            // #3.1
-            //const API_URL = 'https://fit-plus-backend.onrender.com/api/save-food'; // URL completa
-            // #3.1
+            const API_URL = 'https://fit-plus-backend.onrender.com/api/save-food'; // URL completa
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
