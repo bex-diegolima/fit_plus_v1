@@ -48,7 +48,7 @@ function verifyToken(req, res, next) {
 
   if (!token) return res.status(401).json({ message: 'Token inválido' });
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+  jwt.verify(token, SECRET_KEY, (err, user) => {
     if (err) return res.status(403).json({ message: 'Token inválido ou expirado' });
 
     req.user = user;
@@ -192,7 +192,11 @@ app.post('/api/login', async (req, res) => {
         // 🔐 Geração do token JWT
         const token = jwt.sign({ userId: user.user_id, email }, SECRET_KEY, { expiresIn: '1h' });
 
-        return res.json({ success: true, message: 'Login realizado com sucesso' });
+        return res.json({
+        success: true,
+        message: 'Login realizado com sucesso',
+        token: token // ⬅️ agora o token será enviado para o frontend
+        });
     } catch (error) {
         return res.status(500).json({ success: false, message: 'Erro durante o login' });
     }
