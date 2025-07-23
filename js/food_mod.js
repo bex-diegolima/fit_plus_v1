@@ -427,7 +427,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 glutem: document.getElementById('foodGluten').value === 'true',
                 alergicos_comuns: document.getElementById('foodAllergens').value,
                 //Inicio DeepSeek 23-07 #2
-                antioxidantes: document.getElementById('foodAntioxidants').value.trim() || null,
+                carga_antioxidante: document.getElementById('foodAntioxidants').value.trim() || null,
                 //Fim DeepSeek 23-07 #2
                 observacoes: document.getElementById('foodObservations').value.trim()
             };
