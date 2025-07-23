@@ -408,7 +408,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
                 ),
 
-                acucar_adicionados_gr: calculateProportion(
+                acucar_adicionado_gr: calculateProportion(
                 parseFloat(document.getElementById('foodSugaradd').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
                 ),
