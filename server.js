@@ -393,6 +393,10 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
         // 2. Preparar valores
         const tipo_medida = [10, 11].includes(parseInt(req.body.grupo_alimentar)) ? 2 : 1;
         
+        //Alteração DeepSeek 23-07
+        console.log('Usuário autenticado:', req.user); // Verifique se userId existe
+        //Fim DeepSeek 23-07
+
         // 3. Query SQL
         const query = `
             INSERT INTO tbl_foods (
@@ -459,7 +463,9 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
             req.body.categoria_nutricional || null,
             req.body.origem || null,
             req.body.nivel_processamento || null,
-            req.user.id, // ID do usuário autenticado
+            //Alteração DeepSeek 23-07
+            req.user.userId, // ID do usuário autenticado
+            //Fim DeepSeek 23-07
             tipo_medida,
             //new Date(), // dt_registro
             //new Date(), // dt_atualizacao
