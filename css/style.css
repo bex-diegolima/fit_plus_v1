@@ -1030,3 +1030,19 @@ body {
     align-items: center;
 }
 /*Fim DeepSeek #4*/
+
+/*Inicio DeepSeek #4.1*/
+#foodAllergens option {
+    padding: 5px;
+    cursor: pointer;
+}
+
+#foodAllergens option:hover {
+    background-color: #f0f0f0;
+}
+
+#foodAllergens option:checked {
+    background-color: #e0e0e0;
+    font-weight: bold;
+}
+/*Fim DeepSeek #4.1*/

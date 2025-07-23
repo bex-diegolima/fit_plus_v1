@@ -534,6 +534,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Carregar opções de selects (tabelas auxiliares)
 
+            //Inicio DeepSeek #4.1
+            function setupMultiSelectBehavior() {
+            const allergensSelect = document.getElementById('foodAllergens');
+            if (!allergensSelect) return;
+
+            // Permite seleção múltipla com clique simples
+            allergensSelect.addEventListener('click', function(e) {
+                // Ignora se não for um option que foi clicado
+                if (e.target.tagName !== 'OPTION') return;
+                
+                // Mantém as seleções existentes
+                if (!e.ctrlKey && !e.shiftKey && !e.metaKey) {
+                    e.target.selected = !e.target.selected;
+                    e.preventDefault();
+                    
+                    // Dispara o evento change manualmente
+                    const event = new Event('change');
+                    this.dispatchEvent(event);
+                }
+            });
+            }
+            //Inicio DeepSeek #4.1
+
         //Inicio DeepSeek #4
 
     async function loadSelectOptions() {
@@ -589,6 +612,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             container.lastChild?.remove();
                         }
                     });
+
+                    //Inicio DeepSeek #4.1
+                    setupMultiSelectBehavior();
+                    //Fim DeepSeek #4.1
+
                 }
             }
         }
