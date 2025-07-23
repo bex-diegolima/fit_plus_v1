@@ -441,6 +441,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             formDataToSend.append('foodData', JSON.stringify(formData));
 
+            // #3.1
+            const API_URL = 'https://fit-plus-backend.onrender.com/api/save-food'; // URL completa
+            // #3.1
+
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: {
@@ -468,8 +472,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Enviar para o servidor
 
             //Inicio Alterações GPT
-            const API_URL = 'https://fit-plus-backend.onrender.com/api/save-food'; // URL completa
-
+            // #3.1
+            //const API_URL = 'https://fit-plus-backend.onrender.com/api/save-food'; // URL completa
+            // #3.1
             try {
                 const response = await fetch(API_URL, {
                     method: 'POST',
