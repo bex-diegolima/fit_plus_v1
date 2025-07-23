@@ -16,7 +16,7 @@ const app = express();  // DECLARE APP ANTES de usar app.use()
 // AJUSTES DEEPSEEK
 
 const corsOptions = {
-  origin: 'https://fit-plus-frontend.onrender.com', // Substitua pelo domínio do seu frontend
+  origin: 'https://fit-plus-backend.onrender.com', // Substitua pelo domínio do seu frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true

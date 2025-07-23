@@ -447,7 +447,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Enviar para o servidor
 
             //Inicio Alterações GPT
-            const API_URL = 'https://seu-backend.onrender.com/api/save-food'; // URL completa
+            const API_URL = 'https://fit-plus-backend.onrender.com/api/save-food'; // URL completa
 
             try {
                 const response = await fetch(API_URL, {
