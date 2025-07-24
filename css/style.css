@@ -932,7 +932,7 @@ body {
   border-radius: 4px;
   background-color: white;
   /*Ajuste DeepSeek #4*/height: auto;
-  /*Ajuste DeepSeek #4 ant=100*/min-height: 100px;
+  /*Ajuste DeepSeek #7 ant=100*/min-height: 120px;
   /*Ajuste DeepSeek #6*/overflow-y: auto;
 }
 
@@ -1014,23 +1014,22 @@ body {
 }
 /*FIM ALTERAÇÕES DEEPSEEK 2*/
 
-/*Inicio DeepSeek #4*/
+/*Inicio DeepSeek #7*/
 .selected-tags-container {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
     margin-top: 5px;
+    min-height: 30px;
 }
 
 .selected-tag {
-    background-color: #e0e0e0;
-    border-radius: 10px;
-    padding: 2px 8px;
+    background: #e0e0e0;
+    padding: 3px 8px;
+    border-radius: 12px;
     font-size: 12px;
-    display: flex;
-    align-items: center;
 }
-/*Fim DeepSeek #4*/
+/*Fim DeepSeek #7*/
 
 /*Inicio DeepSeek #4.1*/
 #foodAllergens option {
