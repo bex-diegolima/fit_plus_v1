@@ -118,6 +118,45 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    //Ajuste #13
+    // Coloque esta função junto com as outras funções utilitárias
+    function setupAllergensSelect() {
+        const select = document.getElementById('foodAllergs');
+        if (!select) return;
+        
+        const container = document.getElementById('selectedAllergens');
+        if (!container) return;
+
+        // 1. Configura multiseleção
+        select.multiple = true;
+
+        // 2. Atualiza a exibição ao mudar seleção
+        select.addEventListener('change', updateSelectedAllergensDisplay);
+
+        // 3. Função para mostrar os selecionados
+        function updateSelectedAllergensDisplay() {
+            container.innerHTML = '';
+            Array.from(select.selectedOptions).forEach(option => {
+                const pill = document.createElement('div');
+                pill.className = 'selected-item';
+                pill.innerHTML = `
+                    ${option.textContent}
+                    <button type="button" data-value="${option.value}">&times;</button>
+                `;
+                container.appendChild(pill);
+                
+                // Remove item ao clicar no ×
+                pill.querySelector('button').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    option.selected = false;
+                    updateSelectedAllergensDisplay();
+                });
+            });
+        }
+    }
+    //Fim Ajuste #13
+
+
     // ========== FUNÇÕES DO MÓDULO DE ALIMENTOS ==========
     // Carrega os dados do usuário logado
     async function loadUserData() {
@@ -486,6 +525,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             //Fim DeepSeek #3.1
 
+            //Ajuste #13
+            /*
             //Ajuste #12
             function setupAllergensSelect() {
                 const select = document.getElementById('foodAllergs');
@@ -524,6 +565,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             //Fim Ajuste #12
+            */
+            //Fim Ajuste #13
 
             //Inicio Alterações GPT
                 // GARANTIR TOKEN
@@ -610,6 +653,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 const response = await fetch(url);
                 const options = await response.json();
                 const select = document.getElementById(id);
+
+                //Ajuste #13
+                // Adicione esta linha após preencher as opções:
+                if (id === 'foodAllergs') {
+                    //#13.1
+                    select.multiple = true;
+                    //#13.1
+                    setupAllergensSelect();
+                }
+                //Fim Ajuste #13
 
                 // Limpa opções existentes
                 //Ajuste #8

@@ -1030,7 +1030,10 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: 8px;
+    margin-top: 10px;
+    padding: 8px;
+    background: #f9f9f9;
+    border-radius: 4px;
     min-height: 32px;
 }
 
@@ -1038,19 +1041,20 @@ body {
     background-color: #e0f7fa;
     padding: 6px 12px;
     border-radius: 16px;
-    font-size: 0.85em;
-    display: inline-flex;
+    font-size: 14px;
+    display: flex;
     align-items: center;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     border: 1px solid #b2ebf2;
+    padding: 4px 12px;
 }
 
 .selected-item button {
     background: none;
     border: none;
-    margin-left: 6px;
+    margin-left: 8px;
     cursor: pointer;
-    color: #555;
+    color: #666;
     font-size: 1.1em;
     line-height: 1;
     padding: 0 0 2px 0;
@@ -1064,19 +1068,22 @@ body {
 #foodAllergs {
     min-height: 120px;
     padding: 8px;
+    width: 100%;
+    min-height: 120px;
 }
 
 #foodAllergs option {
     padding: 6px 8px;
     border-radius: 4px;
+    cursor: pointer;
 }
 
 #foodAllergs option:hover {
-    background-color: #e3f2fd;
+    background-color: #f0f0f0;
 }
 
 #foodAllergs option:checked {
-    background-color: #bbdefb;
+    background-color: #e0f7fa;
 }
 
 /*Fim Ajuste #12*/
