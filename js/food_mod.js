@@ -238,6 +238,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const element = document.getElementById(id);
         if (element) element.value = '';
         });
+
+        //Ajuste #8
+        document.querySelectorAll('#foodAddModal select').forEach(select => {
+            select.selectedIndex = 0; // Reseta para a primeira opção (placeholder)
+        });
+        //Fim Ajuste #8
+
     }
 
     // Atualize o evento de fechar o modal (substitua o existente):
@@ -534,8 +541,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const select = document.getElementById(id);
 
             // Limpa opções existentes
-            select.innerHTML = '';
-            
+            //Ajuste #8
+            select.innerHTML = '<option value="" disabled selected>Selecione uma opção</option>';
+            //Fim Ajuste #8
             options.forEach(opt => {
                 const option = document.createElement('option');
                 option.value = opt.id;
