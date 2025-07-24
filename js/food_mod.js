@@ -162,6 +162,8 @@ document.addEventListener('DOMContentLoaded', function() {
             //Ajuste #9
             clearModalFields();
             addModal.scrollTo(0, 0);
+            const modalContent = document.querySelector('.food-modal-content');
+            if (modalContent) modalContent.scrollTop = 0;
             //Fim Ajuste #9
             // Garante que todos os blocos estão visíveis ao abrir
             document.querySelectorAll('.food-block-content').forEach(content => {
@@ -503,6 +505,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     foodAddModal.style.display = 'none';
                     //Ajuste #9
                     clearModalFields();
+                    const modalContent = document.querySelector('.food-modal-content');
+                    if (modalContent) modalContent.scrollTop = 0;
                     //Fim Ajuste #9
                 } else {
                     throw new Error(result.message || 'Erro ao salvar');
