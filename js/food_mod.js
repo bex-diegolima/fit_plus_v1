@@ -553,44 +553,68 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Carregar opções de selects (tabelas auxiliares)
 
-        //Inicio DeepSeek #7
-        function setupMultiSelectBehavior() {
-            const allergensSelect = document.getElementById('foodAllergens');
-            if (!allergensSelect) return;
+    //Inicio DeepSeek #7
+    function setupMultiSelectBehavior() {
+        const allergensSelect = document.getElementById('foodAllergens');
+        if (!allergensSelect) return;
 
-            // Remove listeners antigos para evitar duplicação
-            allergensSelect.removeEventListener('mousedown', handleMouseDown);
-        
-            // Adiciona novo handler
-            allergensSelect.addEventListener('mousedown', function(e) {
-            if (e.target.tagName !== 'OPTION') return;
-            if (e.ctrlKey || e.shiftKey || e.metaKey) return;
-            
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // Toggle selection
-            e.target.selected = !e.target.selected;
-            
-            // Atualiza visualização
-            updateSelectedAllergensDisplay();
-            });
+        // Remove qualquer listener antigo para evitar duplicação
+        allergensSelect.removeEventListener('mousedown', handleSelect);
+        allergensSelect.removeEventListener('click', handleSelect);
 
-            // Função para atualizar a exibição dos selecionados
-            function updateSelectedAllergensDisplay() {
-                const container = document.getElementById('selectedAllergens');
-                if (!container) return;
+        // Novo handler para seleção
+        function handleSelect(e) {
+            // Permite seleção múltipla com Ctrl/Cmd ou Shift
+            if (e.ctrlKey || e.metaKey || e.shiftKey) return;
+            
+            // Só interfere se clicou diretamente em uma option
+            if (e.target.tagName === 'OPTION') {
+                e.preventDefault();
+                e.stopPropagation();
                 
-                container.innerHTML = '';
-                Array.from(allergensSelect.selectedOptions).forEach(opt => {
-                    const tag = document.createElement('div');
-                    tag.className = 'selected-tag';
-                    tag.textContent = opt.text;
-                    container.appendChild(tag);
-                });
+                // Inverte o estado de seleção
+                e.target.selected = !e.target.selected;
+                
+                // Atualiza a exibição visual
+                updateSelectedDisplay();
+                
+                // Impede o fechamento do dropdown
+                return false;
             }
         }
-        //Fim DeepSeek #7
+
+        // Atualiza a exibição das tags selecionadas
+        function updateSelectedDisplay() {
+        const container = document.getElementById('selectedAllergens');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        const selected = Array.from(allergensSelect.selectedOptions);
+        
+        // Limita a 10 seleções
+        if (selected.length > 10) {
+            alert('Máximo de 10 alérgenos permitidos');
+            selected[selected.length-1].selected = false;
+            selected.pop(); // Remove o último
+        }
+        
+        // Exibe as tags
+        selected.forEach(opt => {
+            const tag = document.createElement('div');
+            tag.className = 'selected-tag';
+            tag.textContent = opt.text;
+            container.appendChild(tag);
+            });
+        }
+
+        // Adiciona os listeners
+        allergensSelect.addEventListener('mousedown', handleSelect);
+        allergensSelect.addEventListener('click', handleSelect);
+    
+        // Adiciona também um listener para o evento change
+        allergensSelect.addEventListener('change', updateSelectedDisplay);
+    }
+    //Fim DeepSeek #7
 
     async function loadSelectOptions() {
         const selects = {
@@ -631,39 +655,48 @@ document.addEventListener('DOMContentLoaded', function() {
                 select.appendChild(option);
             });
 
-            // Adiciona funcionalidade especial apenas para o foodAllergens
+                //Inicio DeepSeek #7
+                // Adiciona funcionalidade especial apenas para o foodAllergens
                 if (id === 'foodAllergens') {
-                    // Cria container para mostrar seleções
+                    // Remove o container existente se já houver um
+                    const existingContainer = select.nextElementSibling;
+                    if (existingContainer && existingContainer.classList.contains('selected-tags-container')) {
+                        existingContainer.remove();
+                    }
+                    
+                    // Cria novo container para mostrar seleções
                     const container = document.createElement('div');
                     container.id = 'selectedAllergens';
                     container.className = 'selected-tags-container';
                     select.parentNode.insertBefore(container, select.nextSibling);
 
-                    // Adiciona evento para mostrar seleções e limitar a 10
+                    // Configura o comportamento de seleção
                     select.addEventListener('change', function() {
                         // Atualiza display
                         container.innerHTML = '';
-                        Array.from(this.selectedOptions).forEach(opt => {
+                        const selectedOptions = Array.from(this.selectedOptions);
+                        
+                        // Limita a 10 seleções
+                        if (selectedOptions.length > 10) {
+                            alert('Máximo de 10 alérgenos permitidos');
+                            this.selectedOptions[this.selectedOptions.length-1].selected = false;
+                            selectedOptions.pop(); // Remove o último da array
+                        }
+                        
+                        // Exibe as tags selecionadas
+                        selectedOptions.forEach(opt => {
                             const tag = document.createElement('div');
                             tag.className = 'selected-tag';
                             tag.textContent = opt.text;
                             container.appendChild(tag);
                         });
-
-                        // Limita a 10 seleções
-                        if (this.selectedOptions.length > 10) {
-                            alert('Máximo de 10 alérgenos permitidos');
-                            this.selectedOptions[this.selectedOptions.length-1].selected = false;
-                            // Atualiza novamente após remover o último
-                            container.lastChild?.remove();
-                        }
                     });
 
-                    //Inicio DeepSeek #4.1
-                    setTimeout(setupMultiSelectBehavior, 0); // Garante que o DOM esteja pronto
-                    //Fim DeepSeek #4.1
-
+                    // Configura o comportamento especial de seleção
+                    setupMultiSelectBehavior();
                 }
+                //Fim DeepSeek #7
+                
             }
         }
 
@@ -680,7 +713,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setupModalCleanup();
         //Inicio DeepSeek #7
         loadSelectOptions().then(() => {
-        setupMultiSelectBehavior();
+            setupMultiSelectBehavior();
         });
         //Fim DeepSeek #7
     });
