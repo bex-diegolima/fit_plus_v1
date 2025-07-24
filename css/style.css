@@ -924,17 +924,6 @@ body {
 }
 
 /* ===== ESTILOS DO BLOCO 3 ===== */
-/* Select múltiplo */
-.food-select-multiple {
-  width: 100%;
-  /*Ajuste DeepSeek #4 ant=10*/padding: 5px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: white;
-  /*Ajuste DeepSeek #4*/height: auto;
-  /*Ajuste DeepSeek #7 ant=100*/min-height: 120px;
-  /*Ajuste DeepSeek #6*/overflow-y: auto;
-}
 
 .food-select-multiple option {
   padding: 5px;

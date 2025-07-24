@@ -160,10 +160,16 @@ document.addEventListener('DOMContentLoaded', function() {
         addBtn.addEventListener('click', () => {
             addModal.style.display = 'block';
             //Ajuste #9
-            clearModalFields();
-            addModal.scrollTo(0, 0);
-            const modalContent = document.querySelector('.food-modal-content');
-            if (modalContent) modalContent.scrollTop = 0;
+            requestAnimationFrame(() => {
+                clearModalFields();
+                addModal.scrollTop = 0;
+                const modalContent = addModal.querySelector('.food-modal-content');
+                if (modalContent) {
+                    modalContent.scrollTop = 0;
+                    modalContent.style.overflowY = 'hidden';
+                    setTimeout(() => { modalContent.style.overflowY = 'auto'; }, 10);
+                }
+            });
             //Fim Ajuste #9
             // Garante que todos os blocos estão visíveis ao abrir
             document.querySelectorAll('.food-block-content').forEach(content => {
@@ -505,7 +511,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     foodAddModal.style.display = 'none';
                     //Ajuste #9
                     clearModalFields();
-                    const modalContent = document.querySelector('.food-modal-content');
+                    foodAddModal.scrollTop = 0;
+                    const modalContent = foodAddModal.querySelector('.food-modal-content');
                     if (modalContent) modalContent.scrollTop = 0;
                     //Fim Ajuste #9
                 } else {
