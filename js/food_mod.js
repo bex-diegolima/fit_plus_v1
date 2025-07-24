@@ -558,60 +558,60 @@ document.addEventListener('DOMContentLoaded', function() {
         const allergensSelect = document.getElementById('foodAllergens');
         if (!allergensSelect) return;
 
-        // Remove qualquer listener antigo para evitar duplicação
-        allergensSelect.removeEventListener('mousedown', handleSelect);
-        allergensSelect.removeEventListener('click', handleSelect);
+        // Remove listeners antigos
+        allergensSelect.removeEventListener('mousedown', handleSelection);
+        allergensSelect.removeEventListener('click', handleSelection);
+        allergensSelect.removeEventListener('change', updateSelectedDisplay);
 
-        // Novo handler para seleção
-        function handleSelect(e) {
-            // Permite seleção múltipla com Ctrl/Cmd ou Shift
+        // Handler para seleção
+        function handleSelection(e) {
+            // Permite comportamento padrão com teclas modificadoras
             if (e.ctrlKey || e.metaKey || e.shiftKey) return;
             
-            // Só interfere se clicou diretamente em uma option
+            // Só atua em clicks diretos em options
             if (e.target.tagName === 'OPTION') {
                 e.preventDefault();
                 e.stopPropagation();
                 
+                // Mantém o dropdown aberto
+                e.stopImmediatePropagation();
+                
                 // Inverte o estado de seleção
                 e.target.selected = !e.target.selected;
                 
-                // Atualiza a exibição visual
-                updateSelectedDisplay();
-                
-                // Impede o fechamento do dropdown
-                return false;
+                // Força atualização
+                const event = new Event('change');
+                allergensSelect.dispatchEvent(event);
             }
         }
 
-        // Atualiza a exibição das tags selecionadas
+        // Atualiza a exibição das tags
         function updateSelectedDisplay() {
-        const container = document.getElementById('selectedAllergens');
-        if (!container) return;
-        
-        container.innerHTML = '';
-        const selected = Array.from(allergensSelect.selectedOptions);
-        
-        // Limita a 10 seleções
-        if (selected.length > 10) {
-            alert('Máximo de 10 alérgenos permitidos');
-            selected[selected.length-1].selected = false;
-            selected.pop(); // Remove o último
-        }
-        
-        // Exibe as tags
-        selected.forEach(opt => {
-            const tag = document.createElement('div');
-            tag.className = 'selected-tag';
-            tag.textContent = opt.text;
-            container.appendChild(tag);
+            const container = document.getElementById('selectedAllergens');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            const selected = Array.from(allergensSelect.selectedOptions);
+            
+            // Limita a 10 seleções
+            if (selected.length > 10) {
+                alert('Máximo de 10 alérgenos permitidos');
+                selected.slice(10).forEach(opt => opt.selected = false);
+                selected.length = 10;
+            }
+            
+            // Exibe as tags
+            selected.forEach(opt => {
+                const tag = document.createElement('div');
+                tag.className = 'selected-tag';
+                tag.textContent = opt.text;
+                container.appendChild(tag);
             });
         }
 
         // Adiciona os listeners
-        allergensSelect.addEventListener('mousedown', handleSelect);
-        allergensSelect.addEventListener('click', handleSelect);
-    
-        // Adiciona também um listener para o evento change
+        allergensSelect.addEventListener('mousedown', handleSelection);
+        allergensSelect.addEventListener('click', handleSelection);
         allergensSelect.addEventListener('change', updateSelectedDisplay);
     }
     //Fim DeepSeek #7
@@ -632,18 +632,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const options = await response.json();
             const select = document.getElementById(id);
             
-            //Inicio GPT #5
-            if (id === 'foodAllergens' && select.options.length > 0) {
-            continue;
+         
+            // Mantém a verificação de options.length mas remove o continue
+            if (id === 'foodAllergens') {
+                // Limpa opções existentes
+                select.innerHTML = '';
+                
+                // Adiciona novas opções
+                options.forEach(opt => {
+                    const option = document.createElement('option');
+                    option.value = opt.id;
+                    option.textContent = opt.nome;
+                    select.appendChild(option);
+                });
             }
-
-            options.forEach(opt => {
-            const option = document.createElement('option');
-            option.value = opt.id;
-            option.textContent = opt.nome;
-            select.appendChild(option);
-            });
-            //Fim GPT #5
 
             // Limpa opções existentes
             select.innerHTML = '';
@@ -657,44 +659,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 //Inicio DeepSeek #7
                 // Adiciona funcionalidade especial apenas para o foodAllergens
+            
                 if (id === 'foodAllergens') {
-                    // Remove o container existente se já houver um
-                    const existingContainer = select.nextElementSibling;
-                    if (existingContainer && existingContainer.classList.contains('selected-tags-container')) {
-                        existingContainer.remove();
-                    }
-                    
-                    // Cria novo container para mostrar seleções
-                    const container = document.createElement('div');
-                    container.id = 'selectedAllergens';
-                    container.className = 'selected-tags-container';
-                    select.parentNode.insertBefore(container, select.nextSibling);
-
-                    // Configura o comportamento de seleção
-                    select.addEventListener('change', function() {
-                        // Atualiza display
-                        container.innerHTML = '';
-                        const selectedOptions = Array.from(this.selectedOptions);
-                        
-                        // Limita a 10 seleções
-                        if (selectedOptions.length > 10) {
-                            alert('Máximo de 10 alérgenos permitidos');
-                            this.selectedOptions[this.selectedOptions.length-1].selected = false;
-                            selectedOptions.pop(); // Remove o último da array
-                        }
-                        
-                        // Exibe as tags selecionadas
-                        selectedOptions.forEach(opt => {
-                            const tag = document.createElement('div');
-                            tag.className = 'selected-tag';
-                            tag.textContent = opt.text;
-                            container.appendChild(tag);
-                        });
-                    });
-
-                    // Configura o comportamento especial de seleção
-                    setupMultiSelectBehavior();
+                // Remove container existente
+                const existingContainer = select.nextElementSibling;
+                if (existingContainer && existingContainer.classList.contains('selected-tags-container')) {
+                    existingContainer.remove();
                 }
+                
+                // Cria novo container
+                const container = document.createElement('div');
+                container.id = 'selectedAllergens';
+                container.className = 'selected-tags-container';
+                select.parentNode.insertBefore(container, select.nextSibling);
+
+                // Configura comportamento
+                setupMultiSelectBehavior();
+            }
                 //Fim DeepSeek #7
                 
             }
