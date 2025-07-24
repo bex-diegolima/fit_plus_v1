@@ -113,16 +113,16 @@
 
                 <div class="food-form-group">
                 <label for="foodGroup">Grupo Alimentar <span class="required-field">*</span></label>
-                <select id="foodGroup" class="food-select" required>
+                <select id="foodGroup" class="food-select" required onchange="document.getElementById('portionLabel').textContent = this.value.includes('Bebidas') ? 'Porção Base (ml)' : 'Porção Base (g)'">
                     <option value="" disabled selected>Selecione o grupo alimentar</option>
                     <!-- Opções serão preenchidas via BD posteriormente -->
                 </select>
                 </div>
 
                 <div class="food-form-group">
-                <label for="foodBasePortion">Porção Base <span class="required-field">*</span></label>
+                <label for="foodBasePortion" id="portionLabel">Porção Base (g) <span class="required-field">*</span></label>
                 <input type="number" id="foodBasePortion" class="food-input" step="0.01" value="100.00" required>
-                <span id="foodPortionUnit" class="food-unit">g</span>
+                <!--<span id="foodPortionUnit" class="food-unit">g</span>-->
                 </div>
 
                 <div class="food-form-group">
