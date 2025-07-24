@@ -190,9 +190,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Reseta os selects
+        //Inicio GPT #5
         document.querySelectorAll('#foodAddModal .food-select').forEach(select => {
+        if (select.multiple) {
+            Array.from(select.options).forEach(option => option.selected = false);
+        } else {
             select.selectedIndex = 0;
+        }
         });
+        //Fim GPT #5
         
         // Reseta o valor padrão da porção
         const portionInput = document.getElementById('foodBasePortion');
@@ -274,7 +280,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
              // Capturar os valores selecionados do select múltiplo de alérgenos
             const allergensSelect = document.getElementById('foodAllergens');
-            const alergicos_comuns = Array.from(allergensSelect.selectedOptions).map(opt => opt.value);
+            
+        //Inicio GPT #5
+            //const alergicos_comuns = Array.from(allergensSelect.selectedOptions).map(opt => opt.value);
+            const alergicos_comuns = Array.from(allergensSelect.selectedOptions)
+                              .map(opt => opt.value)
+                              .join(',');
+        //Fim GPT #5
+
 
             //Fim ajustes GPT
 
@@ -425,7 +438,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 origem: document.getElementById('foodOrigin').value,
                 nivel_processamento: document.getElementById('foodProcessing').value,
                 glutem: document.getElementById('foodGluten').value === 'true',
-                alergicos_comuns: document.getElementById('foodAllergens').value,
+                //Inicio GPT #5
+                //alergicos_comuns: document.getElementById('foodAllergens').value,
+                alergicos_comuns: selectedAllergens,
+                //Fim GPT #5
                 //Inicio DeepSeek 23-07 #2
                 carga_antioxidante: document.getElementById('foodAntioxidants').value.trim() || null,
                 //Fim DeepSeek 23-07 #2
@@ -583,6 +599,19 @@ document.addEventListener('DOMContentLoaded', function() {
             const options = await response.json();
             const select = document.getElementById(id);
             
+            //Inicio GPT #5
+            if (id === 'foodAllergens' && select.options.length > 0) {
+            continue;
+            }
+
+            options.forEach(opt => {
+            const option = document.createElement('option');
+            option.value = opt.id;
+            option.textContent = opt.nome;
+            select.appendChild(option);
+            });
+            //Fim GPT #5
+
             // Limpa opções existentes
             select.innerHTML = '';
             
