@@ -159,6 +159,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (addBtn) {
         addBtn.addEventListener('click', () => {
             addModal.style.display = 'block';
+            //Ajuste #9
+            clearModalFields();
+            //Fim Ajuste #9
             // Garante que todos os blocos estão visíveis ao abrir
             document.querySelectorAll('.food-block-content').forEach(content => {
                 content.style.display = 'block';
@@ -182,25 +185,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Adicione esta função no seu arquivo:
     function clearModalFields() {
-        // Limpa todos os inputs
+        //Ajuste #9
+        // Limpa inputs básicos
+        document.querySelectorAll('#foodAddModal input[type="text"], #foodAddModal input[type="number"]').forEach(input => {
+        input.value = '';
+        });
+
+        // Reseta selects (incluindo o de glúten)
         document.querySelectorAll('#foodAddModal select').forEach(select => {
-            // Para selects múltiplos
-            if (select.multiple) {
-                Array.from(select.options).forEach(option => {
-                    option.selected = false;
-                });
-                // Limpa o container de tags
-                const container = select.nextElementSibling;
-                if (container && container.classList.contains('selected-tags-container')) {
-                    container.innerHTML = '';
-                }
-            } 
-            // Para selects normais
-            else {
-                select.selectedIndex = -1; // Nenhuma opção selecionada
-            }
-        }); 
-        
+            select.selectedIndex = 0; // Volta para a primeira opção (placeholder)
+        });
+        //Fim Ajuste #9
         // Reseta o valor padrão da porção
         const portionInput = document.getElementById('foodBasePortion');
         if (portionInput) {
@@ -467,7 +462,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 img.src = URL.createObjectURL(file);
             });
-        }
+            }
             //Fim DeepSeek #3.1
 
             //Inicio Alterações GPT
@@ -505,7 +500,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (result.success) {
                     alert('Alimento salvo com sucesso!');
                     foodAddModal.style.display = 'none';
-                    // Limpar formulário ou recarregar dados
+                    //Ajuste #9
+                    clearModalFields();
+                    //Fim Ajuste #9
                 } else {
                     throw new Error(result.message || 'Erro ao salvar');
                 }
@@ -524,31 +521,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
         
 
-        // Carregar opções de selects (tabelas auxiliares)
-    async function loadSelectOptions() {
-        const selects = {
-            'foodPreparation': '/api/get-options?table=tbl_aux_modo_preparo',
-            'foodGroup': '/api/get-options?table=tbl_aux_grupo_alimentar',
-            'foodCategory': '/api/get-options?table=tbl_aux_categoria_nutri',
-            'foodOrigin': '/api/get-options?table=tbl_aux_origem_alimentar',
-            'foodProcessing': '/api/get-options?table=tbl_aux_processamento',
-            // ... outros selects
-        };
+            // Carregar opções de selects (tabelas auxiliares)
+            async function loadSelectOptions() {
+            const selects = {
+                'foodPreparation': '/api/get-options?table=tbl_aux_modo_preparo',
+                'foodGroup': '/api/get-options?table=tbl_aux_grupo_alimentar',
+                'foodCategory': '/api/get-options?table=tbl_aux_categoria_nutri',
+                'foodOrigin': '/api/get-options?table=tbl_aux_origem_alimentar',
+                'foodProcessing': '/api/get-options?table=tbl_aux_processamento',
+                // ... outros selects
+            };
 
-        for (const [id, url] of Object.entries(selects)) {
-            const response = await fetch(url);
-            const options = await response.json();
-            const select = document.getElementById(id);
+            for (const [id, url] of Object.entries(selects)) {
+                const response = await fetch(url);
+                const options = await response.json();
+                const select = document.getElementById(id);
 
-            // Limpa opções existentes
-            //Ajuste #8
-            select.innerHTML = '<option value="" disabled selected>Selecione uma opção</option>';
-            //Fim Ajuste #8
-            options.forEach(opt => {
-                const option = document.createElement('option');
-                option.value = opt.id;
-                option.textContent = opt.nome;
-                select.appendChild(option);
+                // Limpa opções existentes
+                //Ajuste #8
+                select.innerHTML = '<option value="" disabled selected>Selecione uma opção</option>';
+                //Fim Ajuste #8
+                options.forEach(opt => {
+                    const option = document.createElement('option');
+                    option.value = opt.id;
+                    option.textContent = opt.nome;
+                    select.appendChild(option);
             });
                 
             }
