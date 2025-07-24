@@ -437,6 +437,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 nivel_processamento: document.getElementById('foodProcessing').value,
                 glutem: document.getElementById('foodGluten').value === 'true',
                 carga_antioxidante: document.getElementById('foodAntioxidants').value.trim() || null,
+                //Ajuste #12
+                alergicos_comuns: Array.from(document.getElementById('foodAllergs').selectedOptions).map(opt => opt.value),
+                //Fim Ajuste #12
                 observacoes: document.getElementById('foodObservations').value.trim(),
                 img_registro: await getImageBase64()  // ← Nova função para a imagem
             };
@@ -482,6 +485,32 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             }
             //Fim DeepSeek #3.1
+
+            //Ajuste #12
+            function setupAllergensSelect() {
+                const select = document.getElementById('foodAllergs');
+                const container = document.getElementById('selectedAllergens');
+            
+                select.addEventListener('change', function() {
+                    container.innerHTML = '';
+                    Array.from(select.selectedOptions).forEach(option => {
+                        const pill = document.createElement('div');
+                        pill.className = 'selected-item';
+                        pill.innerHTML = `
+                            ${option.textContent}
+                            <button type="button" data-value="${option.value}">&times;</button>
+                        `;
+                        container.appendChild(pill);
+                    
+                        // Adiciona evento para remover item
+                        pill.querySelector('button').addEventListener('click', function() {
+                            option.selected = false;
+                            pill.remove();
+                        });
+                    });
+                });
+            }
+            //Fim Ajuste #12
 
             //Inicio Alterações GPT
                 // GARANTIR TOKEN
@@ -559,7 +588,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 'foodCategory': '/api/get-options?table=tbl_aux_categoria_nutri',
                 'foodOrigin': '/api/get-options?table=tbl_aux_origem_alimentar',
                 'foodProcessing': '/api/get-options?table=tbl_aux_processamento',
-                // ... outros selects
+                //Ajuste #12
+                'foodAllergs': '/api/get-options?table=tbl_aux_alergicos',
+                //FimAjuste #12
             };
 
             for (const [id, url] of Object.entries(selects)) {
@@ -590,4 +621,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setupCollapsibleBlocks();
         setupPortionUnitToggle();
         setupModalCleanup();
+        //Ajuste #12
+        setupAllergensSelect();
+        //Fim Ajuste #12
     });

@@ -407,6 +407,7 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
         //Fim DeepSeek 23-07
 
         // 3. Query SQL
+        //Ajuste #12 - Foi inserido no final como "alergicos_comuns" e $43
         const query = `
             INSERT INTO tbl_foods (
                 item, marca, modo_preparo, grupo_alimentar, porcao_base,
@@ -418,16 +419,17 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
                 vitamina_b12_mcg, vitamina_e_mcg, omega_tres_mg, acido_folico_mcg,
                 teor_alcoolico, observacoes, glutem, categoria_nutricional, origem, nivel_processamento,
                 user_registro, tipo_medida_alimento, dt_registro, dt_atualizacao,
-                status_registro, tipo_registro_alimento,  carga_antioxidante, img_registro
+                status_registro, tipo_registro_alimento,  carga_antioxidante, img_registro, alergicos_comuns
             ) VALUES (
                 $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
                 $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
                 $21, $22, $23, $24, $25, $26, $27, $28, $29, $30,
                 $31, $32, $33, $34, $35, $36, $37, $38, NOW(),
-                NOW(), $39, $40, $41, $42
+                NOW(), $39, $40, $41, $42, $43
             )
             RETURNING id
         `;
+        //Fim Ajuste #12 - Foi inserido no final como "alergicos_comuns" e $43
 
         // 4. Valores para a query
         const values = [
@@ -480,6 +482,9 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
             parseInt(req.body.tipo_registro_alimento) || 2,
             parseInt(req.body.carga_antioxidante) || 0,
             imageBuffer,
+            //Ajuste #12
+            req.body.alergicos_comuns ? req.body.alergicos_comuns.join(',') : null,
+            //Fim Ajuste #12
         ];
 
         // 5. Executar query

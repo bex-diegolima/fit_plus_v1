@@ -925,10 +925,6 @@ body {
 
 /* ===== ESTILOS DO BLOCO 3 ===== */
 
-.food-select-multiple option {
-  padding: 5px;
-}
-
 /* Textarea */
 .food-textarea {
   width: 100%;
@@ -1001,40 +997,6 @@ body {
   border-radius: 4px;
   font-size: 14px;
 }
-/*FIM ALTERAÇÕES DEEPSEEK 2*/
-
-/*Inicio DeepSeek #7*/
-.selected-tags-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 5px;
-    min-height: 30px;
-}
-
-.selected-tag {
-    background: #e0e0e0;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-}
-/*Fim DeepSeek #7*/
-
-/*Inicio DeepSeek #4.1*/
-#foodAllergens option {
-    padding: 5px;
-    cursor: pointer;
-}
-
-#foodAllergens option:hover {
-    background-color: #f0f0f0;
-}
-
-#foodAllergens option:checked {
-    background-color: #e0e0e0;
-    font-weight: bold;
-}
-/*Fim DeepSeek #4.1*/
 
 /*Ajuste #10*/
 .food-modal-loader {
@@ -1062,3 +1024,28 @@ body {
     margin-bottom: 10px;
 }
 /*Fim Ajuste #10*/
+
+/*Ajuste #12*/
+.selected-items-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.selected-item {
+    background-color: #e0f7fa;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    display: flex;
+    align-items: center;
+}
+
+.selected-item button {
+    background: none;
+    border: none;
+    margin-left: 4px;
+    cursor: pointer;
+    color: #555;
+}
+/*Fim Ajuste #12*/
