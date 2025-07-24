@@ -161,6 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
             addModal.style.display = 'block';
             //Ajuste #9
             clearModalFields();
+            addModal.scrollTo(0, 0);
             //Fim Ajuste #9
             // Garante que todos os blocos estão visíveis ao abrir
             document.querySelectorAll('.food-block-content').forEach(content => {
