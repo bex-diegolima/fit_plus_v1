@@ -1030,22 +1030,53 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    margin-top: 8px;
+    min-height: 32px;
 }
 
 .selected-item {
     background-color: #e0f7fa;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.8em;
-    display: flex;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 0.85em;
+    display: inline-flex;
     align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1px solid #b2ebf2;
 }
 
 .selected-item button {
     background: none;
     border: none;
-    margin-left: 4px;
+    margin-left: 6px;
     cursor: pointer;
     color: #555;
+    font-size: 1.1em;
+    line-height: 1;
+    padding: 0 0 2px 0;
 }
+
+.selected-item button:hover {
+    color: #f44336;
+}
+
+/* Estilo para o select múltiplo */
+#foodAllergs {
+    min-height: 120px;
+    padding: 8px;
+}
+
+#foodAllergs option {
+    padding: 6px 8px;
+    border-radius: 4px;
+}
+
+#foodAllergs option:hover {
+    background-color: #e3f2fd;
+}
+
+#foodAllergs option:checked {
+    background-color: #bbdefb;
+}
+
 /*Fim Ajuste #12*/

@@ -490,8 +490,20 @@ document.addEventListener('DOMContentLoaded', function() {
             function setupAllergensSelect() {
                 const select = document.getElementById('foodAllergs');
                 const container = document.getElementById('selectedAllergens');
-            
-                select.addEventListener('change', function() {
+    
+                // Permite seleção múltipla sem necessidade de teclas
+                select.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+        
+                    const option = e.target;
+                    option.selected = !option.selected;
+        
+                    // Atualiza a exibição dos selecionados
+                    updateSelectedAllergensDisplay();
+                });
+
+                // Função para atualizar a exibição dos itens selecionados
+                function updateSelectedAllergensDisplay() {
                     container.innerHTML = '';
                     Array.from(select.selectedOptions).forEach(option => {
                         const pill = document.createElement('div');
@@ -501,14 +513,15 @@ document.addEventListener('DOMContentLoaded', function() {
                             <button type="button" data-value="${option.value}">&times;</button>
                         `;
                         container.appendChild(pill);
-                    
+            
                         // Adiciona evento para remover item
-                        pill.querySelector('button').addEventListener('click', function() {
+                        pill.querySelector('button').addEventListener('click', function(e) {
+                            e.stopPropagation();
                             option.selected = false;
-                            pill.remove();
+                            updateSelectedAllergensDisplay();
                         });
                     });
-                });
+                }
             }
             //Fim Ajuste #12
 
