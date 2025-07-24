@@ -92,19 +92,21 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Altera unidade da porção base conforme grupo alimentar
-    function setupPortionUnitToggle() {
-        const foodGroupSelect = document.getElementById('foodGroup');
-        if (foodGroupSelect) {
-            foodGroupSelect.addEventListener('change', function() {
-                const unitSpan = document.getElementById('foodPortionUnit');
-                if (this.value === 'bebida' || this.value === 'bebida-alcoolica') {
-                    unitSpan.textContent = 'ml';
-                } else {
-                    unitSpan.textContent = 'g';
-                }
-            });
-        }
-    }
+    //Ajuste #11
+    //function setupPortionUnitToggle() {
+        //const foodGroupSelect = document.getElementById('foodGroup');
+        //if (foodGroupSelect) {
+            //foodGroupSelect.addEventListener('change', function() {
+                //const unitSpan = document.getElementById('foodPortionUnit');
+                //if (this.value === 'bebida' || this.value === 'bebida-alcoolica') {
+                    //unitSpan.textContent = 'ml';
+                //} else {
+                    //unitSpan.textContent = 'g';
+                //}
+            //});
+        //}
+    //}
+    //Fim Ajuste #11
 
     // Limpa campos ao fechar o modal
     function setupModalCleanup() {
@@ -209,7 +211,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const portionInput = document.getElementById('foodBasePortion');
         if (portionInput) {
             portionInput.value = '100.00';
-            document.getElementById('foodPortionUnit').textContent = 'g';
+            //Ajuste #11
+            //document.getElementById('foodPortionUnit').textContent = 'g';
+            //Fim Ajuste #11
         }
         
         // Limpa o input de arquivo (imagem)
