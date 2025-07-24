@@ -280,6 +280,11 @@ document.addEventListener('DOMContentLoaded', function() {
         // Função para salvar alimento
         saveBtn.addEventListener('click', async function() {
 
+            //Ajuste #10
+            // Mostrar loader
+            document.getElementById('foodModalLoader').style.display = 'flex';
+            //Fim Ajuste #10
+
             // Coletar dados do formulário
             const formData = {
                 // Bloco 1
@@ -527,7 +532,16 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error('Erro inesperado:', error);
                 }
                 alert('Erro ao conectar com o servidor. Verifique o console (F12)');
+                //Ajuste #10
+                document.getElementById('foodModalLoader').style.display = 'none';
+                //Fim Ajuste #10
             }
+                //Ajuste #10
+                finally {
+                    // Ocultar loader em qualquer caso
+                    document.getElementById('foodModalLoader').style.display = 'none';
+                }
+                //Fim Ajuste #10
             });
             //FIm Alterações GPT
 
