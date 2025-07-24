@@ -729,7 +729,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setupModalCleanup();
         //Ajuste #12
         //#13
-        //setupAllergensSelect();
+        setupAllergensSelect();
         //#13
         //Fim Ajuste #12
     });
