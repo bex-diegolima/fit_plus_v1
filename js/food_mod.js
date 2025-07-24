@@ -127,13 +127,34 @@ document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('selectedAllergens');
         if (!container) return;
 
-        // 1. Configura multiseleção
+        // Configuração inicial
         select.multiple = true;
+        select.style.display = 'none'; // Escondemos o select nativo
 
-        // 2. Atualiza a exibição ao mudar seleção
-        select.addEventListener('change', updateSelectedAllergensDisplay);
+        // Cria um container para as opções visíveis
+        const optionsContainer = document.createElement('div');
+        optionsContainer.className = 'allergens-options-container';
+        select.parentNode.insertBefore(optionsContainer, select.nextSibling);
 
-        // 3. Função para mostrar os selecionados
+        // Cria opções clicáveis
+        Array.from(select.options).forEach(option => {
+            if (option.value) {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'allergen-option';
+                optionDiv.textContent = option.textContent;
+                optionDiv.dataset.value = option.value;
+                
+                optionDiv.addEventListener('click', function() {
+                    option.selected = !option.selected;
+                    this.classList.toggle('selected', option.selected);
+                    updateSelectedAllergensDisplay();
+                });
+                
+                optionsContainer.appendChild(optionDiv);
+            }
+        });
+
+        // Atualiza a exibição dos selecionados
         function updateSelectedAllergensDisplay() {
             container.innerHTML = '';
             Array.from(select.selectedOptions).forEach(option => {
@@ -145,15 +166,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 `;
                 container.appendChild(pill);
                 
-                // Remove item ao clicar no ×
                 pill.querySelector('button').addEventListener('click', (e) => {
                     e.stopPropagation();
                     option.selected = false;
+                    // Atualiza a opção correspondente
+                    document.querySelector(`.allergen-option[data-value="${option.value}"]`)
+                        .classList.remove('selected');
                     updateSelectedAllergensDisplay();
                 });
             });
         }
-    }
+    }    
     //Fim Ajuste #13
 
 
@@ -254,6 +277,23 @@ document.addEventListener('DOMContentLoaded', function() {
             //document.getElementById('foodPortionUnit').textContent = 'g';
             //Fim Ajuste #11
         }
+
+        //Ajuste #13
+            // Limpa especificamente os alergênicos
+            const select = document.getElementById('foodAllergs');
+            if (select) {
+                Array.from(select.options).forEach(option => {
+                    option.selected = false;
+                });
+                const container = document.getElementById('selectedAllergens');
+                if (container) container.innerHTML = '';
+                
+                // Remove seleção visual das opções customizadas
+                document.querySelectorAll('.allergen-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+            } 
+        //Fim Ajuste #13
         
         // Limpa o input de arquivo (imagem)
         const fileInput = document.getElementById('foodImage');
@@ -688,6 +728,8 @@ document.addEventListener('DOMContentLoaded', function() {
         setupPortionUnitToggle();
         setupModalCleanup();
         //Ajuste #12
-        setupAllergensSelect();
+        //#13
+        //setupAllergensSelect();
+        //#13
         //Fim Ajuste #12
     });
