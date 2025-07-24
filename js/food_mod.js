@@ -183,7 +183,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Adicione esta função no seu arquivo:
     function clearModalFields() {
         // Limpa todos os inputs
-        //Inicio DeepSeek #7
         document.querySelectorAll('#foodAddModal select').forEach(select => {
             // Para selects múltiplos
             if (select.multiple) {
@@ -201,7 +200,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 select.selectedIndex = -1; // Nenhuma opção selecionada
             }
         }); 
-        //Fim DeepSeek #7
         
         // Reseta o valor padrão da porção
         const portionInput = document.getElementById('foodBasePortion');
@@ -240,14 +238,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const element = document.getElementById(id);
         if (element) element.value = '';
         });
-
-        // Limpa select múltiplo
-        const allergensSelect = document.getElementById('foodAllergens');
-        if (allergensSelect) {
-            Array.from(allergensSelect.options).forEach(option => {
-            option.selected = false;
-            });
-        }
     }
 
     // Atualize o evento de fechar o modal (substitua o existente):
@@ -278,21 +268,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Função para salvar alimento
         saveBtn.addEventListener('click', async function() {
-
-            //Inicio ajustes GPT
-
-             // Capturar os valores selecionados do select múltiplo de alérgenos
-            const allergensSelect = document.getElementById('foodAllergens');
-            
-        //Inicio DeepSeek #7
-            //const alergicos_comuns = Array.from(allergensSelect.selectedOptions).map(opt => opt.value);
-            const selectedAllergens = Array.from(allergensSelect.selectedOptions)
-                          .map(opt => opt.value)
-                          .join(',');
-        //Fim DeepSeek #7
-
-
-            //Fim ajustes GPT
 
             // Coletar dados do formulário
             const formData = {
@@ -441,18 +416,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 origem: document.getElementById('foodOrigin').value,
                 nivel_processamento: document.getElementById('foodProcessing').value,
                 glutem: document.getElementById('foodGluten').value === 'true',
-                //Inicio DeepSeek #7
-                //alergicos_comuns: document.getElementById('foodAllergens').value,
-                alergicos_comuns: selectedAllergens,
-                //Fim DeepSeek #7
-                //Inicio DeepSeek 23-07 #2
                 carga_antioxidante: document.getElementById('foodAntioxidants').value.trim() || null,
-                //Fim DeepSeek 23-07 #2
                 observacoes: document.getElementById('foodObservations').value.trim(),
-
-                //Inicio DeepSeek #3
                 img_registro: await getImageBase64()  // ← Nova função para a imagem
-                //Fim Deep Seek #3
             };
 
             //Inicio DeepSeek #3
@@ -552,70 +518,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
 
         // Carregar opções de selects (tabelas auxiliares)
-
-    //Inicio DeepSeek #7
-    function setupMultiSelectBehavior() {
-        const allergensSelect = document.getElementById('foodAllergens');
-        if (!allergensSelect) return;
-
-        // Remove listeners antigos
-        allergensSelect.removeEventListener('mousedown', handleSelection);
-        allergensSelect.removeEventListener('click', handleSelection);
-        allergensSelect.removeEventListener('change', updateSelectedDisplay);
-
-        // Handler para seleção
-        function handleSelection(e) {
-            // Permite comportamento padrão com teclas modificadoras
-            if (e.ctrlKey || e.metaKey || e.shiftKey) return;
-            
-            // Só atua em clicks diretos em options
-            if (e.target.tagName === 'OPTION') {
-                e.preventDefault();
-                e.stopPropagation();
-                
-                // Mantém o dropdown aberto
-                e.stopImmediatePropagation();
-                
-                // Inverte o estado de seleção
-                e.target.selected = !e.target.selected;
-                
-                // Força atualização
-                const event = new Event('change');
-                allergensSelect.dispatchEvent(event);
-            }
-        }
-
-        // Atualiza a exibição das tags
-        function updateSelectedDisplay() {
-            const container = document.getElementById('selectedAllergens');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            const selected = Array.from(allergensSelect.selectedOptions);
-            
-            // Limita a 10 seleções
-            if (selected.length > 10) {
-                alert('Máximo de 10 alérgenos permitidos');
-                selected.slice(10).forEach(opt => opt.selected = false);
-                selected.length = 10;
-            }
-            
-            // Exibe as tags
-            selected.forEach(opt => {
-                const tag = document.createElement('div');
-                tag.className = 'selected-tag';
-                tag.textContent = opt.text;
-                container.appendChild(tag);
-            });
-        }
-
-        // Adiciona os listeners
-        allergensSelect.addEventListener('mousedown', handleSelection);
-        allergensSelect.addEventListener('click', handleSelection);
-        allergensSelect.addEventListener('change', updateSelectedDisplay);
-    }
-    //Fim DeepSeek #7
-
     async function loadSelectOptions() {
         const selects = {
             'foodPreparation': '/api/get-options?table=tbl_aux_modo_preparo',
@@ -623,7 +525,6 @@ document.addEventListener('DOMContentLoaded', function() {
             'foodCategory': '/api/get-options?table=tbl_aux_categoria_nutri',
             'foodOrigin': '/api/get-options?table=tbl_aux_origem_alimentar',
             'foodProcessing': '/api/get-options?table=tbl_aux_processamento',
-            'foodAllergens': '/api/get-options?table=tbl_aux_alergicos',
             // ... outros selects
         };
 
@@ -631,21 +532,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const response = await fetch(url);
             const options = await response.json();
             const select = document.getElementById(id);
-            
-         
-            // Mantém a verificação de options.length mas remove o continue
-            if (id === 'foodAllergens') {
-                // Limpa opções existentes
-                select.innerHTML = '';
-                
-                // Adiciona novas opções
-                options.forEach(opt => {
-                    const option = document.createElement('option');
-                    option.value = opt.id;
-                    option.textContent = opt.nome;
-                    select.appendChild(option);
-                });
-            }
 
             // Limpa opções existentes
             select.innerHTML = '';
@@ -656,32 +542,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 option.textContent = opt.nome;
                 select.appendChild(option);
             });
-
-                //Inicio DeepSeek #7
-                // Adiciona funcionalidade especial apenas para o foodAllergens
-            
-                if (id === 'foodAllergens') {
-                // Remove container existente
-                const existingContainer = select.nextElementSibling;
-                if (existingContainer && existingContainer.classList.contains('selected-tags-container')) {
-                    existingContainer.remove();
-                }
-                
-                // Cria novo container
-                const container = document.createElement('div');
-                container.id = 'selectedAllergens';
-                container.className = 'selected-tags-container';
-                select.parentNode.insertBefore(container, select.nextSibling);
-
-                // Configura comportamento
-                setupMultiSelectBehavior();
-            }
-                //Fim DeepSeek #7
                 
             }
         }
-
-        //Fim DeepSeek #4
 
         loadSelectOptions();
     //FIM ALTERAÇÕES DEEPSEEK
@@ -692,9 +555,4 @@ document.addEventListener('DOMContentLoaded', function() {
         setupCollapsibleBlocks();
         setupPortionUnitToggle();
         setupModalCleanup();
-        //Inicio DeepSeek #7
-        loadSelectOptions().then(() => {
-            setupMultiSelectBehavior();
-        });
-        //Fim DeepSeek #7
     });
