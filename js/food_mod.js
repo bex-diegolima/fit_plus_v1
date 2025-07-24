@@ -183,12 +183,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Adicione esta função no seu arquivo:
     function clearModalFields() {
         // Limpa todos os inputs
-        document.querySelectorAll('#foodAddModal .food-input').forEach(input => {
-            if (input.type !== 'file') { // Mantém o file input diferente
-                input.value = '';
+        //Inicio DeepSeek #6
+        document.querySelectorAll('#foodAddModal .food-select').forEach(select => {
+            if (select.multiple) {
+                Array.from(select.options).forEach(option => option.selected = false);
+                // Limpa também o container de tags
+                const container = select.nextElementSibling;
+                if (container && container.classList.contains('selected-tags-container')) {
+                    container.innerHTML = '';
+                }
+            } else {
+                select.selectedIndex = 0; // Define para o primeiro item (deve ser option vazio)
             }
         });
-        
+        //Fim DeepSeek #6
         // Reseta os selects
         //Inicio GPT #5
         document.querySelectorAll('#foodAddModal .food-select').forEach(select => {
@@ -281,12 +289,12 @@ document.addEventListener('DOMContentLoaded', function() {
              // Capturar os valores selecionados do select múltiplo de alérgenos
             const allergensSelect = document.getElementById('foodAllergens');
             
-        //Inicio GPT #5
+        //Inicio DeepSeek #6
             //const alergicos_comuns = Array.from(allergensSelect.selectedOptions).map(opt => opt.value);
-            const alergicos_comuns = Array.from(allergensSelect.selectedOptions)
-                              .map(opt => opt.value)
-                              .join(',');
-        //Fim GPT #5
+            const selectedAllergens = Array.from(document.getElementById('foodAllergens').selectedOptions)
+                          .map(opt => opt.value)
+                          .join(',');
+        //Fim DeepSeek #6
 
 
             //Fim ajustes GPT
@@ -438,10 +446,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 origem: document.getElementById('foodOrigin').value,
                 nivel_processamento: document.getElementById('foodProcessing').value,
                 glutem: document.getElementById('foodGluten').value === 'true',
-                //Inicio GPT #5
+                //Inicio DeepSeek #6
                 //alergicos_comuns: document.getElementById('foodAllergens').value,
                 alergicos_comuns: selectedAllergens,
-                //Fim GPT #5
+                //Fim DeepSeek #6
                 //Inicio DeepSeek 23-07 #2
                 carga_antioxidante: document.getElementById('foodAntioxidants').value.trim() || null,
                 //Fim DeepSeek 23-07 #2
@@ -561,24 +569,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Adiciona novo handler
                 allergensSelect.addEventListener('mousedown', handleMouseDown);
                 
-                function handleMouseDown(e) {
-                    // Ignora se não for um option que foi clicado
-                    if (e.target.tagName !== 'OPTION') return;
-                    
-                    // Permite comportamento normal com teclas modificadoras
-                    if (e.ctrlKey || e.shiftKey || e.metaKey) return;
-                    
-                    // Previne o comportamento padrão
-                    e.preventDefault();
-                    
-                    // Alterna o estado de seleção
-                    e.target.selected = !e.target.selected;
-                    
-                    // Dispara o evento change manualmente
-                    const changeEvent = new Event('change');
-                    allergensSelect.dispatchEvent(changeEvent);
-                }
+            //Inicio DeepSeek #6
+            function handleMouseDown(e) {
+                if (e.target.tagName !== 'OPTION') return;
+                if (e.ctrlKey || e.shiftKey || e.metaKey) return;
+                
+                e.preventDefault();
+                e.stopPropagation(); // Adicione esta linha
+                
+                e.target.selected = !e.target.selected;
+                
+                // Remova a linha que dispara o evento change manualmente
+                // Atualiza o container diretamente
+                const container = document.getElementById('selectedAllergens');
+                container.innerHTML = '';
+                Array.from(allergensSelect.selectedOptions).forEach(opt => {
+                    const tag = document.createElement('div');
+                    tag.className = 'selected-tag';
+                    tag.textContent = opt.text;
+                    container.appendChild(tag);
+                });
             }
+            //Fim DeepSeek #6
+        }
             //Inicio DeepSeek #4.1
 
         //Inicio DeepSeek #4
@@ -669,4 +682,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setupCollapsibleBlocks();
         setupPortionUnitToggle();
         setupModalCleanup();
+        //Inicio DeepSeek #6
+        setupMultiSelectBehavior();
+        //Fim DeepSeek #6
     });
