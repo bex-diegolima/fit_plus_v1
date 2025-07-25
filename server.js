@@ -435,9 +435,10 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
         const values = [
             // Dados básicoss
             req.body.item || null,
-            //Ajuste #16
-            req.body.marca === '' ? null : req.body.marca || null,
-            //Ajuste #16
+            //Ajuste #16.1
+            //req.body.marca === '' ? null : req.body.marca || null,
+            (req.body.marca && req.body.marca.trim() !== '') ? req.body.marca.trim() : null,
+            //Ajuste #16.1
             req.body.modo_preparo || null,
             req.body.grupo_alimentar || null,
             100, // porcao_base fixo

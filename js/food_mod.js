@@ -642,7 +642,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            //Ajuste #16
+            /*//Ajuste #16
             allergSelect.addEventListener('click', function(e) {
                 e.preventDefault();
                 if (e.target.tagName.toLowerCase() === 'option') {
@@ -657,6 +657,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             //Fim ajuste #16
+            */
             //Fim Ajuste #15.1
 
             // Evento para seleção de alergênicos
