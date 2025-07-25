@@ -566,7 +566,7 @@ document.addEventListener('DOMContentLoaded', function() {
             //Fim DeepSeek #3.1
 
             //Ajuste #13
-            /*
+            
             //Ajuste #12
             function setupAllergensSelect() {
                 const select = document.getElementById('foodAllergs');
@@ -605,7 +605,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             //Fim Ajuste #12
-            */
+            
             //Fim Ajuste #13
 
             //Inicio Alterações GPT
