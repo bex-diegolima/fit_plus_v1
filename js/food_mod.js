@@ -615,6 +615,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 allergSelect.appendChild(option);
             });
 
+            //Ajuste #15.1
+            allergSelect.addEventListener('mousedown', function(e) {
+                e.preventDefault(); // Evita comportamento padrão
+                const option = e.target;
+                if (option.tagName.toLowerCase() === 'option') {
+                    option.selected = !option.selected; // Alterna o estado
+                    updateSelectedAllergens(); // Atualiza os tags
+                }
+            });
+            //Fim Ajuste #15.1
+
             // Evento para seleção de alergênicos
             allergSelect.addEventListener('change', function() {
                 updateSelectedAllergens();
