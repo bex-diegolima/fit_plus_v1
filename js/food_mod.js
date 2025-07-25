@@ -620,8 +620,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.preventDefault(); // Evita comportamento padrão
                 const option = e.target;
                 if (option.tagName.toLowerCase() === 'option') {
+                    //Ajuste 15.2
+                    const scrollTop = this.scrollTop;
+                    //Ajuste 15.2
                     option.selected = !option.selected; // Alterna o estado
                     updateSelectedAllergens(); // Atualiza os tags
+                    //Ajuste 15.2
+                    this.scrollTop = scrollTop;
+                    //Fim Ajuste 15.2
                 }
             });
             //Fim Ajuste #15.1
