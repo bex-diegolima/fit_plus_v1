@@ -1024,3 +1024,36 @@ body {
     margin-bottom: 10px;
 }
 /*Fim Ajuste #10*/
+
+/*Ajuste #15*/
+/* Estilos para o campo de alergênicos */
+.tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.allergen-tag {
+    background-color: #f0f0f0;
+    border-radius: 15px;
+    padding: 5px 10px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.allergen-tag button {
+    background: none;
+    border: none;
+    margin-left: 5px;
+    cursor: pointer;
+    color: #666;
+}
+
+/* Estilo para opções selecionadas */
+.food-select option:checked {
+    background-color: #d4e6f1;
+    color: #000;
+}
+/*Fim Ajuste #15*/

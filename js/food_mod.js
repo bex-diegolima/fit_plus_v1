@@ -194,6 +194,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    //Ajuste #15
+    // Atualizar tags de alergênicos selecionados
+    function updateSelectedAllergens() {
+        const select = document.getElementById('foodAllergs3');
+        const tagsContainer = document.getElementById('selectedAllergensTags');
+        tagsContainer.innerHTML = '';
+        
+        Array.from(select.selectedOptions).forEach(option => {
+            const tag = document.createElement('div');
+            tag.className = 'allergen-tag';
+            tag.innerHTML = `
+                ${option.textContent}
+                <button type="button" data-value="${option.value}">×</button>
+            `;
+            tagsContainer.appendChild(tag);
+        });
+
+        // Evento para remover tags
+        document.querySelectorAll('.allergen-tag button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                const option = select.querySelector(`option[value="${value}"]`);
+                option.selected = false;
+                updateSelectedAllergens();
+            });
+        });
+    }
+    //Fim Ajuste #15
+
     // Adicione esta função no seu arquivo:
     function clearModalFields() {
         //Ajuste #9
@@ -252,6 +281,14 @@ document.addEventListener('DOMContentLoaded', function() {
             select.selectedIndex = 0; // Reseta para a primeira opção (placeholder)
         });
         //Fim Ajuste #8
+
+        //Ajuste #15
+        const allergSelect = document.getElementById('foodAllergs3');
+        if (allergSelect) {
+            allergSelect.selectedIndex = -1;
+            document.getElementById('selectedAllergensTags').innerHTML = '';
+        }
+        //Fim Ajuste #15
 
     }
 
@@ -438,7 +475,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 glutem: document.getElementById('foodGluten').value === 'true',
                 carga_antioxidante: document.getElementById('foodAntioxidants').value.trim() || null,
                 observacoes: document.getElementById('foodObservations').value.trim(),
-                img_registro: await getImageBase64()  // ← Nova função para a imagem
+                img_registro: await getImageBase64(),  // ← Nova função para a imagem
+                //Ajuste #15
+                alergicos_comuns: Array.from(document.getElementById('foodAllergs3').selectedOptions)
+                    .map(opt => opt.value).join(', ')
+                //Fim Ajuste #15
             };
 
             //Inicio DeepSeek #3
@@ -560,6 +601,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 'foodOrigin': '/api/get-options?table=tbl_aux_origem_alimentar',
                 'foodProcessing': '/api/get-options?table=tbl_aux_processamento',
             };
+
+            //Ajuste #15
+            // Carregar opções de alergênicos
+            const allergResponse = await fetch('/api/get-options?table=tbl_aux_alergicos');
+            const allergOptions = await allergResponse.json();
+            const allergSelect = document.getElementById('foodAllergs3');
+
+            allergOptions.forEach(opt => {
+                const option = document.createElement('option');
+                option.value = opt.id;
+                option.textContent = opt.nome;
+                allergSelect.appendChild(option);
+            });
+
+            // Evento para seleção de alergênicos
+            allergSelect.addEventListener('change', function() {
+                updateSelectedAllergens();
+            });
+            //FIm Ajuste #15
 
             for (const [id, url] of Object.entries(selects)) {
                 const response = await fetch(url);

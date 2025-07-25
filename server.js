@@ -479,6 +479,9 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
             parseInt(req.body.tipo_registro_alimento) || 2,
             parseInt(req.body.carga_antioxidante) || 0,
             imageBuffer,
+            //Ajuste #15
+            (req.body.alergicos_comuns || null),
+            //Fim Ajuste #15
         ];
 
         // 5. Executar query
