@@ -407,9 +407,20 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
         //Fim DeepSeek 23-07
 
         // 3. Query SQL
-        //Ajuste #16
-        console.log('Valor de marca:', req.body.marca, 'Será salvo como:', req.body.marca === '' ? null : req.body.marca || null);
-        //Fim Ajuste #16
+        //Ajuste #16.1
+        const alergicosArray = req.body.alergicos_comuns 
+            ? typeof req.body.alergicos_comuns === 'string'
+                ? req.body.alergicos_comuns
+                    .split(',')
+                    .map(item => item.trim())
+                    .filter(item => item !== '')
+                : Array.isArray(req.body.alergicos_comuns)
+                    ? req.body.alergicos_comuns.filter(item => item !== '')
+                    : null
+            : null;
+
+        console.log('alergicosArray processado:', alergicosArray); // Para depuração
+        //Fim Ajuste #16.1
         const query = `
             INSERT INTO tbl_foods (
                 item, marca, modo_preparo, grupo_alimentar, porcao_base,
@@ -486,7 +497,10 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
             parseInt(req.body.carga_antioxidante) || 0,
             imageBuffer,
             //Ajuste #15
-            (req.body.alergicos_comuns || null),
+            //Ajuste #16.1
+            //(req.body.alergicos_comuns || null),
+            alergicosArray && alergicosArray.length > 0 ? alergicosArray.join(',') : null,
+            //Fim Ajuste #16.1
             //Fim Ajuste #15
         ];
 
