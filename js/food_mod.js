@@ -478,7 +478,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 img_registro: await getImageBase64(),  // ← Nova função para a imagem
                 //Ajuste #15
                 alergicos_comuns: Array.from(document.getElementById('foodAllergs3').selectedOptions)
-                    .map(opt => opt.value).join(', ')
+                    .map(opt => opt.value).join(', ') || null
                 //Fim Ajuste #15
             };
 
