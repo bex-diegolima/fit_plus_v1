@@ -536,6 +536,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Validar campos obrigatórios
             if (!formData.item || !formData.marca || !formData.modo_preparo || !formData.grupo_alimentar) {
                 alert('Preencha todos os campos obrigatórios!');
+                document.getElementById('foodModalLoader').style.display = 'none';
                 return;
             }
 
