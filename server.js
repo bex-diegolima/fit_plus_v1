@@ -407,6 +407,9 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
         //Fim DeepSeek 23-07
 
         // 3. Query SQL
+        //Ajuste #16
+        console.log('Valor de marca:', req.body.marca, 'Será salvo como:', req.body.marca === '' ? null : req.body.marca || null);
+        //Fim Ajuste #16
         const query = `
             INSERT INTO tbl_foods (
                 item, marca, modo_preparo, grupo_alimentar, porcao_base,
@@ -432,7 +435,9 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
         const values = [
             // Dados básicoss
             req.body.item || null,
-            req.body.marca || null,
+            //Ajuste #16
+            req.body.marca === '' ? null : req.body.marca || null,
+            //Ajuste #16
             req.body.modo_preparo || null,
             req.body.grupo_alimentar || null,
             100, // porcao_base fixo

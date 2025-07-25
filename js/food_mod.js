@@ -330,7 +330,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const formData = {
                 // Bloco 1
                 item: document.getElementById('foodItemName').value.trim(),
-                marca: document.getElementById('foodBrand').value.trim(),
+                //Ajuste #16
+                marca: document.getElementById('foodBrand').value.trim() || '',
+                //Ajuste #16
                 modo_preparo: document.getElementById('foodPreparation').value,
                 grupo_alimentar: document.getElementById('foodGroup').value,
                 porcao_base: 100, // Valor fixo conforme regra
@@ -534,11 +536,13 @@ document.addEventListener('DOMContentLoaded', function() {
             //Fim Alterações GPT
 
             // Validar campos obrigatórios
-            if (!formData.item || !formData.modo_preparo || !formData.grupo_alimentar || !formData.marca || !formData.calorias_kcal || !formData.proteina_gr || !formData.carbo_gr || !formData.gorduras_totais_gr) {
+            //Ajuste #16 - retirado o marca
+            if (!formData.item || !formData.modo_preparo || !formData.grupo_alimentar || !formData.calorias_kcal || !formData.proteina_gr || !formData.carbo_gr || !formData.gorduras_totais_gr) {
                 alert('Preencha todos os campos obrigatórios!');
                 document.getElementById('foodModalLoader').style.display = 'none';
                 return;
             }
+            //Fim Ajuste #16 - retirado o marca
 
             // Enviar para o servidor
 
@@ -617,7 +621,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             //Ajuste #15.1
+            //Ajuste #16
             allergSelect.addEventListener('mousedown', function(e) {
+            //Fim Ajuste #16
                 e.preventDefault(); // Evita comportamento padrão
                 const option = e.target;
                 if (option.tagName.toLowerCase() === 'option') {
@@ -635,6 +641,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     //Ajuste 15.2
                 }
             });
+
+            //Ajuste #16
+            allergSelect.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (e.target.tagName.toLowerCase() === 'option') {
+                    const selectElement = this;
+                    const scrollTop = selectElement.scrollTop;
+                    selectElement.blur();
+                    e.target.selected = !e.target.selected;
+                    setTimeout(() => {
+                        updateSelectedAllergens();
+                        selectElement.scrollTop = scrollTop;
+                    }, 0);
+                }
+            });
+            //Fim ajuste #16
             //Fim Ajuste #15.1
 
             // Evento para seleção de alergênicos
