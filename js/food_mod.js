@@ -325,7 +325,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Mostrar loader
             document.getElementById('foodModalLoader').style.display = 'flex';
             //Fim Ajuste #10
-
+            //ajuste #16.1
+            const selectedAllergens = Array.from(document.getElementById('foodAllergs3').selectedOptions)
+                    .map(opt => opt.value);
+            //Fim ajuste #16.1
             // Coletar dados do formulário
             const formData = {
                 // Bloco 1
@@ -479,8 +482,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 observacoes: document.getElementById('foodObservations').value.trim(),
                 img_registro: await getImageBase64(),  // ← Nova função para a imagem
                 //Ajuste #15
-                alergicos_comuns: Array.from(document.getElementById('foodAllergs3').selectedOptions)
-                    .map(opt => opt.value).join(', ') || null
+                //alergicos_comuns: Array.from(document.getElementById('foodAllergs3').selectedOptions)
+                    //.map(opt => opt.value).join(', ') || null
+
+                //Ajuste #16.1
+                
+
+                alergicos_comuns: selectedAllergens.length > 0 ? selectedAllergens : []
+                //Fim Ajuste #16.1
                 //Fim Ajuste #15
             };
 
