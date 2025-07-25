@@ -630,7 +630,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         updateSelectedAllergens();
                         // Restaura scroll depois de tudo
                         selectElement.scrollTop = scrollTop;
-                    }, 50);
+                    }, 0);
                     //Ajuste 15.2
                 }
             });
