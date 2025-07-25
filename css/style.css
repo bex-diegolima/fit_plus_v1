@@ -717,6 +717,7 @@ body {
     background-color: #fefefe;
     margin: 5% auto;
     padding: 20px;
+    padding-top: 0;
     border-radius: 8px;
     width: 60%;
     max-width: 700px;
@@ -805,12 +806,14 @@ body {
 }
 
 /* ===== ESTILOS DO MODAL DE CADASTRO (BLOCO 1) ===== */
+/*Ajuste Manual #1
 .food-modal-title {
   text-align: center;
   color: #2c3e50;
   margin-bottom: 20px;
   font-size: 1.5rem;
 }
+Fim Ajuste Manual #1*/
 
 /* Bloco recolhível */
 .food-block {
@@ -961,6 +964,7 @@ body {
     width: 100%;
 }
 
+
 .btn-save:hover {
     background-color: #2ecc71;
 }
@@ -1057,3 +1061,91 @@ body {
     color: #000;
 }
 /*Fim Ajuste #15*/
+
+/*Ajuste Manual #1*/
+
+.fm-top-barrier {
+    position: sticky;
+    top: 0;
+    height: 16px; /* Mesmo valor do espaço que você quer proteger */
+    background: #fefefe; /* Mesma cor do cabeçalho */
+    z-index: 1001; /* Um nível acima do cabeçalho f8f9fa */
+}
+
+.fm-cabecalho {
+    position: sticky;
+    top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    top: 16px;
+    margin-bottom: 16px;
+}
+
+.barraD {
+    position: sticky;
+    top: calc(16px + 64px); /* Altura do cabeçalho + espaçamento (ajuste este valor) */
+    height: 16px;
+    background: #fefefe; /* Mesma cor do cabeçalho */
+    margin-top: -16px; /* Compensa o espaço */
+    z-index: 999; /* Um nível abaixo do cabeçalho */
+    
+}
+
+.food-modal-title {
+    flex: 1; /* Ocupa todo o espaço disponível */
+    text-align: center;
+    margin: 0;
+    padding: 0 20px; /* Espaço para evitar que o texto encoste nos botões */
+    font-size: 1.2rem; /* Tamanho um pouco menor */
+    white-space: nowrap; /* Impede que o texto quebre em várias linhas */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Adiciona "..." se o texto for muito longo */
+}
+
+.save-btn, .close-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+    flex-shrink: 0; /* Impede que os botões diminuam */
+}
+
+.save-btn {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+}
+
+.save-btn:hover {
+    background-color: #45a049; /* Verde mais escuro no hover */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.close-btn {
+    background-color: #f44336; /* Vermelho */
+    color: white;
+}
+
+.close-btn:hover {
+    background-color: #d32f2f; /* Vermelho mais escuro no hover */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Container para os botões para alinhá-los à direita */
+.fm-cabecalho > div {
+    display: flex;
+    margin-left: auto; /* Empurra os botões para a direita */
+}
+/*Fim Ajuste Manual #1*/

@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const addBtn = document.querySelector('.food-add-btn');
     const detailModal = document.getElementById('foodDetailModal');
     const addModal = document.getElementById('foodAddModal');
-    const closeButtons = document.querySelectorAll('.food-modal-close');
+    const closeButtons = document.querySelectorAll('.food-modal-close, #close-bt');
     const foodTableBody = document.querySelector('.food-table tbody');
     const profilePic = document.getElementById('profilePic');
     const welcomeMessage = document.getElementById('welcomeMessage');
@@ -187,12 +187,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    //Ajuste #17
     // Fechar ao clicar fora do modal
-    window.addEventListener('click', (event) => {
+    /*window.addEventListener('click', (event) => {
         if (event.target.classList.contains('food-modal')) {
             event.target.style.display = 'none';
         }
-    });
+    });*/
+    //Fim Ajuste #17
 
     //Ajuste #15
     // Atualizar tags de alergênicos selecionados
@@ -300,17 +302,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Atualize também o clique fora do modal:
+    //Ajuste #17
+    /*// Atualize também o clique fora do modal:
     window.addEventListener('click', (event) => {
         if (event.target.classList.contains('food-modal')) {
             event.target.style.display = 'none';
             clearModalFields(); // Limpa os campos ao fechar
         }
-    });
+    });*/
+    //Fim Ajuste #17
 
     //ALTERAÇÕES DEEPSEEK
     // Elementos do DOM
-        const saveBtn = document.getElementById('saveFoodBtn');
+        const saveBtn = document.getElementById('save-bt');
         const foodAddModal = document.getElementById('foodAddModal');
         
         // Função para calcular proporção (regra de 3)
@@ -320,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Função para salvar alimento
         saveBtn.addEventListener('click', async function() {
-
+        
             //Ajuste #10
             // Mostrar loader
             document.getElementById('foodModalLoader').style.display = 'flex';
@@ -540,6 +544,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const token = localStorage.getItem('token');
                 if (!token) {
                     alert('Usuário não autenticado. Faça login novamente.');
+                    document.getElementById('foodModalLoader').style.display = 'none';
                     return;  // para não continuar o envio
                 }
             //Fim Alterações GPT
