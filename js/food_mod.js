@@ -546,7 +546,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Validar campos obrigatórios
             //Ajuste #16 - retirado o marca
-            if (!formData.item || !formData.modo_preparo || !formData.marca || !formData.grupo_alimentar || !formData.calorias_kcal || !formData.proteina_gr || !formData.carbo_gr || !formData.gorduras_totais_gr) {
+            if (!formData.item || !formData.modo_preparo || !formData.grupo_alimentar || !formData.calorias_kcal || !formData.proteina_gr || !formData.carbo_gr || !formData.gorduras_totais_gr) {
                 alert('Preencha todos os campos obrigatórios!');
                 document.getElementById('foodModalLoader').style.display = 'none';
                 return;
