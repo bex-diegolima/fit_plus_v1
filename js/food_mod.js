@@ -534,7 +534,7 @@ document.addEventListener('DOMContentLoaded', function() {
             //Fim Alterações GPT
 
             // Validar campos obrigatórios
-            if (!formData.item || !formData.marca || !formData.modo_preparo || !formData.grupo_alimentar) {
+            if (!formData.item || !formData.modo_preparo || !formData.grupo_alimentar || !formData.calorias_kcal || !formData.proteina_gr || !formData.carbo_gr || !formData.gorduras_totais_gr) {
                 alert('Preencha todos os campos obrigatórios!');
                 document.getElementById('foodModalLoader').style.display = 'none';
                 return;
