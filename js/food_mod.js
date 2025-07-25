@@ -624,13 +624,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     const selectElement = this;
                     const scrollTop = selectElement.scrollTop;
                     //Ajuste 15.2
+                    selectElement.blur();
                     option.selected = !option.selected; // Alterna o estado
-                    updateSelectedAllergens(); // Atualiza os tags
-                    //Ajuste 15.2
-                    requestAnimationFrame(() => {
+                    setTimeout(() => {
+                        updateSelectedAllergens();
+                        // Restaura scroll depois de tudo
                         selectElement.scrollTop = scrollTop;
-                    });
-                    //Fim Ajuste 15.2
+                    }, 50);
+                    //Ajuste 15.2
                 }
             });
             //Fim Ajuste #15.1
