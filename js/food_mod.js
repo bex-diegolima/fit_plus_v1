@@ -621,12 +621,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 const option = e.target;
                 if (option.tagName.toLowerCase() === 'option') {
                     //Ajuste 15.2
-                    const scrollTop = this.scrollTop;
+                    const selectElement = this;
+                    const scrollTop = selectElement.scrollTop;
                     //Ajuste 15.2
                     option.selected = !option.selected; // Alterna o estado
                     updateSelectedAllergens(); // Atualiza os tags
                     //Ajuste 15.2
-                    this.scrollTop = scrollTop;
+                    requestAnimationFrame(() => {
+                        selectElement.scrollTop = scrollTop;
+                    });
                     //Fim Ajuste 15.2
                 }
             });
