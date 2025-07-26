@@ -412,7 +412,9 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Erro:', error);
             loader.style.display = 'none';
             alert('Erro ao carregar detalhes do alimento');
-            modal.style.display = 'none';
+            //Ajuste #23.2
+            //modal.style.display = 'none';
+            //Fim Ajuste #23.2
         }
     }
     //Fim Ajuste #23.1
@@ -653,7 +655,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
             //Ajuste #10
             // Mostrar loader
-            document.getElementById('foodModalLoader').style.display = 'flex';
+            //Ajuste #23.2
+            const loader = document.getElementById('foodModalLoader');
+            loader.style.display = 'flex';
+            //Fim Ajuste #23.2
             //Fim Ajuste #10
             //ajuste #16.1
             const selectedAllergens = Array.from(document.getElementById('foodAllergs3').selectedOptions)

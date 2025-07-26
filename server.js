@@ -649,6 +649,10 @@ app.get('/api/search-foods', authenticateToken, async (req, res) => {
 // Adicionar após as outras rotas
 app.get('/api/food-details', authenticateToken, async (req, res) => {
     try {
+        //Ajuste #23.2
+        const token = req.headers['authorization']?.split(' ')[1];
+        if (!token) return res.status(401).json({ error: 'Token não fornecido' });
+        //Fim Ajuste #23.2
         const { id } = req.query;
         if (!id) return res.status(400).json({ error: 'ID do alimento não fornecido' });
 
