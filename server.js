@@ -645,6 +645,64 @@ app.get('/api/search-foods', authenticateToken, async (req, res) => {
 });
 //Fim Ajuste #22
 
+//Ajuste #23
+// Adicionar após as outras rotas
+app.get('/api/food-details', authenticateToken, async (req, res) => {
+    try {
+        const { id } = req.query;
+        if (!id) return res.status(400).json({ error: 'ID do alimento não fornecido' });
+
+        const query = `
+            SELECT 
+                f.*,
+                mp.nome as modo_preparo_nome,
+                ga.nome as grupo_alimentar_nome,
+                cn.nome as categoria_nutricional_nome,
+                oa.nome as origem_alimentar_nome,
+                pr.nome as processamento_nome,
+                tm.nome as tipo_medida_nome
+            FROM tbl_foods f
+            LEFT JOIN tbl_aux_modo_preparo mp ON f.modo_preparo = mp.id
+            LEFT JOIN tbl_aux_grupo_alimentar ga ON f.grupo_alimentar = ga.id
+            LEFT JOIN tbl_aux_categoria_nutri cn ON f.categoria_nutricional = cn.id
+            LEFT JOIN tbl_aux_origem_alimentar oa ON f.origem = oa.id
+            LEFT JOIN tbl_aux_processamento pr ON f.nivel_processamento = pr.id
+            LEFT JOIN tbl_aux_tipo_medida tm ON f.tipo_medida_alimento = tm.id
+            WHERE f.id = $1
+        `;
+
+        const result = await pool.query(query, [id]);
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Alimento não encontrado' });
+        }
+
+        let foodData = result.rows[0];
+        
+        // Processar alérgenos se existirem
+        if (foodData.alergicos_comuns) {
+            const allergenicIds = foodData.alergicos_comuns.split(',').filter(id => id.trim() !== '');
+            if (allergenicIds.length > 0) {
+                const allergenicQuery = `
+                    SELECT nome FROM tbl_aux_alergicos 
+                    WHERE id = ANY($1::int[])
+                    ORDER BY nome
+                `;
+                const allergenicResult = await pool.query(allergenicQuery, [allergenicIds]);
+                foodData.alergicos_comuns_nomes = allergenicResult.rows.map(r => r.nome).join(', ');
+            } else {
+                foodData.alergicos_comuns_nomes = null;
+            }
+        }
+
+        res.json(foodData);
+    } catch (error) {
+        console.error('Erro ao buscar detalhes:', error);
+        res.status(500).json({ error: 'Erro interno no servidor' });
+    }
+});
+//Fim Ajuste #23
+
 //FIM ALTERAÇÕES DEEPSEEK
 
 app.listen(PORT, async () => {

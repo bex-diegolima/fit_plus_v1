@@ -79,6 +79,7 @@
         </div>
     </div>-->
 
+    <!--Ajuste #23-->
     <div id="foodDetailModal" class="food-modal" style="display: none;">
         <div class="food-modal-content">
             <div class="fm-top-barrier"></div>
@@ -90,9 +91,236 @@
                 </div>
             </div>
             <div class="barraD"></div>
+
+            <!-- Bloco 1 - Informações Básicas -->
+        <div class="food-block" id="blockBasicInfoDetail">
+            <div class="food-block-header">
+                <h3>Informações Básicas</h3>
+                <span class="food-block-toggle">▼</span>
+            </div>
+            <div class="food-block-content">
+                <div id="alertVerification" class="alert-box"></div>
+                <div id="alertGluten" class="alert-box" style="display:none;"></div>
+                <div id="alertAllergens" class="alert-box" style="display:none;"></div>
+                
+                <div class="food-image-container">
+                    <img id="foodDetailImage" src="" alt="Imagem do Alimento" class="food-image">
+                </div>
+                
+                <h3 id="foodDetailName" class="food-name"></h3>
+                
+                <div class="food-detail-group">
+                    <label>Porção Base:</label>
+                    <div class="food-detail-value">
+                        <input type="number" id="foodDetailBasePortion" class="food-input" step="0.01" value="100.00">
+                        <span id="foodDetailPortionUnit" class="food-unit">g</span>
+                    </div>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Modo de Preparo:</label>
+                    <span id="foodDetailPreparation" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Kcal.:</label>
+                    <span id="foodDetailCalories" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Proteínas:</label>
+                    <span id="foodDetailProteins" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Carboidratos:</label>
+                    <span id="foodDetailCarbs" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Gorduras Totais:</label>
+                    <span id="foodDetailFats" class="food-detail-value"></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bloco 2 - Mais Informações Nutricionais -->
+        <div class="food-block" id="blockNutritionInfoDetail">
+            <div class="food-block-header">
+                <h3>Mais Informações Nutricionais</h3>
+                <span class="food-block-toggle">▼</span>
+            </div>
+            <div class="food-block-content">
+                <div class="food-detail-group">
+                    <label>Gorduras Boas:</label>
+                    <span id="foodDetailGoodFats" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Gorduras Ruins:</label>
+                    <span id="foodDetailBadFats" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Fibras:</label>
+                    <span id="foodDetailFiber" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Sódio:</label>
+                    <span id="foodDetailSodium" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Açúcares Totais:</label>
+                    <span id="foodDetailSugar" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Açúcares Adicionados:</label>
+                    <span id="foodDetailSugarAdd" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Índice Glicêmico:</label>
+                    <span id="foodDetailGlycemicIndex" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Carga Glicêmica:</label>
+                    <span id="foodDetailGlycemicLoad" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Colesterol:</label>
+                    <span id="foodDetailCholesterol" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Cálcio:</label>
+                    <span id="foodDetailCalcium" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Ferro:</label>
+                    <span id="foodDetailIron" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Potássio:</label>
+                    <span id="foodDetailPotassium" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Magnésio:</label>
+                    <span id="foodDetailMagnesium" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Zinco:</label>
+                    <span id="foodDetailZinc" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Vitamina A:</label>
+                    <span id="foodDetailVitaminA" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Vitamina D:</label>
+                    <span id="foodDetailVitaminD" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Vitamina C:</label>
+                    <span id="foodDetailVitaminC" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Vitamina B12:</label>
+                    <span id="foodDetailVitaminB12" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Vitamina E:</label>
+                    <span id="foodDetailVitaminE" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Ômega 3:</label>
+                    <span id="foodDetailOmega3" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Ácido Fólico:</label>
+                    <span id="foodDetailFolicAcid" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Teor Alcoólico:</label>
+                    <span id="foodDetailAlcohol" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Carga Antioxidante:</label>
+                    <span id="foodDetailAntioxidants" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Densidade Calórica:</label>
+                    <span id="foodDetailCaloricDensity" class="food-detail-value"></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bloco 3 - Outras Informações -->
+        <div class="food-block" id="blockOtherInfoDetail">
+            <div class="food-block-header">
+                <h3>Outras Informações</h3>
+                <span class="food-block-toggle">▼</span>
+            </div>
+            <div class="food-block-content">
+                <div class="food-detail-group">
+                    <label>Grupo Alimentar:</label>
+                    <span id="foodDetailGroup" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Categoria Nutricional:</label>
+                    <span id="foodDetailCategory" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Origem Alimentícia:</label>
+                    <span id="foodDetailOrigin" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Nível de Processamento:</label>
+                    <span id="foodDetailProcessing" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Contém Glúten?:</label>
+                    <span id="foodDetailGluten" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group">
+                    <label>Alérgicos e Intolerâncias Comuns:</label>
+                    <span id="foodDetailAllergens" class="food-detail-value"></span>
+                </div>
+                
+                <div class="food-detail-group full-width">
+                    <label>Observações:</label>
+                    <div id="foodDetailObservations" class="food-detail-text"></div>
+                </div>
+            </div>
+        </div>
+
         </div>
     </div>
     <!-- Fim Ajuste Manual #2-->
+    <!--Fim Ajuste #23-->
 
     <!-- Modal de Cadastro -->
     <div id="foodAddModal" class="food-modal" style="display: none;">

@@ -1208,3 +1208,108 @@ Fim Ajuste Manual #1*/
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 /*Fim Ajuste Manual #2*/
+
+/*Inicio Ajuste #23*/
+/* Adicionar após os estilos existentes */
+.food-detail-group {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.food-detail-group label {
+    font-weight: 600;
+    color: #555;
+    display: inline-block;
+    width: 200px;
+    vertical-align: top;
+}
+
+.food-detail-group.full-width label {
+    display: block;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.food-detail-value {
+    display: inline-block;
+    margin-left: 10px;
+    color: #333;
+}
+
+.food-detail-text {
+    display: block;
+    margin-top: 5px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 4px;
+    border-left: 3px solid #3498db;
+}
+
+.food-image-container {
+    text-align: center;
+    margin: 15px 0;
+}
+
+.food-image {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    padding: 5px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.food-name {
+    text-align: center;
+    margin: 15px 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.alert-box {
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+}
+
+.alert-box.verified {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    border-left: 4px solid #1976d2;
+}
+
+.alert-box.warning {
+    background-color: #fff8e1;
+    color: #ff8f00;
+    border-left: 4px solid #ff8f00;
+}
+
+.alert-box img {
+    width: 20px;
+    height: 20px;
+}
+
+.food-unit {
+    margin-left: 5px;
+    color: #7f8c8d;
+    font-size: 14px;
+}
+
+/* Estilos para os blocos colapsáveis */
+.food-block-header {
+    cursor: pointer;
+    user-select: none;
+}
+
+.food-block-content {
+    transition: all 0.3s ease;
+}
+/*Fim Ajuste #23*/

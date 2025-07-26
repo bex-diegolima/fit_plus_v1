@@ -378,6 +378,199 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }
 
+    //Ajuste #23
+    //FUNÇÕES DETALHES
+    // Adicionar após as outras funções
+    async function loadFoodDetails(foodId) {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`https://fit-plus-backend.onrender.com/api/food-details?id=${foodId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (!response.ok) throw new Error('Erro ao carregar detalhes');
+            
+            const foodData = await response.json();
+            populateFoodDetails(foodData);
+        } catch (error) {
+            console.error('Erro:', error);
+            alert('Erro ao carregar detalhes do alimento');
+        }
+    }
+
+    function populateFoodDetails(data) {
+        // Alerta de verificação
+        const verificationAlert = document.getElementById('alertVerification');
+        if (data.tipo_registro_alimento === 1) {
+            verificationAlert.innerHTML = `
+                <img src="images/icn_verificado.png" alt="Verificado">
+                <span>Informações Nutricionais Validadas por Especialistas.</span>
+            `;
+            verificationAlert.className = 'alert-box verified';
+        } else {
+            verificationAlert.innerHTML = `
+                <img src="images/icn_alerta.png" alt="Alerta">
+                <span>Informações Nutricionais Não Verificadas por Especialistas.</span>
+            `;
+            verificationAlert.className = 'alert-box warning';
+        }
+        
+        // Alerta de glúten
+        const glutenAlert = document.getElementById('alertGluten');
+        if (data.glutem) {
+            glutenAlert.innerHTML = `
+                <img src="images/icn_alerta.png" alt="Alerta">
+                <span>Este alimento contém glúten!</span>
+            `;
+            glutenAlert.className = 'alert-box warning';
+            glutenAlert.style.display = 'flex';
+        } else {
+            glutenAlert.style.display = 'none';
+        }
+        
+        // Alerta de alérgenos
+        const allergensAlert = document.getElementById('alertAllergens');
+        if (data.alergicos_comuns && data.alergicos_comuns.length > 0) {
+            allergensAlert.innerHTML = `
+                <img src="images/icn_alerta.png" alt="Alerta">
+                <span>Este alimento possui alérgenos ou intolerâncias comuns!</span>
+            `;
+            allergensAlert.className = 'alert-box warning';
+            allergensAlert.style.display = 'flex';
+        } else {
+            allergensAlert.style.display = 'none';
+        }
+        
+        // Imagem do alimento
+        const foodImage = document.getElementById('foodDetailImage');
+        if (data.img_registro) {
+            foodImage.src = `data:image/jpeg;base64,${data.img_registro}`;
+        } else {
+            foodImage.src = 'images/default-food.png';
+        }
+        
+        // Nome do alimento
+        document.getElementById('foodDetailName').textContent = data.item;
+        
+        // Configurar unidade de medida
+        const unitSpan = document.getElementById('foodDetailPortionUnit');
+        if ([10, 11].includes(parseInt(data.grupo_alimentar))) {
+            unitSpan.textContent = 'ml';
+        } else {
+            unitSpan.textContent = 'g';
+        }
+        
+        // Porção base
+        const portionInput = document.getElementById('foodDetailBasePortion');
+        portionInput.value = data.porcao_base || 100;
+        
+        // Configurar evento para recalcular valores quando a porção mudar
+        portionInput.addEventListener('input', () => {
+            updateNutritionValues(data, parseFloat(portionInput.value));
+        });
+        
+        // Preencher todos os campos
+        updateNutritionValues(data, data.porcao_base || 100);
+        
+        // Preencher outras informações
+        document.getElementById('foodDetailGroup').textContent = data.grupo_alimentar_nome || '-';
+        document.getElementById('foodDetailCategory').textContent = data.categoria_nutricional_nome || '-';
+        document.getElementById('foodDetailOrigin').textContent = data.origem_alimentar_nome || '-';
+        document.getElementById('foodDetailProcessing').textContent = data.processamento_nome || '-';
+        document.getElementById('foodDetailGluten').textContent = data.glutem ? 'Sim' : 'Não';
+        document.getElementById('foodDetailAllergens').textContent = data.alergicos_comuns_nomes || 'Nenhum registrado';
+        document.getElementById('foodDetailObservations').textContent = data.observacoes || 'Nenhuma observação registrada';
+        
+        // Configurar colapsáveis
+        setupDetailCollapsibles();
+        
+        // Abrir o modal
+        document.getElementById('foodDetailModal').style.display = 'block';
+    }
+
+    function updateNutritionValues(data, portion) {
+        const calculateValue = (value) => {
+            if (!value) return '-';
+            return ((value * portion) / 100).toFixed(2);
+        };
+        
+        const formatUnit = (value, unit) => {
+            if (value === '-') return '-';
+            return `${value} ${unit}`;
+        };
+        
+        // Bloco 1
+        document.getElementById('foodDetailPreparation').textContent = data.modo_preparo_nome || '-';
+        document.getElementById('foodDetailCalories').textContent = formatUnit(calculateValue(data.calorias_kcal), 'kcal');
+        document.getElementById('foodDetailProteins').textContent = formatUnit(calculateValue(data.proteina_gr), 'g');
+        document.getElementById('foodDetailCarbs').textContent = formatUnit(calculateValue(data.carbo_gr), 'g');
+        document.getElementById('foodDetailFats').textContent = formatUnit(calculateValue(data.gorduras_totais_gr), 'g');
+        
+        // Bloco 2
+        document.getElementById('foodDetailGoodFats').textContent = formatUnit(calculateValue(data.gorduras_boas_gr), 'g');
+        document.getElementById('foodDetailBadFats').textContent = formatUnit(calculateValue(data.gorduras_ruins_gr), 'g');
+        document.getElementById('foodDetailFiber').textContent = formatUnit(calculateValue(data.fibras_gr), 'g');
+        document.getElementById('foodDetailSodium').textContent = formatUnit(calculateValue(data.sodio_mg), 'mg');
+        document.getElementById('foodDetailSugar').textContent = formatUnit(calculateValue(data.acucares_gr), 'g');
+        document.getElementById('foodDetailSugarAdd').textContent = formatUnit(calculateValue(data.acucar_adicionado_gr), 'g');
+        document.getElementById('foodDetailGlycemicIndex').textContent = calculateValue(data.indice_glicemico);
+        document.getElementById('foodDetailGlycemicLoad').textContent = calculateValue(data.carga_glicemica);
+        document.getElementById('foodDetailCholesterol').textContent = formatUnit(calculateValue(data.colesterol_mg), 'mg');
+        document.getElementById('foodDetailCalcium').textContent = formatUnit(calculateValue(data.calcio_mg), 'mg');
+        document.getElementById('foodDetailIron').textContent = formatUnit(calculateValue(data.ferro_mg), 'mg');
+        document.getElementById('foodDetailPotassium').textContent = formatUnit(calculateValue(data.potassio_mg), 'mg');
+        document.getElementById('foodDetailMagnesium').textContent = formatUnit(calculateValue(data.magnesio_mg), 'mg');
+        document.getElementById('foodDetailZinc').textContent = formatUnit(calculateValue(data.zinco_mg), 'mg');
+        document.getElementById('foodDetailVitaminA').textContent = formatUnit(calculateValue(data.vitamina_a_mcg), 'mcg');
+        document.getElementById('foodDetailVitaminD').textContent = formatUnit(calculateValue(data.vitamina_d_mcg), 'mcg');
+        document.getElementById('foodDetailVitaminC').textContent = formatUnit(calculateValue(data.vitamina_c_mg), 'mg');
+        document.getElementById('foodDetailVitaminB12').textContent = formatUnit(calculateValue(data.vitamina_b12_mcg), 'mcg');
+        document.getElementById('foodDetailVitaminE').textContent = formatUnit(calculateValue(data.vitamina_e_mcg), 'mcg');
+        document.getElementById('foodDetailOmega3').textContent = formatUnit(calculateValue(data.omega_tres_mg), 'mg');
+        document.getElementById('foodDetailFolicAcid').textContent = formatUnit(calculateValue(data.acido_folico_mcg), 'mcg');
+        document.getElementById('foodDetailAlcohol').textContent = formatUnit(calculateValue(data.teor_alcoolico), '%');
+        document.getElementById('foodDetailAntioxidants').textContent = calculateValue(data.carga_antioxidante);
+        
+        // Calcular densidade calórica (kcal/g)
+        const caloricDensity = data.calorias_kcal ? (data.calorias_kcal / 100).toFixed(2) : '-';
+        document.getElementById('foodDetailCaloricDensity').textContent = 
+            caloricDensity === '-' ? '-' : `${caloricDensity} kcal/g`;
+    }
+
+    function setupDetailCollapsibles() {
+        document.querySelectorAll('#foodDetailModal .food-block-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const block = header.parentElement;
+                const content = block.querySelector('.food-block-content');
+                const toggleIcon = block.querySelector('.food-block-toggle');
+                
+                content.style.display = content.style.display === 'none' ? 'block' : 'none';
+                toggleIcon.textContent = content.style.display === 'none' ? '►' : '▼';
+            });
+        });
+    }
+
+    // Configurar evento de clique na tabela
+    foodTableBody.addEventListener('click', (e) => {
+        const row = e.target.closest('tr');
+        if (row && row.dataset.id) {
+            loadFoodDetails(row.dataset.id);
+        }
+    });
+
+    // Configurar botão fechar
+    document.getElementById('close-btD').addEventListener('click', function() {
+        document.getElementById('foodDetailModal').style.display = 'none';
+    });
+
+    // Configurar botão reportar erro (placeholder)
+    document.getElementById('rep-btD').addEventListener('click', function() {
+        alert('Funcionalidade de reportar erro será implementada em breve.');
+    });
+    //Fim Ajuste #23
+
     // Atualize o evento de fechar o modal (substitua o existente):
     closeButtons.forEach(btn => {
         btn.addEventListener('click', function() {
