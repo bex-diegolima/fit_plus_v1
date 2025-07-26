@@ -1124,22 +1124,22 @@ Fim Ajuste Manual #1*/
 }
 
 .save-btn {
-    background-color: #4CAF50; /* Verde */
+    background-color: #557de9; /* Verde */
     color: white;
 }
 
 .save-btn:hover {
-    background-color: #45a049; /* Verde mais escuro no hover */
+    background-color: #24449c; /* Verde mais escuro no hover */
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
 .close-btn {
-    background-color: #f44336; /* Vermelho */
+    background-color: #ce6861; /* Vermelho */
     color: white;
 }
 
 .close-btn:hover {
-    background-color: #d32f2f; /* Vermelho mais escuro no hover */
+    background-color: #ac2c2c; /* Vermelho mais escuro no hover */
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
