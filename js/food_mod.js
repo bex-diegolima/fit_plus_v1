@@ -17,6 +17,80 @@ document.addEventListener('DOMContentLoaded', function() {
     const welcomeMessage = document.getElementById('welcomeMessage');
     const userNameSpan = document.getElementById('userName');
 
+    //Ajuste #22
+    // ========== ELEMENTOS DE PESQUISA ==========
+    const foodSearchInput = document.querySelector('.food-search-input');
+    const paginationInfo = document.querySelector('.pagination-info');
+    const prevPageBtn = document.querySelector('.pagination-btn:first-child');
+    const nextPageBtn = document.querySelector('.pagination-btn:last-child');
+
+    // Variáveis de estado
+    let currentPage = 1;
+    const itemsPerPage = 10;
+    let searchResults = [];
+    //Fim Ajuste #22
+
+    //Ajuste #22
+    // Função para processar pesquisa
+    async function searchFoods(searchTerm) {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`https://fit-plus-backend.onrender.com/api/search-foods?term=${encodeURIComponent(searchTerm)}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (!response.ok) throw new Error('Erro na pesquisa');
+            
+            const data = await response.json();
+            searchResults = data;
+            currentPage = 1;
+            renderTable();
+        } catch (error) {
+            console.error('Erro na pesquisa:', error);
+            foodTableBody.innerHTML = '<tr class="empty-row"><td colspan="7">Erro ao carregar resultados</td></tr>';
+        }
+    }
+
+    function renderTable() {
+        if (searchResults.length === 0) {
+            foodTableBody.innerHTML = '<tr class="empty-row"><td colspan="7">Nenhum resultado encontrado</td></tr>';
+            paginationInfo.textContent = 'Página 0 de 0';
+            prevPageBtn.disabled = true;
+            nextPageBtn.disabled = true;
+            return;
+        }
+
+        const startIdx = (currentPage - 1) * itemsPerPage;
+        const paginatedItems = searchResults.slice(startIdx, startIdx + itemsPerPage);
+        const totalPages = Math.ceil(searchResults.length / itemsPerPage);
+
+        foodTableBody.innerHTML = paginatedItems.map(item => `
+            <tr data-id="${item.id}">
+                <td class="text-left">${item.item}</td>
+                <td class="text-left">${item.marca || '-'}</td>
+                <td class="text-left">${item.modo_preparo_nome}</td>
+                <td class="text-left">${item.grupo_alimentar_nome}</td>
+                <td class="text-center">${item.porcao_base}(${item.tipo_medida_nome})</td>
+                <td class="text-center">${item.calorias_kcal}</td>
+                <td class="food-status-icon">
+                    <img src="images/icn_${item.tipo_registro_alimento === 1 ? 'verificado' : 'alerta'}.png" 
+                        alt="${item.tipo_registro_alimento === 1 ? 'Verificado' : 'Alerta'}"
+                        title="${item.tipo_registro_alimento === 1 ? 
+                            'Informações nutricionais validadas por especialistas' : 
+                            'Informações nutricionais não verificadas por especialistas'}">
+                </td>
+            </tr>
+        `).join('');
+
+        paginationInfo.textContent = `Página ${currentPage} de ${totalPages}`;
+        prevPageBtn.disabled = currentPage === 1;
+        nextPageBtn.disabled = currentPage === totalPages;
+    }
+
+    //Fim Ajuste #22
+
     // ========== FUNÇÕES DO MENU ==========
     // Alternar visibilidade do menu
     menuButton.addEventListener('click', function(e) {
@@ -754,8 +828,42 @@ document.addEventListener('DOMContentLoaded', function() {
             }));
         }
 
+        //Ajuste #22
+        // Evento de pesquisa
+        foodSearchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && foodSearchInput.value.trim()) {
+                searchFoods(foodSearchInput.value.trim());
+            }
+        });
+
+        // Eventos de paginação
+        prevPageBtn.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+            }
+        });
+
+        nextPageBtn.addEventListener('click', () => {
+            if (currentPage * itemsPerPage < searchResults.length) {
+                currentPage++;
+                renderTable();
+            }
+        });
+
+        // Evento para abrir modal de detalhes
+        foodTableBody.addEventListener('click', (e) => {
+            const row = e.target.closest('tr');
+            if (row && row.dataset.id) {
+                const detailModal = document.getElementById('foodDetailModal');
+                detailModal.style.display = 'block';
+                // Aqui você pode implementar a lógica para carregar os detalhes
+            }
+        });
+        //Fim Ajuste #22
+
         loadSelectOptions();
-    //FIM ALTERAÇÕES DEEPSEEK
+        //FIM ALTERAÇÕES DEEPSEEK
 
         // ========== INICIALIZAÇÃO ==========
         loadUserData();

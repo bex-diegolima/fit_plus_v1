@@ -593,6 +593,46 @@ app.get('/api/get-options', async (req, res) => {
     }
 });
 
+//Ajuste #22
+// Rota de pesquisa
+app.get('/api/search-foods', authenticateToken, async (req, res) => {
+    try {
+        const { term } = req.query;
+        if (!term) return res.status(400).json([]);
+
+        // Processa termos de pesquisa
+        const searchTerms = term.toLowerCase().split(/\s+/)
+            .filter(word => word.length > 2 && !['de', 'da', 'do'].includes(word));
+
+        if (searchTerms.length === 0) return res.json([]);
+
+        // Consulta SQL
+        const query = `
+            SELECT f.*, 
+                   mp.nome as modo_preparo_nome,
+                   ga.nome as grupo_alimentar_nome,
+                   tm.nome as tipo_medida_nome,
+                   COUNT(*) OVER() as total_count
+            FROM tbl_foods f
+            LEFT JOIN tbl_aux_modo_preparo mp ON f.modo_preparo = mp.id
+            LEFT JOIN tbl_aux_grupo_alimentar ga ON f.grupo_alimentar = ga.id
+            LEFT JOIN tbl_aux_tipo_medida tm ON f.tipo_medida_alimento = tm.id
+            WHERE ${searchTerms.map((_, i) => `f.key_words LIKE $${i + 1}`).join(' OR ')}
+            ORDER BY 
+                ${searchTerms.map((_, i) => `CASE WHEN f.key_words LIKE $${i + 1} THEN 1 ELSE 0 END`).join(' + ')} DESC,
+                f.item ASC
+        `;
+
+        const values = searchTerms.map(term => `%${term}%`);
+        const result = await pool.query(query, values);
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Erro na pesquisa:', error);
+        res.status(500).json({ error: 'Erro interno' });
+    }
+});
+//Fim Ajuste #22
+
 //FIM ALTERAÇÕES DEEPSEEK
 
 app.listen(PORT, async () => {
