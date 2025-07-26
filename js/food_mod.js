@@ -606,11 +606,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const result = await response.json();
 
-                //Ajuste #21
+                //Ajuste #21.1
+                //Ajuste #21 - Bloco unificado
                 if (result.success) {
                     alert('Alimento salvo com sucesso!');
                     foodAddModal.style.display = 'none';
                     clearModalFields();
+                    foodAddModal.scrollTop = 0; // Ajuste #9
+                    const modalContent = foodAddModal.querySelector('.food-modal-content');
+                    if (modalContent) modalContent.scrollTop = 0; // Ajuste #9
                 } else {
                     // Exibe a mensagem do servidor SEM lançar erro
                     alert(result.message || 'Erro ao salvar');
@@ -619,31 +623,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 //Fim Ajuste #21
 
-                if (result.success) {
-                    alert('Alimento salvo com sucesso!');
-                    foodAddModal.style.display = 'none';
+                //if (result.success) {
+                    //alert('Alimento salvo com sucesso!');
+                    //foodAddModal.style.display = 'none';
                     //Ajuste #9
-                    clearModalFields();
-                    foodAddModal.scrollTop = 0;
-                    const modalContent = foodAddModal.querySelector('.food-modal-content');
-                    if (modalContent) modalContent.scrollTop = 0;
+                    //clearModalFields();
+                    //foodAddModal.scrollTop = 0;
+                    //const modalContent = foodAddModal.querySelector('.food-modal-content');
+                    //if (modalContent) modalContent.scrollTop = 0;
                     //Fim Ajuste #9
-                } else {
-                    throw new Error(result.message || 'Erro ao salvar');
-                }
+                //} else {
+                    //throw new Error(result.message || 'Erro ao salvar');
+                //}
+
+                //Fim Ajuste #21.1
+
+
             } catch (error) {
-                // Verificar se response existe para evitar erro
-                if (error instanceof TypeError) {
-                    // Erro de rede ou CORS provavelmente
-                    console.error('Erro de rede ou CORS:', error);
-                } else {
-                    console.error('Erro inesperado:', error);
+                    // Verificar se response existe para evitar erro
+                    if (error instanceof TypeError) {
+                        // Erro de rede ou CORS provavelmente
+                        console.error('Erro de rede ou CORS:', error);
+                    } else {
+                        console.error('Erro inesperado:', error);
+                    }
+                    alert('Erro ao conectar com o servidor. Verifique o console (F12)');
+                    //Ajuste #10
+                    document.getElementById('foodModalLoader').style.display = 'none';
+                    //Fim Ajuste #10
                 }
-                alert('Erro ao conectar com o servidor. Verifique o console (F12)');
-                //Ajuste #10
-                document.getElementById('foodModalLoader').style.display = 'none';
-                //Fim Ajuste #10
-            }
                 //Ajuste #10
                 finally {
                     // Ocultar loader em qualquer caso
