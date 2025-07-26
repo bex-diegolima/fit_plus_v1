@@ -16,7 +16,12 @@ const app = express();  // DECLARE APP ANTES de usar app.use()
 
 //Ajuste #18
 // Configura o timezone padrão para América/São Paulo
-await pool.query("SET TIME ZONE 'America/Sao_Paulo';");
+const pool = new Pool({
+connectionString: process.env.DATABASE_URL,
+// Adicione esta configuração:
+connectionTimeoutMillis: 5000,
+idleTimeoutMillis: 30000,
+});
 //Fim Ajuste #18
 
 // AJUSTES DEEPSEEK
@@ -29,6 +34,21 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+//Ajuste #18.1
+// Adicione este middleware ANTES das rotas:
+app.use(async (req, res, next) => {
+  try {
+    const client = await pool.connect();
+    await client.query("SET TIME ZONE 'America/Sao_Paulo'");
+    client.release();
+    next();
+  } catch (err) {
+    console.error('Erro ao configurar timezone:', err);
+    next();
+  }
+});
+//Fim Ajuste #18.1
 
 // Adicione também para lidar com requisições OPTIONS
 app.options('*', cors(corsOptions));
@@ -311,6 +331,17 @@ app.get('/api/get-user-data', async (req, res) => {
         res.status(500).json({ success: false, message: 'Erro no servidor' });
     }
 });
+
+//Ajuste #18.1
+app.get('/health', async (req, res) => {
+  try {
+    await pool.query('SELECT 1');
+    res.status(200).send('OK');
+  } catch (err) {
+    res.status(500).send('Database connection failed');
+  }
+});
+//Fim Ajuste #18.1
 
 app.post('/api/upload-profile-pic', upload.single('profilePic'), async (req, res) => {
     try {
