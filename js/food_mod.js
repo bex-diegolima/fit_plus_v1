@@ -611,16 +611,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     alert('Alimento salvo com sucesso!');
                     foodAddModal.style.display = 'none';
                     clearModalFields();
-                    foodAddModal.scrollTop = 0;
-                    const modalContent = foodAddModal.querySelector('.food-modal-content');
-                    if (modalContent) modalContent.scrollTop = 0;
                 } else {
-                    // Tratamento específico para duplicatas
-                    if (result.message && result.message.includes('já está cadastrado')) {
-                        alert(result.message);
-                    } else {
-                        alert('Erro ao salvar: ' + (result.message || 'Erro desconhecido'));
-                    }
+                    // Exibe a mensagem do servidor SEM lançar erro
+                    alert(result.message || 'Erro ao salvar');
+                    document.getElementById('foodModalLoader').style.display = 'none'; // Oculta loader
+                    return; // Interrompe o fluxo sem tratar como erro
                 }
                 //Fim Ajuste #21
 

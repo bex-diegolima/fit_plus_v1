@@ -426,7 +426,7 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
 
         if (isDuplicate) {
             await client.query('ROLLBACK');
-            return res.status(400).json({
+            return res.status(200).json({  // ✅ Status 200 para evitar trigger de erro no front
                 success: false,
                 message: 'Este alimento já está cadastrado com os mesmos dados básicos.'
             });
