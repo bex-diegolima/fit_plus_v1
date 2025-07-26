@@ -607,12 +607,20 @@ app.get('/api/search-foods', authenticateToken, async (req, res) => {
         if (searchTerms.length === 0) return res.json([]);
 
         // Consulta SQL
+    //Inicio Ajuste #21
         const query = `
-            SELECT f.*, 
-                   mp.nome as modo_preparo_nome,
-                   ga.nome as grupo_alimentar_nome,
-                   tm.nome as tipo_medida_nome,
-                   COUNT(*) OVER() as total_count
+            SELECT 
+                f.id,
+                f.item,
+                f.marca,
+                f.modo_preparo,
+                f.porcao_base,
+                f.calorias_kcal,
+                f.tipo_medida_alimento,
+                f.tipo_registro_alimento,
+                mp.nome as modo_preparo_nome,
+                ga.nome as grupo_alimentar_nome,
+                tm.nome as tipo_medida_nome
             FROM tbl_foods f
             LEFT JOIN tbl_aux_modo_preparo mp ON f.modo_preparo = mp.id
             LEFT JOIN tbl_aux_grupo_alimentar ga ON f.grupo_alimentar = ga.id
@@ -630,6 +638,7 @@ app.get('/api/search-foods', authenticateToken, async (req, res) => {
         console.error('Erro na pesquisa:', error);
         res.status(500).json({ error: 'Erro interno' });
     }
+    //Fim Ajuste #22.1
 });
 //Fim Ajuste #22
 
