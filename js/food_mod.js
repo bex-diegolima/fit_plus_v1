@@ -381,8 +381,17 @@ document.addEventListener('DOMContentLoaded', function() {
     //Ajuste #23
     //FUNÇÕES DETALHES
     // Adicionar após as outras funções
+    //Ajuste #23.1
     async function loadFoodDetails(foodId) {
+        const modal = document.getElementById('foodDetailModal');
+        const loader = document.getElementById('foodDetailLoader');
+        
         try {
+            // Mostrar loader e esconder conteúdo
+            modal.style.display = 'block';
+            loader.style.display = 'flex';
+            document.querySelector('.food-modal-content > .food-block').style.display = 'none';
+            
             const token = localStorage.getItem('token');
             const response = await fetch(`https://fit-plus-backend.onrender.com/api/food-details?id=${foodId}`, {
                 headers: {
@@ -393,12 +402,20 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!response.ok) throw new Error('Erro ao carregar detalhes');
             
             const foodData = await response.json();
+            
+            // Esconder loader e mostrar conteúdo
+            loader.style.display = 'none';
+            document.querySelector('.food-modal-content > .food-block').style.display = 'block';
             populateFoodDetails(foodData);
+            
         } catch (error) {
             console.error('Erro:', error);
+            loader.style.display = 'none';
             alert('Erro ao carregar detalhes do alimento');
+            modal.style.display = 'none';
         }
     }
+    //Fim Ajuste #23.1
 
     function populateFoodDetails(data) {
         // Alerta de verificação
@@ -443,13 +460,26 @@ document.addEventListener('DOMContentLoaded', function() {
             allergensAlert.style.display = 'none';
         }
         
+        //Ajuste #23.1
         // Imagem do alimento
+        // Substituir a parte de carregamento da imagem por:
         const foodImage = document.getElementById('foodDetailImage');
         if (data.img_registro) {
-            foodImage.src = `data:image/jpeg;base64,${data.img_registro}`;
+            // Verificar se já tem o prefixo data:image
+            if (data.img_registro.startsWith('data:image')) {
+                foodImage.src = data.img_registro;
+            } else {
+                foodImage.src = `data:image/jpeg;base64,${data.img_registro}`;
+            }
+            foodImage.alt = data.item; // Usar o nome do alimento como alt
+            foodImage.onerror = function() {
+                this.src = 'images/default-food.png';
+            };
         } else {
             foodImage.src = 'images/default-food.png';
+            foodImage.alt = 'Imagem não disponível';
         }
+        //Fim Ajuste #23.1
         
         // Nome do alimento
         document.getElementById('foodDetailName').textContent = data.item;
@@ -539,18 +569,23 @@ document.addEventListener('DOMContentLoaded', function() {
             caloricDensity === '-' ? '-' : `${caloricDensity} kcal/g`;
     }
 
+    //Ajuste #23.1
     function setupDetailCollapsibles() {
         document.querySelectorAll('#foodDetailModal .food-block-header').forEach(header => {
+            // Fechar todos os blocos inicialmente
+            const content = header.nextElementSibling;
+            content.style.display = 'none';
+            header.querySelector('.food-block-toggle').textContent = '►';
+            
             header.addEventListener('click', () => {
-                const block = header.parentElement;
-                const content = block.querySelector('.food-block-content');
-                const toggleIcon = block.querySelector('.food-block-toggle');
-                
-                content.style.display = content.style.display === 'none' ? 'block' : 'none';
-                toggleIcon.textContent = content.style.display === 'none' ? '►' : '▼';
+                const content = header.nextElementSibling;
+                const isHidden = content.style.display === 'none';
+                content.style.display = isHidden ? 'block' : 'none';
+                header.querySelector('.food-block-toggle').textContent = isHidden ? '▼' : '►';
             });
         });
     }
+    //Fim Ajuste #23.1
 
     // Configurar evento de clique na tabela
     foodTableBody.addEventListener('click', (e) => {
@@ -562,7 +597,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Configurar botão fechar
     document.getElementById('close-btD').addEventListener('click', function() {
+        //Ajuste #23.1
+        // Resetar a porção base para 100
+        document.getElementById('foodDetailBasePortion').value = '100.00';
+        
+        // Fechar o modal
         document.getElementById('foodDetailModal').style.display = 'none';
+        
+        // Fechar todos os blocos
+        document.querySelectorAll('#foodDetailModal .food-block-content').forEach(content => {
+            content.style.display = 'none';
+        });
+        document.querySelectorAll('#foodDetailModal .food-block-toggle').forEach(toggle => {
+            toggle.textContent = '►';
+        });
+        //Fim Ajuste #23.1
     });
 
     // Configurar botão reportar erro (placeholder)

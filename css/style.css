@@ -1313,3 +1313,32 @@ Fim Ajuste Manual #1*/
     transition: all 0.3s ease;
 }
 /*Fim Ajuste #23*/
+
+/*Ajuste #23.1*/
+.food-modal-loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.food-modal-loader .loader-content {
+    text-align: center;
+}
+
+.food-modal-loader .loader-content i {
+    color: #3498db;
+    margin-bottom: 15px;
+}
+
+.food-modal-loader .loader-content p {
+    color: #2c3e50;
+    font-weight: 600;
+}
+/*Fim Ajuste #23.1*/
