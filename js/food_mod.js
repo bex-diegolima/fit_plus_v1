@@ -706,8 +706,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     option.textContent = opt.nome;
                     select.appendChild(option);
             });
-                
             }
+
+            console.log('Horário enviado:', new Date().toLocaleString('pt-BR', {
+                timeZone: 'America/Sao_Paulo'
+            }));
         }
 
         loadSelectOptions();

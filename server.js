@@ -14,6 +14,11 @@ const SECRET_KEY = 'Cruciatu$145'; // apenas para testes
 
 const app = express();  // DECLARE APP ANTES de usar app.use()
 
+//Ajuste #18
+// Configura o timezone padrão para América/São Paulo
+await pool.query("SET TIME ZONE 'America/Sao_Paulo';");
+//Fim Ajuste #18
+
 // AJUSTES DEEPSEEK
 
 const corsOptions = {
