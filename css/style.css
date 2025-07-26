@@ -653,9 +653,18 @@ body {
 }
 
 .food-status-icon {
+    /*Ajuste #22*/
+    width: 24px; /* Tamanho reduzido */
+    /*Fim Ajuste #22*/
     text-align: center;
-    width: 40px;
 }
+
+/*Ajuste #22*/
+.food-status-icon img {
+    width: 20px; /* Tamanho do ícone */
+    height: 20px;
+}
+/*Fim Ajuste #22*/
 
 .status-icon {
     width: 20px;
