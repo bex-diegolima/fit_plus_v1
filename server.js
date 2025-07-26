@@ -392,6 +392,13 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
 
         const userId = req.user.userId;
 
+        //Ajuste #18
+        // Validação no backend (garante que porcao_base >= 1 mesmo se o frontend falhar)
+        if (parseFloat(req.body.base_portion_original) < 1) {
+            throw new Error('Porção base inválida (deve ser >= 1)');
+        }
+        //Fim Ajuste #18
+
         //Inicio DeepSeek #3
         // 2. Converta a imagem de base64 para Buffer (se existir)
         const imageBuffer = req.body.img_registro 

@@ -333,6 +333,17 @@ document.addEventListener('DOMContentLoaded', function() {
             const selectedAllergens = Array.from(document.getElementById('foodAllergs3').selectedOptions)
                     .map(opt => opt.value);
             //Fim ajuste #16.1
+
+            //Ajuste #18
+            // Validação da porção base (deve ser >= 1)
+            const basePortion = parseFloat(document.getElementById('foodBasePortion').value);
+            if (basePortion < 1) {
+                alert('A porção base deve ser maior ou igual a 1!');
+                document.getElementById('foodModalLoader').style.display = 'none'; // Remove loader se houver erro
+                return; // Interrompe o processo
+            }
+            //Fim Ajuste #18
+
             // Coletar dados do formulário
             const formData = {
                 // Bloco 1
