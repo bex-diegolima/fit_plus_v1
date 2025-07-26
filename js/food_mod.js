@@ -560,14 +560,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             //Fim Alterações GPT
 
+            //Ajuste #20
             // Validar campos obrigatórios
-            //Ajuste #16 - retirado o marca
-            if (!formData.item || !formData.modo_preparo || !formData.grupo_alimentar || !formData.calorias_kcal || !formData.proteina_gr || !formData.carbo_gr || !formData.gorduras_totais_gr) {
-                alert('Preencha todos os campos obrigatórios!');
-                document.getElementById('foodModalLoader').style.display = 'none';
-                return;
+            //if (!formData.item || !formData.modo_preparo || !formData.grupo_alimentar || !formData.calorias_kcal || !formData.proteina_gr || !formData.carbo_gr || !formData.gorduras_totais_gr) {
+                //alert('Preencha todos os campos obrigatórios!');
+                //document.getElementById('foodModalLoader').style.display = 'none';
+                //return;
+            //}
+
+            const requiredFields = {
+                item: formData.item,
+                modo_preparo: formData.modo_preparo,
+                grupo_alimentar: formData.grupo_alimentar,
+                calorias_kcal: formData.calorias_kcal,
+                proteina_gr: formData.proteina_gr,
+                carbo_gr: formData.carbo_gr,
+                gorduras_totais_gr: formData.gorduras_totais_gr
+            };
+
+            for (const [field, value] of Object.entries(requiredFields)) {
+                if (value === undefined || value === null || value === '') {
+                    alert(`O campo ${field.replace('_', ' ')} é obrigatório!`);
+                    document.getElementById('foodModalLoader').style.display = 'none';
+                    return;
+                }
             }
-            //Fim Ajuste #16 - retirado o marca
+
+            //Fim Ajuste #20
+
 
             // Enviar para o servidor
 
