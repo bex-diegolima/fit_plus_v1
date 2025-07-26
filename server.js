@@ -565,6 +565,9 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
+        //Ajuste #22.2
+        await client.query('ROLLBACK'); // Reverte em caso de erro
+        //Fim Ajuste #22.2
         console.error('Erro interno:', error);
         res.status(500).json({  // Garanta que retorna JSON mesmo em erros
             success: false,
@@ -650,7 +653,19 @@ app.listen(PORT, async () => {
     try {
         const result = await pool.query('SELECT 1+1 AS result');
         console.log('✅ Conexão com o banco de dados OK:', result.rows[0].result === 2 ? 'Sucesso' : 'Erro');
+    //Ajuste #22.2
+    try{
+        const maxIdResult = await pool.query('SELECT MAX(id) FROM tbl_foods');
+        const maxId = maxIdResult.rows[0].max || 0;
+        await pool.query(`SELECT setval('tbl_foods_id_seq', ${maxId + 1}, true)`);
+        console.log(`✅ Sequence ajustada para: ${maxId + 1}`);
+    } catch (seqError) {
+        console.error('⚠️ Aviso: Não foi possível ajustar a sequence:', seqError.message);
+            // Não encerra o servidor pois pode ser apenas um aviso
+    }
+    //Fim Ajuste #22.2
     } catch (error) {
-        console.error('❌ Falha na conexão com o banco:', error);
+        console.error('❌ Erro crítico na inicialização:', error);
+        process.exit(1); // Encerra o servidor se não conseguir conectar ao banco
     }
 });
