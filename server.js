@@ -379,6 +379,28 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
+//Ajuste #21
+// Função para verificar duplicatas
+async function checkDuplicateFood(item, marca, modo_preparo, calorias_kcal, userId) {
+    const client = await pool.connect();
+    try {
+        const query = `
+            SELECT id FROM tbl_foods 
+            WHERE item = $1 
+            AND marca = $2 
+            AND modo_preparo = $3 
+            AND calorias_kcal = $4 
+            AND user_registro = $5
+        `;
+        const values = [item, marca, modo_preparo, calorias_kcal, userId];
+        const result = await client.query(query, values);
+        return result.rows.length > 0;
+    } finally {
+        client.release();
+    }
+}
+//Fim Ajuste #21
+
 // Rota para salvar alimento (atualizada)
 app.post('/api/save-food', authenticateToken, async (req, res) => {
     const client = await pool.connect();
@@ -391,6 +413,25 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
         }
 
         const userId = req.user.userId;
+
+        //Ajuste #21
+        // Verificar duplicata
+        const isDuplicate = await checkDuplicateFood(
+            req.body.item,
+            req.body.marca || '', // Garante que marca vazia seja tratada como NULL no banco
+            req.body.modo_preparo,
+            req.body.calorias_kcal,
+            req.user.userId
+        );
+
+        if (isDuplicate) {
+            await client.query('ROLLBACK');
+            return res.status(400).json({
+                success: false,
+                message: 'Este alimento já está cadastrado com os mesmos dados básicos.'
+            });
+        }
+        //Fim Ajuste #21
 
         //Ajuste #18
         // Validação no backend (garante que porcao_base >= 1 mesmo se o frontend falhar)

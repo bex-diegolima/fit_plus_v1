@@ -606,6 +606,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const result = await response.json();
 
+                //Ajuste #21
+                if (result.success) {
+                    alert('Alimento salvo com sucesso!');
+                    foodAddModal.style.display = 'none';
+                    clearModalFields();
+                    foodAddModal.scrollTop = 0;
+                    const modalContent = foodAddModal.querySelector('.food-modal-content');
+                    if (modalContent) modalContent.scrollTop = 0;
+                } else {
+                    // Tratamento específico para duplicatas
+                    if (result.message && result.message.includes('já está cadastrado')) {
+                        alert(result.message);
+                    } else {
+                        alert('Erro ao salvar: ' + (result.message || 'Erro desconhecido'));
+                    }
+                }
+                //Fim Ajuste #21
+
                 if (result.success) {
                     alert('Alimento salvo com sucesso!');
                     foodAddModal.style.display = 'none';
