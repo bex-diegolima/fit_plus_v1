@@ -643,10 +643,13 @@ body {
     vertical-align: middle;
 }
 
+/*Ajuste #22.1*/
 .food-table tr:hover {
-    background-color: #f5f5f5;
+    background-color: #f0f7ff !important; /* Azul bem clarinho */
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
+/*Ajuste #22.1*/
 
 .text-center {
     text-align: center;
@@ -1158,3 +1161,17 @@ Fim Ajuste Manual #1*/
     margin-left: auto; /* Empurra os botões para a direita */
 }
 /*Fim Ajuste Manual #1*/
+
+/*Ajuste #22.1*/
+.search-loader {
+    text-align: center;
+    padding: 15px;
+    color: #59798f;
+    font-style: italic;
+    background-color: #f8f9fa;
+}
+
+.loader-row {
+    background-color: #f8f9fa !important;
+}
+/*Fim Ajuste #22.1*/

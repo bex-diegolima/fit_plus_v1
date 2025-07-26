@@ -33,6 +33,16 @@ document.addEventListener('DOMContentLoaded', function() {
     //Ajuste #22
     // Função para processar pesquisa
     async function searchFoods(searchTerm) {
+
+        //Ajuste #22.1
+        // Mostrar loader
+        const loaderRow = document.createElement('tr');
+        loaderRow.className = 'loader-row';
+        loaderRow.innerHTML = `<td colspan="7" class="search-loader">Buscando...</td>`;
+        foodTableBody.innerHTML = '';
+        foodTableBody.appendChild(loaderRow);
+        //Fim Ajuste #22.1
+
         try {
             const token = localStorage.getItem('token');
             const response = await fetch(`https://fit-plus-backend.onrender.com/api/search-foods?term=${encodeURIComponent(searchTerm)}`, {
