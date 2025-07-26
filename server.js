@@ -428,6 +428,7 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
 
         console.log('alergicosArray processado:', alergicosArray); // Para depuração
         //Fim Ajuste #16.1
+        //Ajuste #19 - Antigo NOW()
         const query = `
             INSERT INTO tbl_foods (
                 item, marca, modo_preparo, grupo_alimentar, porcao_base,
@@ -444,11 +445,12 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
                 $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
                 $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
                 $21, $22, $23, $24, $25, $26, $27, $28, $29, $30,
-                $31, $32, $33, $34, $35, $36, $37, $38, NOW(),
-                NOW(), $39, $40, $41, $42, $43
+                $31, $32, $33, $34, $35, $36, $37, $38, (timezone('America/Sao_Paulo', now())),
+                (timezone('America/Sao_Paulo', now())), $39, $40, $41, $42, $43
             )
             RETURNING id
         `;
+        //Fim Ajuste #19 - Antigo NOW()
         // 4. Valores para a query
         const values = [
             // Dados básicoss
