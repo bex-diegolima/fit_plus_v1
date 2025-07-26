@@ -1175,3 +1175,36 @@ Fim Ajuste Manual #1*/
     background-color: #f8f9fa !important;
 }
 /*Fim Ajuste #22.1*/
+
+/*Ajuste Manual #2*/
+.rep-btnD, .close-btnD {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+    flex-shrink: 0; /* Impede que os botões diminuam */
+}
+
+.rep-btnD {
+    background-color: #c4a950; /* Verde */
+    color: black
+}
+
+.rep-btnD:hover {
+    background-color: #df9638; /* Verde mais escuro no hover */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.close-btnD {
+    background-color: #ce6861; /* Vermelho */
+    color: white;
+}
+
+.close-btnD:hover {
+    background-color: #ac2c2c; /* Vermelho mais escuro no hover */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+/*Fim Ajuste Manual #2*/
