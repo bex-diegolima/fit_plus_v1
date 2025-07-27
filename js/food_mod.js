@@ -411,7 +411,9 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('Erro:', error);
             loader.style.display = 'none';
-            alert('Erro ao carregar detalhes do alimento');
+            document.querySelector('.food-modal-content > .food-block').style.display = 'block';
+            alert('Erro ao carregar detalhes do alimento: ' + error.message);
+            return;
             //Ajuste #23.2
             //modal.style.display = 'none';
             //Fim Ajuste #23.2

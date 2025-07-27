@@ -649,12 +649,10 @@ app.get('/api/search-foods', authenticateToken, async (req, res) => {
 // Adicionar após as outras rotas
 app.get('/api/food-details', authenticateToken, async (req, res) => {
     try {
-        //Ajuste #23.2
-        const token = req.headers['authorization']?.split(' ')[1];
-        if (!token) return res.status(401).json({ error: 'Token não fornecido' });
-        //Fim Ajuste #23.2
         const { id } = req.query;
         if (!id) return res.status(400).json({ error: 'ID do alimento não fornecido' });
+
+        console.log('Buscando detalhes para alimento ID:', id); // Log para debug
 
         const query = `
             SELECT 
@@ -699,10 +697,14 @@ app.get('/api/food-details', authenticateToken, async (req, res) => {
             }
         }
 
+        console.log('Dados retornados:', JSON.stringify(foodData, null, 2)); // Log para debug
         res.json(foodData);
     } catch (error) {
         console.error('Erro ao buscar detalhes:', error);
-        res.status(500).json({ error: 'Erro interno no servidor' });
+        res.status(500).json({ 
+            error: 'Erro interno no servidor',
+            details: error.message 
+        });
     }
 });
 //Fim Ajuste #23
