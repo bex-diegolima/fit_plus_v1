@@ -577,6 +577,9 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         
         // Bloco 1
+        //Ajuste Manual #3
+        document.getElementById('foodDetailBrand').textContent = data.marca || '-';
+        //Fim Ajuste Manual #3
         document.getElementById('foodDetailPreparation').textContent = data.modo_preparo_nome || '-';
         document.getElementById('foodDetailCalories').textContent = formatUnit(calculateValue(data.calorias_kcal), 'kcal');
         document.getElementById('foodDetailProteins').textContent = formatUnit(calculateValue(data.proteina_gr), 'g');
@@ -623,7 +626,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Garantir estado inicial
             content.style.display = 'block';
-            toggleIcon.textContent = '▼';
+            toggleIcon.textContent = '▾';
             
             // Remover event listeners anteriores para evitar duplicação
             const newHeader = header.cloneNode(true);
@@ -633,7 +636,9 @@ document.addEventListener('DOMContentLoaded', function() {
             newHeader.addEventListener('click', () => {
                 const isHidden = content.style.display === 'none';
                 content.style.display = isHidden ? 'block' : 'none';
-                toggleIcon.textContent = isHidden ? '▼' : '►';
+                if (toggleIcon) {
+                toggleIcon.textContent = isHidden ? '▾' : '▸';
+                }
             });
         });
     }
