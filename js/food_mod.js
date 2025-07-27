@@ -387,9 +387,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const modal = document.getElementById('foodDetailModal');
         const loader = document.getElementById('foodDetailLoader');
         
-        // Resetar estado antes de carregar
-        detailModal.scrollTop = 0;
-        const modalContent = detailModal.querySelector('.food-modal-content');
+        // Resetar estado antes de carregar - usar a variável 'modal' que acabamos de declarar
+        modal.scrollTop = 0;
+        const modalContent = modal.querySelector('.food-modal-content');
         if (modalContent) modalContent.scrollTop = 0;
         
         // Garantir que todos os blocos estarão abertos
@@ -421,9 +421,6 @@ document.addEventListener('DOMContentLoaded', function() {
             loader.style.display = 'none';
             document.querySelector('.food-modal-content > .food-block').style.display = 'block';
             populateFoodDetails(foodData);
-
-            // Configurar colapsáveis APÓS carregar os dados
-            setupDetailCollapsibles();
             
         } catch (error) {
             console.error('Erro:', error);
@@ -431,9 +428,6 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.style.display = 'none';
             alert('Erro ao carregar detalhes do alimento: ' + error.message);
             return;
-            //Ajuste #23.2
-            //modal.style.display = 'none';
-            //Fim Ajuste #23.2
         }
     }
     //Fim Validar #1
@@ -600,14 +594,18 @@ document.addEventListener('DOMContentLoaded', function() {
     //Ajuste #23.1
     function setupDetailCollapsibles() {
         document.querySelectorAll('#foodDetailModal .food-block-header').forEach(header => {
-            // Garantir que o bloco está aberto inicialmente
             const content = header.nextElementSibling;
             const toggleIcon = header.querySelector('.food-block-toggle');
-
+            
+            // Garantir estado inicial
+            content.style.display = 'block';
+            toggleIcon.textContent = '▼';
+            
             // Remover event listeners anteriores para evitar duplicação
-            header.replaceWith(header.cloneNode(true));
-            const newHeader = header.parentElement.querySelector('.food-block-header');
-
+            const newHeader = header.cloneNode(true);
+            header.replaceWith(newHeader);
+            
+            // Adicionar novo event listener
             newHeader.addEventListener('click', () => {
                 const isHidden = content.style.display === 'none';
                 content.style.display = isHidden ? 'block' : 'none';
