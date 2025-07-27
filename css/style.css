@@ -833,6 +833,7 @@ Fim Ajuste Manual #1*/
   border: 1px solid #ddd;
   border-radius: 5px;
   overflow: hidden;
+  background: white;
 }
 
 .food-block-header {
@@ -842,6 +843,12 @@ Fim Ajuste Manual #1*/
   padding: 12px 15px;
   background-color: #f8f9fa;
   cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid #ddd;
+}
+
+.food-block-header:hover {
+    background-color: #e9ecef;
 }
 
 .food-block-header h3 {
@@ -858,6 +865,8 @@ Fim Ajuste Manual #1*/
 .food-block-content {
   padding: 15px;
   background-color: #fff;
+  transition: all 0.3s ease;
+  overflow: hidden;
 }
 
 /* Campos do formulário */
@@ -1302,16 +1311,6 @@ Fim Ajuste Manual #1*/
     color: #7f8c8d;
     font-size: 14px;
 }
-
-/* Estilos para os blocos colapsáveis */
-.food-block-header {
-    cursor: pointer;
-    user-select: none;
-}
-
-.food-block-content {
-    transition: all 0.3s ease;
-}
 /*Fim Ajuste #23*/
 
 .food-modal-loader .loader-content {
@@ -1328,3 +1327,17 @@ Fim Ajuste Manual #1*/
     font-weight: 600;
 }
 /*Fim Ajuste #23.1*/
+
+/* Garante que os blocos estejam abertos inicialmente */
+#foodDetailModal .food-block-content {
+    display: block !important;
+}
+
+/* Classe para controle via JS */
+.food-block-content.collapsed {
+    display: none;
+}
+
+.food-block-toggle.collapsed {
+    transform: rotate(-90deg);
+}

@@ -581,10 +581,10 @@ document.addEventListener('DOMContentLoaded', function() {
     //Ajuste #23.1
     function setupDetailCollapsibles() {
         document.querySelectorAll('#foodDetailModal .food-block-header').forEach(header => {
-            // Fechar todos os blocos inicialmente
+            // Abrir todos os blocos inicialmente
             const content = header.nextElementSibling;
-            content.style.display = 'none';
-            header.querySelector('.food-block-toggle').textContent = '►';
+            content.style.display = 'block';
+            header.querySelector('.food-block-toggle').textContent = '▼';
             
             header.addEventListener('click', () => {
                 const content = header.nextElementSibling;
@@ -594,6 +594,22 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    // Adicionar após a função setupDetailCollapsibles()
+    document.querySelectorAll('#foodDetailModal .food-block-header').forEach(header => {
+        header.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            const toggleIcon = this.querySelector('.food-block-toggle');
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                toggleIcon.textContent = '▼';
+            } else {
+                content.style.display = 'none';
+                toggleIcon.textContent = '►';
+            }
+        });
+    });
     //Fim Ajuste #23.1
 
     // Configurar evento de clique na tabela
