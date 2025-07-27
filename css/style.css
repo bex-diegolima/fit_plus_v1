@@ -1339,7 +1339,3 @@ Fim Ajuste Manual #1*/
 .food-block-toggle.collapsed {
     transform: rotate(-90deg);
 }
-
-.food-block-toggle.rotated {
-    transform: rotate(-90deg);
-}
