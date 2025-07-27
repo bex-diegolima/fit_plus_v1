@@ -384,13 +384,22 @@ document.addEventListener('DOMContentLoaded', function() {
     //Ajuste #23.1
     //Validar #1
     async function loadFoodDetails(foodId) {
-        detailModal.scrollTop = 0;
-        const modalContent = detailModal.querySelector('.food-modal-content');
-        if (modalContent) modalContent.scrollTop = 0;
-
         const modal = document.getElementById('foodDetailModal');
         const loader = document.getElementById('foodDetailLoader');
         
+        // Resetar estado antes de carregar
+        detailModal.scrollTop = 0;
+        const modalContent = detailModal.querySelector('.food-modal-content');
+        if (modalContent) modalContent.scrollTop = 0;
+        
+        // Garantir que todos os blocos estarão abertos
+        document.querySelectorAll('#foodDetailModal .food-block-content').forEach(content => {
+            content.style.display = 'block';
+        });
+        document.querySelectorAll('#foodDetailModal .food-block-toggle').forEach(toggle => {
+            toggle.textContent = '▼';
+        });
+
         try {
             // Mostrar loader e esconder conteúdo
             modal.style.display = 'block';
@@ -412,6 +421,8 @@ document.addEventListener('DOMContentLoaded', function() {
             loader.style.display = 'none';
             document.querySelector('.food-modal-content > .food-block').style.display = 'block';
             populateFoodDetails(foodData);
+
+            // Configurar colapsáveis APÓS carregar os dados
             setupDetailCollapsibles();
             
         } catch (error) {
@@ -589,21 +600,21 @@ document.addEventListener('DOMContentLoaded', function() {
     //Ajuste #23.1
     function setupDetailCollapsibles() {
         document.querySelectorAll('#foodDetailModal .food-block-header').forEach(header => {
-            // Abrir todos os blocos inicialmente
+            // Garantir que o bloco está aberto inicialmente
             const content = header.nextElementSibling;
             const toggleIcon = header.querySelector('.food-block-toggle');
-            content.style.display = 'block';
-            toggleIcon.textContent = '▼';
-            header.addEventListener('click', () => {
+
+            // Remover event listeners anteriores para evitar duplicação
+            header.replaceWith(header.cloneNode(true));
+            const newHeader = header.parentElement.querySelector('.food-block-header');
+
+            newHeader.addEventListener('click', () => {
                 const isHidden = content.style.display === 'none';
                 content.style.display = isHidden ? 'block' : 'none';
                 toggleIcon.textContent = isHidden ? '▼' : '►';
             });
         });
     }
-
-    // Configurar colapsáveis
-    setupDetailCollapsibles();
     //Fim Validar #1
     //Fim Ajuste #23.1
 
@@ -619,15 +630,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Configurar botão fechar
     document.getElementById('close-btD').addEventListener('click', function() {
         const detailModal = document.getElementById('foodDetailModal');
-        // Resetar a porção base para 100
+        
+        // Resetar valores
         document.getElementById('foodDetailBasePortion').value = '100.00';
-        // Fechar o modal
+        
+        // Fechar modal
         detailModal.style.display = 'none';
+        
         // Resetar scroll
         detailModal.scrollTop = 0;
         const modalContent = detailModal.querySelector('.food-modal-content');
         if (modalContent) modalContent.scrollTop = 0;
-        // Garantir que todos os blocos estarão abertos na próxima abertura
+        
+        // Resetar blocos para abertos
         document.querySelectorAll('#foodDetailModal .food-block-content').forEach(content => {
             content.style.display = 'block';
         });

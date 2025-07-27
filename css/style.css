@@ -867,6 +867,7 @@ Fim Ajuste Manual #1*/
   background-color: #fff;
   transition: all 0.3s ease;
   overflow: hidden;
+  display: block;
 }
 
 /* Campos do formulário */
@@ -1329,8 +1330,8 @@ Fim Ajuste Manual #1*/
 /*Fim Ajuste #23.1*/
 
 /* Garante que os blocos estejam abertos inicialmente */
-#foodDetailModal .food-block-content {
-    display: block !important;
+#foodDetailModal {
+    display: block;
 }
 
 /* Classe para controle via JS */
