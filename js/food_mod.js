@@ -387,10 +387,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const modal = document.getElementById('foodDetailModal');
         const loader = document.getElementById('foodDetailLoader');
         
+        // Garantir que o modal está visível antes de manipular o scroll
+        await new Promise(resolve => setTimeout(resolve, 50));
+
         // Resetar estado antes de carregar - usar a variável 'modal' que acabamos de declarar
         modal.scrollTop = 0;
         const modalContent = modal.querySelector('.food-modal-content');
-        if (modalContent) modalContent.scrollTop = 0;
+        if (modalContent) {
+            modalContent.scrollTop = 0;
+        }
         
         // Garantir que todos os blocos estarão abertos
         document.querySelectorAll('#foodDetailModal .food-block-content').forEach(content => {
@@ -536,6 +541,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Configurar colapsáveis
         setupDetailCollapsibles();
+
+        // Garantir scroll no topo após popular os dados
+        const modal = document.getElementById('foodDetailModal');
+        modal.scrollTop = 0;
+        const modalContent = modal.querySelector('.food-modal-content');
+        if (modalContent) {
+            modalContent.scrollTop = 0;
+        }
         
         // Abrir o modal
         document.getElementById('foodDetailModal').style.display = 'block';
