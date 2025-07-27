@@ -631,6 +631,8 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    setupDetailCollapsibles();
     //Fim Validar #1
     //Fim Ajuste #23.1
 
@@ -1180,4 +1182,5 @@ document.addEventListener('DOMContentLoaded', function() {
         setupCollapsibleBlocks();
         setupPortionUnitToggle();
         setupModalCleanup();
+        setupDetailCollapsibles();
     });
