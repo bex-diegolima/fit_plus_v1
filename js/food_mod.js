@@ -411,7 +411,7 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('Erro:', error);
             loader.style.display = 'none';
-            document.querySelector('.food-modal-content > .food-block').style.display = 'block';
+            modal.style.display = 'none';
             alert('Erro ao carregar detalhes do alimento: ' + error.message);
             return;
             //Ajuste #23.2
@@ -423,6 +423,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function populateFoodDetails(data) {
         // Alerta de verificação
+
+        if (!data || typeof data !== 'object') {
+            console.error('Dados inválidos recebidos:', data);
+            alert('Os dados do alimento estão incompletos');
+            return;
+        }
+
         const verificationAlert = document.getElementById('alertVerification');
         if (data.tipo_registro_alimento === 1) {
             verificationAlert.innerHTML = `
@@ -467,22 +474,20 @@ document.addEventListener('DOMContentLoaded', function() {
         //Ajuste #23.1
         // Imagem do alimento
         // Substituir a parte de carregamento da imagem por:
+        // Imagem do alimento
         const foodImage = document.getElementById('foodDetailImage');
-        if (data.img_registro) {
-            // Verificar se já tem o prefixo data:image
-            if (data.img_registro.startsWith('data:image')) {
-                foodImage.src = data.img_registro;
-            } else {
-                foodImage.src = `data:image/jpeg;base64,${data.img_registro}`;
-            }
-            foodImage.alt = data.item; // Usar o nome do alimento como alt
-            foodImage.onerror = function() {
-                this.src = 'images/default-food.png';
-            };
+        if (data.img_registro && typeof data.img_registro === 'string') {
+            foodImage.src = data.img_registro.startsWith('data:image') 
+                ? data.img_registro 
+                : `data:image/jpeg;base64,${data.img_registro}`;
+            foodImage.alt = data.item || 'Imagem do alimento';
         } else {
             foodImage.src = 'images/default-food.png';
             foodImage.alt = 'Imagem não disponível';
         }
+        foodImage.onerror = function() {
+            this.src = 'images/default-food.png';
+        };
         //Fim Ajuste #23.1
         
         // Nome do alimento
