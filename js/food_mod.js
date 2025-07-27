@@ -550,9 +550,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('foodDetailAllergens').textContent = data.alergicos_comuns_nomes || 'Nenhum registrado';
         document.getElementById('foodDetailObservations').textContent = data.observacoes || 'Nenhuma observação registrada';
         
-        // Configurar colapsáveis
-        setupDetailCollapsibles();
-
         // Garantir scroll no topo após popular os dados
         const modal = document.getElementById('foodDetailModal');
         modal.scrollTop = 0;
@@ -631,8 +628,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-
-    setupDetailCollapsibles();
     //Fim Validar #1
     //Fim Ajuste #23.1
 
