@@ -620,26 +620,14 @@ document.addEventListener('DOMContentLoaded', function() {
     //Validar #1
     //Ajuste #23.1
     function setupDetailCollapsibles() {
-        document.querySelectorAll('#foodDetailModal .food-block-header').forEach(header => {
-            const content = header.nextElementSibling;
-            const toggleIcon = header.querySelector('.food-block-toggle');
-            
-            // Garantir estado inicial
-            content.style.display = 'block';
-            toggleIcon.textContent = '▾';
-            
-            // Remover event listeners anteriores para evitar duplicação
-            const newHeader = header.cloneNode(true);
-            header.replaceWith(newHeader);
-            
-            // Adicionar novo event listener
-            newHeader.addEventListener('click', () => {
-                const isHidden = content.style.display === 'none';
-                content.style.display = isHidden ? 'block' : 'none';
-                if (toggleIcon) {
-                toggleIcon.textContent = isHidden ? '▾' : '▸';
-                toggleIcon.classList.toggle('rotated', !isHidden);
-                }
+        document.querySelectorAll('.food-block-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const block = header.parentElement;
+                const content = block.querySelector('.food-block-content');
+                const toggleIcon = block.querySelector('.food-block-toggle');
+                
+                content.style.display = content.style.display === 'none' ? 'block' : 'none';
+                toggleIcon.textContent = content.style.display === 'none' ? '►' : '▼';
             });
         });
     }
