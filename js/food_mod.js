@@ -491,21 +491,32 @@ document.addEventListener('DOMContentLoaded', function() {
         //Ajuste #23.1
         // Imagem do alimento
         // Substituir a parte de carregamento da imagem por:
+
         // Imagem do alimento
         const foodImage = document.getElementById('foodDetailImage');
-        if (data.img_registro && typeof data.img_registro === 'string') {
-            foodImage.src = data.img_registro.startsWith('data:image') 
-                ? data.img_registro 
-                : `data:image/jpeg;base64,${data.img_registro}`;
+        if (data.img_registro) {
+            // Se já estiver em formato base64
+            if (typeof data.img_registro === 'string' && data.img_registro.startsWith('data:')) {
+                foodImage.src = data.img_registro;
+            } 
+            // Se for um buffer (vindo do banco)
+            else {
+                foodImage.src = `data:image/jpeg;base64,${data.img_registro}`;
+            }
             foodImage.alt = data.item || 'Imagem do alimento';
         } else {
             foodImage.src = 'images/default-food.png';
-            foodImage.alt = 'Imagem não disponível';
+            foodImage.onerror = null; // Remove handler para evitar loop
         }
-        foodImage.onerror = function() {
-            this.src = 'images/default-food.png';
-        };
-        //Fim Ajuste #23.1
+
+        if (foodImage.src.includes('default-food.png')) {
+            foodImage.onerror = null; // Não tentar recarregar a padrão
+        } else {
+            foodImage.onerror = function() {
+                this.onerror = null; // Remove handler após primeiro erro
+                this.src = 'images/default-food.png';
+            };
+        }
         
         // Nome do alimento
         document.getElementById('foodDetailName').textContent = data.item;

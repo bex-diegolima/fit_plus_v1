@@ -680,6 +680,11 @@ app.get('/api/food-details', authenticateToken, async (req, res) => {
         }
 
         let foodData = result.rows[0];
+
+        // Converter Buffer para base64 se necessário (NOVO CÓDIGO)
+        if (foodData.img_registro instanceof Buffer) {
+            foodData.img_registro = `data:image/jpeg;base64,${foodData.img_registro.toString('base64')}`;
+        }
         
         // Processar alérgenos se existirem
         if (foodData.alergicos_comuns) {
