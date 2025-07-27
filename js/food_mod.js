@@ -638,6 +638,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 content.style.display = isHidden ? 'block' : 'none';
                 if (toggleIcon) {
                 toggleIcon.textContent = isHidden ? '▾' : '▸';
+                toggleIcon.classList.toggle('rotated', !isHidden);
                 }
             });
         });

@@ -859,7 +859,7 @@ Fim Ajuste Manual #1*/
 
 .food-block-toggle {
   font-size: 1rem;
-  transition: transform 0.3s;
+  transition: transform 0.3s ease;
 }
 
 .food-block-content {
@@ -900,8 +900,11 @@ Fim Ajuste Manual #1*/
 }
 
 .food-unit {
-  margin-left: 5px;
-  color: #7f8c8d;
+    display: inline;
+    margin-left: 0;
+    color: #7f8c8d;
+    font-size: 14px;
+    font-weight: normal;
 }
 
 .food-input-file {
@@ -1306,12 +1309,6 @@ Fim Ajuste Manual #1*/
     width: 20px;
     height: 20px;
 }
-
-.food-unit {
-    margin-left: 5px;
-    color: #7f8c8d;
-    font-size: 14px;
-}
 /*Fim Ajuste #23*/
 
 .food-modal-loader .loader-content {
@@ -1340,5 +1337,9 @@ Fim Ajuste Manual #1*/
 }
 
 .food-block-toggle.collapsed {
+    transform: rotate(-90deg);
+}
+
+.food-block-toggle.rotated {
     transform: rotate(-90deg);
 }
