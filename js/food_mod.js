@@ -321,6 +321,14 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('#foodAddModal select').forEach(select => {
             select.selectedIndex = 0; // Volta para a primeira opção (placeholder)
         });
+        //Ajuste Manual #4
+        document.querySelectorAll('#foodAddModal .food-block-content').forEach(content => {
+            content.style.display = 'block';
+        });
+        document.querySelectorAll('#foodAddModal .food-block-toggle').forEach(toggle => {
+            toggle.textContent = '▼';
+        });
+        //Fim Ajuste Manual #4
         //Fim Ajuste #9
         // Reseta o valor padrão da porção
         const portionInput = document.getElementById('foodBasePortion');
