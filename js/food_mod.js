@@ -592,6 +592,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Ajuste #31
     document.getElementById('rep-btD').addEventListener('click', async function() {
+        
+        //Ajuste #31
+        // Verificação adicional
+        if (!document.getElementById('foodReportModal')) {
+            console.error('Modal de reporte não encontrado no DOM');
+            return;
+        }
+        //Fim Ajuste #31
+        
         if (!currentReportFoodId) {
             console.error('Nenhum alimento selecionado para reporte');
             alert('Selecione um alimento antes de reportar erro');
@@ -611,6 +620,16 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Erro ao abrir formulário de reporte:', error);
             alert('Erro ao abrir formulário: ' + error.message);
         }
+
+        //Ajuste #31
+        // Debug adicional
+        console.log('Estado atual:', {
+            currentReportFoodId,
+            token: localStorage.getItem('token'),
+            modal: document.getElementById('foodReportModal')
+        });
+        //Fim Ajuste #31
+
     });
     //Fim Ajuste #31
 
