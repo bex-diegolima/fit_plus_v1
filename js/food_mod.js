@@ -682,8 +682,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Configurar botão reportar erro (placeholder)
     // ========== CONFIGURAR BOTÃO REPORTAR ERRO ==========
     document.getElementById('rep-btD').addEventListener('click', async function() {
+        const reportBtn = this; // Guarda referência do botão
+        const originalText = reportBtn.innerHTML; // Salva texto original
+        
         try {
-            // Obter o ID do alimento atualmente aberto
+            // Feedback visual imediato
+            reportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+            reportBtn.disabled = true;
+
             const foodId = document.querySelector('#foodDetailModal').dataset.foodId;
             
             if (!foodId) {
@@ -700,19 +706,42 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
 
             if (result.success) {
-                // Abrir modal de reporte se as validações passarem
+                // Abrir modal de reporte
                 document.getElementById('foodReportModal').style.display = 'block';
                 document.getElementById('foodReportModal').scrollTop = 0;
             } else {
-                // Mostrar mensagem de erro se alguma validação falhar
-                alert(result.message || 'Você não tem permissão para reportar este alimento');
+                // Mostrar mensagem inline no modal
+                showAlertMessage(result.message, 'error');
             }
 
         } catch (error) {
             console.error('Erro ao verificar permissão:', error);
-            alert('Erro ao verificar permissão para reportar');
+            showAlertMessage('Erro ao verificar permissão', 'error');
+        } finally {
+            // Restaurar botão independente do resultado
+            reportBtn.innerHTML = originalText;
+            reportBtn.disabled = false;
         }
     });
+
+    // Função auxiliar para mostrar mensagens (adicionar no mesmo arquivo)
+    function showAlertMessage(message, type = 'success') {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `report-alert ${type}`;
+        alertDiv.innerHTML = `
+            <i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i>
+            <span>${message}</span>
+        `;
+        
+        // Insere após o botão de reporte
+        const reportBtn = document.getElementById('rep-btD');
+        reportBtn.parentNode.insertBefore(alertDiv, reportBtn.nextSibling);
+        
+        // Remove após 5 segundos
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 5000);
+    }
     //Ajuste #30
     //Fim Ajuste #23
 
