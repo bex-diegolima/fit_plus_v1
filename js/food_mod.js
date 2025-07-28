@@ -639,6 +639,43 @@ document.addEventListener('DOMContentLoaded', function() {
     //Fim Validar #1
     //Fim Ajuste #23.1
 
+    //Ajuste #30
+    // Adicionar após a função setupDetailCollapsibles() e antes do evento de clique na tabela
+    // ========== FUNÇÕES DO FORMULÁRIO DE REPORTE ==========
+    function openReportModal(foodId) {
+        const reportModal = document.getElementById('foodReportModal');
+        
+        // Resetar modal
+        reportModal.scrollTop = 0;
+        const modalContent = reportModal.querySelector('.food-modal-content');
+        if (modalContent) modalContent.scrollTop = 0;
+        
+        // Armazenar ID do alimento sendo reportado
+        reportModal.dataset.foodId = foodId;
+        
+        // Mostrar modal
+        reportModal.style.display = 'block';
+    }
+
+    // Vincular evento ao botão de reporte
+    document.getElementById('rep-btD').addEventListener('click', function() {
+        const detailModal = document.getElementById('foodDetailModal');
+        const foodId = detailModal.dataset.foodId; // Assume que o ID está armazenado no modal de detalhes
+        
+        if (foodId) {
+            openReportModal(foodId);
+        } else {
+            alert('Não foi possível identificar o alimento para reportar. Por favor, recarregue a página e tente novamente.');
+        }
+    });
+
+    // Fechar modal de reporte
+    document.getElementById('closeReportBtn').addEventListener('click', function() {
+        document.getElementById('foodReportModal').style.display = 'none';
+    });
+    //Fim Ajuste #30
+
+
     // Configurar evento de clique na tabela
     foodTableBody.addEventListener('click', (e) => {
         const row = e.target.closest('tr');

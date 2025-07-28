@@ -1339,3 +1339,106 @@ Fim Ajuste Manual #1*/
 .food-block-toggle.collapsed {
     transform: rotate(-90deg);
 }
+
+/*Ajuste #30*/
+/* ========== ESTILOS DO MODAL DE REPORTE ========== */
+.report-modal {
+    /* Herda estilos básicos do food-modal */
+}
+
+.report-modal-content {
+    max-width: 600px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    overflow-y: auto;
+    max-height: 90vh;
+}
+
+.report-header {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+.report-bar {
+    background-color: #e63946;
+    height: 4px;
+    margin-bottom: 20px;
+}
+
+.submit-report-btn {
+    background-color: #e63946;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    margin-right: 10px;
+}
+
+.submit-report-btn:hover {
+    background-color: #c1121f;
+    transform: translateY(-2px);
+}
+
+.close-report-btn {
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.close-report-btn:hover {
+    background-color: #495057;
+    transform: translateY(-2px);
+}
+
+.report-form-container {
+    padding: 20px;
+}
+
+.report-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    color: #e63946;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .report-modal-content {
+        width: 95%;
+        max-height: 85vh;
+    }
+    
+    .submit-report-btn,
+    .close-report-btn {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .report-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .report-header div {
+        margin-top: 10px;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+}
+/*Fim Ajuste #30*/
