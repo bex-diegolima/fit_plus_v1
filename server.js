@@ -729,7 +729,7 @@ app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
 
         // 1. Buscar dados do alimento
         const foodQuery = await pool.query(
-            'SELECT user_registro, tipo_registro_alimento, error_report FROM tbl_foods WHERE id = $1',
+            'SELECT user_registro::text, tipo_registro_alimento, error_report FROM tbl_foods WHERE id = $1',
             [foodId]
         );
 
@@ -741,13 +741,13 @@ app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
         }
 
         const foodData = foodQuery.rows[0];
-        const currentUserId = req.user.userId;
+        const currentUserId = req.user.userId.toString(); // Convertendo para string para comparação
 
-        // 2. Aplicar validações
+        // 2. Aplicar validações CORRIGIDAS
         const validations = {
-            isNotOwner: foodData.user_registro !== currentUserId,
+            isNotOwner: foodData.user_registro !== currentUserId, // Agora ambas são strings
             isVerified: foodData.tipo_registro_alimento === 1,
-            hasNoReport: !foodData.error_report
+            hasNoReport: foodData.error_report !== true // Verificação explícita
         };
 
         const isValid = Object.values(validations).every(Boolean);
