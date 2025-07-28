@@ -393,7 +393,15 @@ document.addEventListener('DOMContentLoaded', function() {
     //Validar #1
     async function loadFoodDetails(foodId) {
         //Ajuste #30
-        currentReportFoodId = foodId;
+        //Ajuste #31
+        // Verificação adicional para garantir que o ID está sendo armazenado
+        if (!foodId) {
+            console.error('Nenhum ID de alimento fornecido');
+            alert('Erro ao carregar detalhes: ID inválido');
+            return;
+        }
+        currentReportFoodId = foodId; // Garante que o ID está armazenado
+        //Fim ajuste #31
         //Fim Ajuste #30
         const modal = document.getElementById('foodDetailModal');
         const loader = document.getElementById('foodDetailLoader');
@@ -488,6 +496,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para abrir o formulário de reporte
     async function openReportForm(foodId) {
         try {
+
+            //Ajuste #31
+            // Verificação inicial
+            if (!foodId) {
+                throw new Error('ID do alimento não fornecido');
+            }
+            //Fim Ajuste #31
+            
             // Validar se pode reportar
             const canReport = await validateCanReport(foodId);
             if (!canReport.valid) {
@@ -575,29 +591,39 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Função para validar se pode reportar
+    //Ajuste #31
     async function validateCanReport(foodId) {
         try {
             const token = localStorage.getItem('token');
-            const userId = jwt.decode(token).userId;
-            
-            const response = await fetch(`https://fit-plus-backend.onrender.com/api/validate-report?foodId=${foodId}&userId=${userId}`, {
+            if (!token) {
+                return { valid: false, message: 'Usuário não autenticado' };
+            }
+
+            // Decodificar token para obter userId
+            const decoded = jwt.decode(token);
+            if (!decoded || !decoded.userId) {
+                return { valid: false, message: 'Dados do usuário inválidos' };
+            }
+
+            const response = await fetch(`https://fit-plus-backend.onrender.com/api/validate-report?foodId=${foodId}&userId=${decoded.userId}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             
-            if (!response.ok) throw new Error('Erro na validação');
-            
-            const result = await response.json();
-            
-            if (!result.canReport) {
-                return { valid: false, message: result.message };
+            if (!response.ok) {
+                throw new Error('Erro na validação: ' + response.status);
             }
             
-            return { valid: true };
+            return await response.json();
+            
         } catch (error) {
             console.error('Erro na validação:', error);
-            return { valid: false, message: 'Erro ao validar condições para reporte' };
+            return { 
+                valid: false, 
+                message: 'Erro ao validar: ' + error.message 
+            };
         }
     }
+    //Fim Ajuste #31
 
     // Função para enviar o reporte
     async function submitReport() {
@@ -994,14 +1020,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Configurar botão reportar erro (placeholder)
     //Ajuste #30
+    //Ajuste #31
     document.getElementById('rep-btD').addEventListener('click', function() {
         if (currentReportFoodId) {
-        openReportForm(currentReportFoodId);
+            openReportForm(currentReportFoodId);
         } else {
-        console.error('ID do alimento não está definido');
-        alert('Erro: Não foi possível identificar o alimento para reporte.');
+            console.error('ID do alimento não está definido');
+            alert('Erro: Não foi possível identificar o alimento para reporte.');
         }
     });
+    //Fim Ajuste #30
     //Fim Ajuste #30
     //Fim Ajuste #23
 
@@ -1501,6 +1529,27 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         //Fim Ajuste #22
+
+        //Ajuste #31
+        // Função de debug para verificar estado do reporte
+        function debugReportState() {
+            console.log('Estado atual do reporte:');
+            console.log('ID do alimento:', currentReportFoodId);
+            console.log('Token:', localStorage.getItem('token') ? 'Presente' : 'Ausente');
+            
+            if (currentReportFoodId) {
+                fetch(`https://fit-plus-backend.onrender.com/api/food-details?id=${currentReportFoodId}`)
+                    .then(res => res.json())
+                    .then(data => console.log('Detalhes do alimento:', data))
+                    .catch(err => console.error('Erro ao buscar detalhes:', err));
+            }
+        }
+
+        // Ativar debug (remover em produção)
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'F2') debugReportState();
+        });
+        //Fim Ajuste #31
 
         loadSelectOptions();
         //FIM ALTERAÇÕES DEEPSEEK
