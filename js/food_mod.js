@@ -724,8 +724,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    //Ajuste #30.1
     // Função auxiliar para mostrar mensagens (adicionar no mesmo arquivo)
-    function showAlertMessage(message, type = 'success') {
+    /*function showAlertMessage(message, type = 'success') {
         const alertDiv = document.createElement('div');
         alertDiv.className = `report-alert ${type}`;
         alertDiv.innerHTML = `
@@ -741,7 +742,39 @@ document.addEventListener('DOMContentLoaded', function() {
         setTimeout(() => {
             alertDiv.remove();
         }, 5000);
+    }*/
+    // Função para mostrar mensagens de alerta
+    function showAlertMessage(message, type = 'error') {
+        const alertModal = document.getElementById('alertModal');
+        const alertMessage = document.getElementById('alertMessage');
+        const alertIcon = document.getElementById('alertIcon');
+        
+        // Configurar mensagem e ícone
+        alertMessage.textContent = message;
+        
+        if (type === 'success') {
+            alertIcon.className = 'fas fa-check-circle success';
+        } else {
+            alertIcon.className = 'fas fa-exclamation-circle';
+        }
+        
+        // Mostrar modal
+        alertModal.style.display = 'flex';
+        
+        // Fechar ao clicar no OK
+        document.getElementById('alertOkBtn').onclick = () => {
+            alertModal.style.display = 'none';
+        };
+        
+        // Fechar ao clicar fora do conteúdo
+        alertModal.onclick = (e) => {
+            if (e.target === alertModal) {
+                alertModal.style.display = 'none';
+            }
+        };
     }
+    //Fim Ajuste #30.1
+
     //Ajuste #30
     //Fim Ajuste #23
 
