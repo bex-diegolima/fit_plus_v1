@@ -1,13 +1,13 @@
-// food_mod.js
 document.addEventListener('DOMContentLoaded', function() {
-    // ========== ELEMENTOS DO MENU (IGUAL AO HOME.JS) ==========
+    // ========== ELEMENTOS DO DOM ==========
+    // Elementos do menu
     const menuButton = document.getElementById('menuButton');
     const menuPanel = document.getElementById('menuPanel');
     const logoutBtn = document.getElementById('logoutBtn');
     const changePicBtn = document.getElementById('changePicBtn');
     const profilePicInput = document.getElementById('profilePicInput');
 
-    // ========== ELEMENTOS DO MÓDULO DE ALIMENTOS ==========
+    // Elementos do módulo de alimentos
     const addBtn = document.querySelector('.food-add-btn');
     const detailModal = document.getElementById('foodDetailModal');
     const addModal = document.getElementById('foodAddModal');
@@ -17,8 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const welcomeMessage = document.getElementById('welcomeMessage');
     const userNameSpan = document.getElementById('userName');
 
-    //Ajuste #22
-    // ========== ELEMENTOS DE PESQUISA ==========
+    // Elementos de pesquisa e paginação
     const foodSearchInput = document.querySelector('.food-search-input');
     const paginationInfo = document.querySelector('.pagination-info');
     const prevPageBtn = document.querySelector('.pagination-btn:first-child');
@@ -28,20 +27,19 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentPage = 1;
     const itemsPerPage = 10;
     let searchResults = [];
-    //Fim Ajuste #22
 
-    //Ajuste #22
-    // Função para processar pesquisa
+    // ========== FUNÇÕES DE PESQUISA E PAGINAÇÃO ==========
+    /**
+     * Realiza pesquisa de alimentos no servidor
+     * @param {string} searchTerm - Termo para busca
+     */
     async function searchFoods(searchTerm) {
-
-        //Ajuste #22.1
-        // Mostrar loader
+        // Mostrar loader durante a busca
         const loaderRow = document.createElement('tr');
         loaderRow.className = 'loader-row';
         loaderRow.innerHTML = `<td colspan="7" class="search-loader">Buscando...</td>`;
         foodTableBody.innerHTML = '';
         foodTableBody.appendChild(loaderRow);
-        //Fim Ajuste #22.1
 
         try {
             const token = localStorage.getItem('token');
@@ -63,6 +61,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    /**
+     * Renderiza a tabela com os resultados da pesquisa
+     */
     function renderTable() {
         if (searchResults.length === 0) {
             foodTableBody.innerHTML = '<tr class="empty-row"><td colspan="7">Nenhum resultado encontrado</td></tr>';
@@ -98,8 +99,6 @@ document.addEventListener('DOMContentLoaded', function() {
         prevPageBtn.disabled = currentPage === 1;
         nextPageBtn.disabled = currentPage === totalPages;
     }
-
-    //Fim Ajuste #22
 
     // ========== FUNÇÕES DO MENU ==========
     // Alternar visibilidade do menu
@@ -160,8 +159,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // ========== FUNÇÕES DO MODAL DE CADASTRO (FASE 1 - BLOCO 1) ==========
-    // Alternar blocos recolhíveis
+    // ========== FUNÇÕES DO MODAL DE CADASTRO ==========
+    /**
+     * Configura blocos recolhíveis no modal
+     */
     function setupCollapsibleBlocks() {
         document.querySelectorAll('.food-block-header').forEach(header => {
             header.addEventListener('click', () => {
@@ -175,24 +176,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Altera unidade da porção base conforme grupo alimentar
-    //Ajuste #11
-    //function setupPortionUnitToggle() {
-        //const foodGroupSelect = document.getElementById('foodGroup');
-        //if (foodGroupSelect) {
-            //foodGroupSelect.addEventListener('change', function() {
-                //const unitSpan = document.getElementById('foodPortionUnit');
-                //if (this.value === 'bebida' || this.value === 'bebida-alcoolica') {
-                    //unitSpan.textContent = 'ml';
-                //} else {
-                    //unitSpan.textContent = 'g';
-                //}
-            //});
-        //}
-    //}
-    //Fim Ajuste #11
-
-    // Limpa campos ao fechar o modal
+    /**
+     * Limpa campos ao fechar o modal
+     */
     function setupModalCleanup() {
         document.querySelector('.food-modal-close').addEventListener('click', () => {
             document.querySelectorAll('.food-input, .food-select').forEach(field => {
@@ -202,8 +188,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ========== FUNÇÕES DO MÓDULO DE ALIMENTOS ==========
-    // Carrega os dados do usuário logado
+    // ========== FUNÇÕES PRINCIPAIS DO MÓDULO ==========
+    /**
+     * Carrega dados do usuário logado
+     */
     async function loadUserData() {
         const userEmail = localStorage.getItem('userEmail');
         if (!userEmail) {
@@ -234,7 +222,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Inicialização da tabela vazia
+    /**
+     * Inicializa tabela vazia
+     */
     function initializeEmptyTable() {
         if (foodTableBody) {
             foodTableBody.innerHTML = '<tr class="empty-row"><td colspan="7">Nenhum alimento cadastrado</td></tr>';
@@ -245,7 +235,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (addBtn) {
         addBtn.addEventListener('click', () => {
             addModal.style.display = 'block';
-            //Ajuste #9
             requestAnimationFrame(() => {
                 clearModalFields();
                 addModal.scrollTop = 0;
@@ -256,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     setTimeout(() => { modalContent.style.overflowY = 'auto'; }, 10);
                 }
             });
-            //Fim Ajuste #9
+            
             // Garante que todos os blocos estão visíveis ao abrir
             document.querySelectorAll('.food-block-content').forEach(content => {
                 content.style.display = 'block';
@@ -271,17 +260,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    //Ajuste #17
-    // Fechar ao clicar fora do modal
-    /*window.addEventListener('click', (event) => {
-        if (event.target.classList.contains('food-modal')) {
-            event.target.style.display = 'none';
-        }
-    });*/
-    //Fim Ajuste #17
-
-    //Ajuste #15
-    // Atualizar tags de alergênicos selecionados
+    /**
+     * Atualiza tags de alergênicos selecionados
+     */
     function updateSelectedAllergens() {
         const select = document.getElementById('foodAllergs3');
         const tagsContainer = document.getElementById('selectedAllergensTags');
@@ -307,36 +288,32 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-    //Fim Ajuste #15
 
-    // Adicione esta função no seu arquivo:
+    /**
+     * Limpa todos os campos do modal
+     */
     function clearModalFields() {
-        //Ajuste #9
         // Limpa inputs básicos
         document.querySelectorAll('#foodAddModal input[type="text"], #foodAddModal input[type="number"]').forEach(input => {
-        input.value = '';
+            input.value = '';
         });
 
-        // Reseta selects (incluindo o de glúten)
+        // Reseta selects
         document.querySelectorAll('#foodAddModal select').forEach(select => {
-            select.selectedIndex = 0; // Volta para a primeira opção (placeholder)
+            select.selectedIndex = 0;
         });
-        //Ajuste Manual #4
+
         document.querySelectorAll('#foodAddModal .food-block-content').forEach(content => {
             content.style.display = 'block';
         });
         document.querySelectorAll('#foodAddModal .food-block-toggle').forEach(toggle => {
             toggle.textContent = '▼';
         });
-        //Fim Ajuste Manual #4
-        //Fim Ajuste #9
+
         // Reseta o valor padrão da porção
         const portionInput = document.getElementById('foodBasePortion');
         if (portionInput) {
             portionInput.value = '100.00';
-            //Ajuste #11
-            //document.getElementById('foodPortionUnit').textContent = 'g';
-            //Fim Ajuste #11
         }
         
         // Limpa o input de arquivo (imagem)
@@ -347,50 +324,41 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Limpa os campos do Bloco 2
         const block2Inputs = [
-        'foodGoodFats', 'foodBadFats', 'foodFiber', 'foodSodium',
-        'foodCholesterol', 'foodSugar', 'foodGlycemicIndex', 'foodGlycemicLoad',
-        'foodCalcium', 'foodIron', 'foodPotassium', 'foodMagnesium',
-        'foodZinc', 'foodVitaminC', 'foodVitaminA', 'foodVitaminD',
-        'foodVitaminB12', 'foodOmega3', 'foodFolicAcid', 'foodAlcohol'
+            'foodGoodFats', 'foodBadFats', 'foodFiber', 'foodSodium',
+            'foodCholesterol', 'foodSugar', 'foodGlycemicIndex', 'foodGlycemicLoad',
+            'foodCalcium', 'foodIron', 'foodPotassium', 'foodMagnesium',
+            'foodZinc', 'foodVitaminC', 'foodVitaminA', 'foodVitaminD',
+            'foodVitaminB12', 'foodOmega3', 'foodFolicAcid', 'foodAlcohol'
         ];
 
         block2Inputs.forEach(id => {
-        const input = document.getElementById(id);
-        if (input) input.value = '';
+            const input = document.getElementById(id);
+            if (input) input.value = '';
         });
 
         // Limpa os campos do Bloco 3
         const block3Inputs = [
-        'foodCategory', 'foodOrigin', 'foodProcessing', 'foodGluten',
-        'foodAntioxidants', 'foodObservations'
+            'foodCategory', 'foodOrigin', 'foodProcessing', 'foodGluten',
+            'foodAntioxidants', 'foodObservations'
         ];
 
         block3Inputs.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) element.value = '';
+            const element = document.getElementById(id);
+            if (element) element.value = '';
         });
 
-        //Ajuste #8
-        document.querySelectorAll('#foodAddModal select').forEach(select => {
-            select.selectedIndex = 0; // Reseta para a primeira opção (placeholder)
-        });
-        //Fim Ajuste #8
-
-        //Ajuste #15
         const allergSelect = document.getElementById('foodAllergs3');
         if (allergSelect) {
             allergSelect.selectedIndex = -1;
             document.getElementById('selectedAllergensTags').innerHTML = '';
         }
-        //Fim Ajuste #15
-
     }
 
-    //Ajuste #23
-    //FUNÇÕES DETALHES
-    // Adicionar após as outras funções
-    //Ajuste #23.1
-    //Validar #1
+    // ========== FUNÇÕES DE DETALHES DO ALIMENTO ==========
+    /**
+     * Carrega detalhes de um alimento específico
+     * @param {string} foodId - ID do alimento
+     */
     async function loadFoodDetails(foodId) {
         const modal = document.getElementById('foodDetailModal');
         const loader = document.getElementById('foodDetailLoader');
@@ -398,7 +366,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Garantir que o modal está visível antes de manipular o scroll
         await new Promise(resolve => setTimeout(resolve, 50));
 
-        // Resetar estado antes de carregar - usar a variável 'modal' que acabamos de declarar
+        // Resetar estado antes de carregar
         modal.scrollTop = 0;
         const modalContent = modal.querySelector('.food-modal-content');
         if (modalContent) {
@@ -443,12 +411,12 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
     }
-    //Fim Validar #1
-    //Fim Ajuste #23.1
 
+    /**
+     * Preenche o modal de detalhes com os dados do alimento
+     * @param {object} data - Dados do alimento
+     */
     function populateFoodDetails(data) {
-        // Alerta de verificação
-
         if (!data || typeof data !== 'object') {
             console.error('Dados inválidos recebidos:', data);
             alert('Os dados do alimento estão incompletos');
@@ -496,10 +464,6 @@ document.addEventListener('DOMContentLoaded', function() {
             allergensAlert.style.display = 'none';
         }
         
-        //Ajuste #23.1
-        // Imagem do alimento
-        // Substituir a parte de carregamento da imagem por:
-
         // Imagem do alimento
         const foodImage = document.getElementById('foodDetailImage');
         if (data.img_registro) {
@@ -514,14 +478,14 @@ document.addEventListener('DOMContentLoaded', function() {
             foodImage.alt = data.item || 'Imagem do alimento';
         } else {
             foodImage.src = 'images/default-food.png';
-            foodImage.onerror = null; // Remove handler para evitar loop
+            foodImage.onerror = null;
         }
 
         if (foodImage.src.includes('default-food.png')) {
-            foodImage.onerror = null; // Não tentar recarregar a padrão
+            foodImage.onerror = null;
         } else {
             foodImage.onerror = function() {
-                this.onerror = null; // Remove handler após primeiro erro
+                this.onerror = null;
                 this.src = 'images/default-food.png';
             };
         }
@@ -559,9 +523,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('foodDetailObservations').textContent = data.observacoes || 'Nenhuma observação registrada';
         
         // Garantir scroll no topo após popular os dados
-        const modal = document.getElementById('foodDetailModal');
         modal.scrollTop = 0;
-        const modalContent = modal.querySelector('.food-modal-content');
         if (modalContent) {
             modalContent.scrollTop = 0;
         }
@@ -570,6 +532,11 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('foodDetailModal').style.display = 'block';
     }
 
+    /**
+     * Atualiza valores nutricionais com base na porção selecionada
+     * @param {object} data - Dados nutricionais
+     * @param {number} portion - Porção selecionada
+     */
     function updateNutritionValues(data, portion) {
         const calculateValue = (value) => {
             if (!value) return '-';
@@ -582,9 +549,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         
         // Bloco 1
-        //Ajuste Manual #3
         document.getElementById('foodDetailBrand').textContent = data.marca || '-';
-        //Fim Ajuste Manual #3
         document.getElementById('foodDetailPreparation').textContent = data.modo_preparo_nome || '-';
         document.getElementById('foodDetailCalories').textContent = formatUnit(calculateValue(data.calorias_kcal), 'kcal');
         document.getElementById('foodDetailProteins').textContent = formatUnit(calculateValue(data.proteina_gr), 'g');
@@ -622,8 +587,9 @@ document.addEventListener('DOMContentLoaded', function() {
             caloricDensity === '-' ? '-' : `${caloricDensity} kcal/g`;
     }
 
-    //Validar #1
-    //Ajuste #23.1
+    /**
+     * Configura blocos recolhíveis no modal de detalhes
+     */
     function setupDetailCollapsibles() {
         document.querySelectorAll('.food-block-header').forEach(header => {
             header.addEventListener('click', () => {
@@ -636,8 +602,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-    //Fim Validar #1
-    //Fim Ajuste #23.1
 
     // Configurar evento de clique na tabela
     foodTableBody.addEventListener('click', (e) => {
@@ -647,8 +611,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    //Validar #1
-    // Configurar botão fechar
+    // Configurar botão fechar modal de detalhes
     document.getElementById('close-btD').addEventListener('click', function() {
         const detailModal = document.getElementById('foodDetailModal');
         
@@ -671,250 +634,219 @@ document.addEventListener('DOMContentLoaded', function() {
             toggle.textContent = '▼';
         });
     });
-    //Fim Validar #1
 
-    // Atualize o evento de fechar o modal (substitua o existente):
-    closeButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            this.closest('.food-modal').style.display = 'none';
-            clearModalFields(); // Limpa os campos ao fechar
-        });
-    });
-
-    //Ajuste #17
-    /*// Atualize também o clique fora do modal:
-    window.addEventListener('click', (event) => {
-        if (event.target.classList.contains('food-modal')) {
-            event.target.style.display = 'none';
-            clearModalFields(); // Limpa os campos ao fechar
-        }
-    });*/
-    //Fim Ajuste #17
-
-    //ALTERAÇÕES DEEPSEEK
+    // ========== FUNÇÕES DE CADASTRO DE ALIMENTOS ==========
     // Elementos do DOM
-        const saveBtn = document.getElementById('save-bt');
-        const foodAddModal = document.getElementById('foodAddModal');
+    const saveBtn = document.getElementById('save-bt');
+    const foodAddModal = document.getElementById('foodAddModal');
+    
+    /**
+     * Calcula proporção nutricional com base na porção
+     * @param {number} value - Valor nutricional
+     * @param {number} basePortion - Porção base
+     * @returns {number} Valor proporcional
+     */
+    const calculateProportion = (value, basePortion) => {
+        return basePortion === 0 ? 0 : (value * 100) / basePortion;
+    };
+
+    // Evento de salvamento de alimento
+    saveBtn.addEventListener('click', async function() {
+        // Mostrar loader
+        const loader = document.getElementById('foodModalLoader');
+        loader.style.display = 'flex';
         
-        // Função para calcular proporção (regra de 3)
-        const calculateProportion = (value, basePortion) => {
-            return basePortion === 0 ? 0 : (value * 100) / basePortion;
-        };
+        const selectedAllergens = Array.from(document.getElementById('foodAllergs3').selectedOptions)
+                .map(opt => opt.value);
 
-        // Função para salvar alimento
-        saveBtn.addEventListener('click', async function() {
-        
-            //Ajuste #10
-            // Mostrar loader
-            //Ajuste #23.2
-            const loader = document.getElementById('foodModalLoader');
-            loader.style.display = 'flex';
-            //Fim Ajuste #23.2
-            //Fim Ajuste #10
-            //ajuste #16.1
-            const selectedAllergens = Array.from(document.getElementById('foodAllergs3').selectedOptions)
-                    .map(opt => opt.value);
-            //Fim ajuste #16.1
+        // Validação da porção base (deve ser >= 1)
+        const basePortion = parseFloat(document.getElementById('foodBasePortion').value);
+        if (basePortion < 1) {
+            alert('A porção base deve ser maior ou igual a 1!');
+            document.getElementById('foodModalLoader').style.display = 'none';
+            return;
+        }
 
-            //Ajuste #18
-            // Validação da porção base (deve ser >= 1)
-            const basePortion = parseFloat(document.getElementById('foodBasePortion').value);
-            if (basePortion < 1) {
-                alert('A porção base deve ser maior ou igual a 1!');
-                document.getElementById('foodModalLoader').style.display = 'none'; // Remove loader se houver erro
-                return; // Interrompe o processo
-            }
-            //Fim Ajuste #18
+        // Coletar dados do formulário
+        const formData = {
+            // Bloco 1
+            item: document.getElementById('foodItemName').value.trim(),
+            marca: document.getElementById('foodBrand').value.trim() || '',
+            modo_preparo: document.getElementById('foodPreparation').value,
+            grupo_alimentar: document.getElementById('foodGroup').value,
+            porcao_base: 100, // Valor fixo conforme regra
+            base_portion_original: parseFloat(document.getElementById('foodBasePortion').value) || 0,
+            
+            // Valores nutricionais (com cálculo proporcional)
+            calorias_kcal: calculateProportion(
+                parseFloat(document.getElementById('foodCalories').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+            ),
 
-            // Coletar dados do formulário
-            const formData = {
-                // Bloco 1
-                item: document.getElementById('foodItemName').value.trim(),
-                //Ajuste #16
-                marca: document.getElementById('foodBrand').value.trim() || '',
-                //Ajuste #16
-                modo_preparo: document.getElementById('foodPreparation').value,
-                grupo_alimentar: document.getElementById('foodGroup').value,
-                porcao_base: 100, // Valor fixo conforme regra
-                base_portion_original: parseFloat(document.getElementById('foodBasePortion').value) || 0,
-                
-                // Valores nutricionais (com cálculo proporcional)
-                calorias_kcal: calculateProportion(
-                    parseFloat(document.getElementById('foodCalories').value) || 0,
-                    parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
-
-                proteina_gr: calculateProportion(
-                    parseFloat(document.getElementById('foodProteins').value) || 0,
-                    parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
-                carbo_gr: calculateProportion(
+            proteina_gr: calculateProportion(
+                parseFloat(document.getElementById('foodProteins').value) || 0,
+                parseFloat(document.getElementById('foodBasePortion').value) || 100
+            ),
+            carbo_gr: calculateProportion(
                 parseFloat(document.getElementById('foodCarbs').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                gorduras_totais_gr: calculateProportion(
+            gorduras_totais_gr: calculateProportion(
                 parseFloat(document.getElementById('foodFats').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                gorduras_boas_gr: calculateProportion(
+            gorduras_boas_gr: calculateProportion(
                 parseFloat(document.getElementById('foodGoodFats').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                gorduras_ruins_gr: calculateProportion(
+            gorduras_ruins_gr: calculateProportion(
                 parseFloat(document.getElementById('foodBadFats').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                omega_tres_mg: calculateProportion(
+            omega_tres_mg: calculateProportion(
                 parseFloat(document.getElementById('foodOmega3').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                fibras_gr: calculateProportion(
+            fibras_gr: calculateProportion(
                 parseFloat(document.getElementById('foodFiber').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                sodio_mg: calculateProportion(
+            sodio_mg: calculateProportion(
                 parseFloat(document.getElementById('foodSodium').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                colesterol_mg: calculateProportion(
+            colesterol_mg: calculateProportion(
                 parseFloat(document.getElementById('foodCholesterol').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                acucares_gr: calculateProportion(
+            acucares_gr: calculateProportion(
                 parseFloat(document.getElementById('foodSugar').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                indice_glicemico: calculateProportion(
+            indice_glicemico: calculateProportion(
                 parseFloat(document.getElementById('foodGlycemicIndex').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                carga_glicemica: calculateProportion(
+            carga_glicemica: calculateProportion(
                 parseFloat(document.getElementById('foodGlycemicLoad').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                calcio_mg: calculateProportion(
+            calcio_mg: calculateProportion(
                 parseFloat(document.getElementById('foodCalcium').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                ferro_mg: calculateProportion(
+            ferro_mg: calculateProportion(
                 parseFloat(document.getElementById('foodIron').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                potassio_mg: calculateProportion(
+            potassio_mg: calculateProportion(
                 parseFloat(document.getElementById('foodPotassium').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                magnesio_mg: calculateProportion(
+            magnesio_mg: calculateProportion(
                 parseFloat(document.getElementById('foodMagnesium').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                zinco_mg: calculateProportion(
+            zinco_mg: calculateProportion(
                 parseFloat(document.getElementById('foodZinc').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                vitamina_c_mg: calculateProportion(
+            vitamina_c_mg: calculateProportion(
                 parseFloat(document.getElementById('foodVitaminC').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                vitamina_a_mcg: calculateProportion(
+            vitamina_a_mcg: calculateProportion(
                 parseFloat(document.getElementById('foodVitaminA').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                vitamina_d_mcg: calculateProportion(
+            vitamina_d_mcg: calculateProportion(
                 parseFloat(document.getElementById('foodVitaminD').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                vitamina_b12_mcg: calculateProportion(
+            vitamina_b12_mcg: calculateProportion(
                 parseFloat(document.getElementById('foodVitaminB12').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                acido_folico_mcg: calculateProportion(
+            acido_folico_mcg: calculateProportion(
                 parseFloat(document.getElementById('foodFolicAcid').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                teor_alcoolico: calculateProportion(
+            teor_alcoolico: calculateProportion(
                 parseFloat(document.getElementById('foodAlcohol').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                acucar_adicionado_gr: calculateProportion(
+            acucar_adicionado_gr: calculateProportion(
                 parseFloat(document.getElementById('foodSugaradd').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
 
-                vitamina_e_mcg: calculateProportion(
+            vitamina_e_mcg: calculateProportion(
                 parseFloat(document.getElementById('foodVitaminE').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
+            ),
+            
+            // Bloco 3
+            categoria_nutricional: document.getElementById('foodCategory').value,
+            origem: document.getElementById('foodOrigin').value,
+            nivel_processamento: document.getElementById('foodProcessing').value,
+            glutem: document.getElementById('foodGluten').value === 'true',
+            carga_antioxidante: document.getElementById('foodAntioxidants').value.trim() || null,
+            observacoes: document.getElementById('foodObservations').value.trim(),
+            img_registro: await getImageBase64(),
+            alergicos_comuns: selectedAllergens.length > 0 ? selectedAllergens : []
+        };
 
-                // ... (repetir para todos os campos nutricionais)
-                
-                // Bloco 3
-                categoria_nutricional: document.getElementById('foodCategory').value,
-                origem: document.getElementById('foodOrigin').value,
-                nivel_processamento: document.getElementById('foodProcessing').value,
-                glutem: document.getElementById('foodGluten').value === 'true',
-                carga_antioxidante: document.getElementById('foodAntioxidants').value.trim() || null,
-                observacoes: document.getElementById('foodObservations').value.trim(),
-                img_registro: await getImageBase64(),  // ← Nova função para a imagem
-                //Ajuste #15
-                //alergicos_comuns: Array.from(document.getElementById('foodAllergs3').selectedOptions)
-                    //.map(opt => opt.value).join(', ') || null
-
-                //Ajuste #16.1
-                
-
-                alergicos_comuns: selectedAllergens.length > 0 ? selectedAllergens : []
-                //Fim Ajuste #16.1
-                //Fim Ajuste #15
-            };
-
-            //Inicio DeepSeek #3
-                async function getImageBase64() {
-                const file = document.getElementById('foodImage').files[0];
-                if (!file) return null;
-                
-                return new Promise((resolve) => {
-                //Inicio DeepSeek #3.1
+        /**
+         * Converte imagem para base64
+         * @returns {Promise<string|null>} Imagem em base64 ou null
+         */
+        async function getImageBase64() {
+            const file = document.getElementById('foodImage').files[0];
+            if (!file) return null;
+            
+            return new Promise((resolve) => {
                 if (file.size > 2 * 1024 * 1024) {
                     compressImage(file, 0.5).then(resolve);
                 } else {
-                //Fim DeepSeek #3.1
                     const reader = new FileReader();
                     reader.readAsDataURL(file);
                     reader.onload = () => {
-                        // Remove o prefixo "data:image/...;base64,"
                         const base64Data = reader.result.split(',')[1]; 
                         resolve(base64Data);
                     };
                 }
-                });
-            }
-            //Fim DeepSeek #3
+            });
+        }
 
-            //Inicio DeepSeek #3.1
-            function compressImage(file, quality) {
+        /**
+         * Comprime imagem
+         * @param {File} file - Arquivo de imagem
+         * @param {number} quality - Qualidade da compressão (0-1)
+         * @returns {Promise<string>} Imagem comprimida em base64
+         */
+        function compressImage(file, quality) {
             return new Promise((resolve) => {
                 const img = new Image();
                 const canvas = document.createElement('canvas');
@@ -929,255 +861,166 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 img.src = URL.createObjectURL(file);
             });
+        }
+
+        // Verificar token de autenticação
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('Usuário não autenticado. Faça login novamente.');
+            document.getElementById('foodModalLoader').style.display = 'none';
+            return;
+        }
+
+        // Validar campos obrigatórios
+        const requiredFields = {
+            item: formData.item,
+            modo_preparo: formData.modo_preparo,
+            grupo_alimentar: formData.grupo_alimentar,
+            calorias_kcal: formData.calorias_kcal,
+            proteina_gr: formData.proteina_gr,
+            carbo_gr: formData.carbo_gr,
+            gorduras_totais_gr: formData.gorduras_totais_gr
+        };
+
+        for (const [field, value] of Object.entries(requiredFields)) {
+            if (value === undefined || value === null || value === '') {
+                alert(`O campo ${field.replace('_', ' ')} é obrigatório!`);
+                document.getElementById('foodModalLoader').style.display = 'none';
+                return;
             }
-            //Fim DeepSeek #3.1
+        }
 
-            //Inicio Alterações GPT
-                // GARANTIR TOKEN
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    alert('Usuário não autenticado. Faça login novamente.');
-                    document.getElementById('foodModalLoader').style.display = 'none';
-                    return;  // para não continuar o envio
-                }
-            //Fim Alterações GPT
-
-            //Ajuste #20
-            // Validar campos obrigatórios
-            //if (!formData.item || !formData.modo_preparo || !formData.grupo_alimentar || !formData.calorias_kcal || !formData.proteina_gr || !formData.carbo_gr || !formData.gorduras_totais_gr) {
-                //alert('Preencha todos os campos obrigatórios!');
-                //document.getElementById('foodModalLoader').style.display = 'none';
-                //return;
-            //}
-
-            const requiredFields = {
-                item: formData.item,
-                modo_preparo: formData.modo_preparo,
-                grupo_alimentar: formData.grupo_alimentar,
-                calorias_kcal: formData.calorias_kcal,
-                proteina_gr: formData.proteina_gr,
-                carbo_gr: formData.carbo_gr,
-                gorduras_totais_gr: formData.gorduras_totais_gr
-            };
-
-            for (const [field, value] of Object.entries(requiredFields)) {
-                if (value === undefined || value === null || value === '') {
-                    alert(`O campo ${field.replace('_', ' ')} é obrigatório!`);
-                    document.getElementById('foodModalLoader').style.display = 'none';
-                    return;
-                }
-            }
-
-            //Fim Ajuste #20
-
-
-            // Enviar para o servidor
-
-            //Inicio Alterações GPT
-            const API_URL = 'https://fit-plus-backend.onrender.com/api/save-food'; // URL completa
-            try {
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    mode: 'cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                const result = await response.json();
-
-                //Ajuste #21.1
-                //Ajuste #21 - Bloco unificado
-                if (result.success) {
-                    alert('Alimento salvo com sucesso!');
-                    foodAddModal.style.display = 'none';
-                    clearModalFields();
-                    foodAddModal.scrollTop = 0; // Ajuste #9
-                    const modalContent = foodAddModal.querySelector('.food-modal-content');
-                    if (modalContent) modalContent.scrollTop = 0; // Ajuste #9
-                } else {
-                    // Exibe a mensagem do servidor SEM lançar erro
-                    alert(result.message || 'Erro ao salvar');
-                    document.getElementById('foodModalLoader').style.display = 'none'; // Oculta loader
-                    return; // Interrompe o fluxo sem tratar como erro
-                }
-                //Fim Ajuste #21
-
-                //if (result.success) {
-                    //alert('Alimento salvo com sucesso!');
-                    //foodAddModal.style.display = 'none';
-                    //Ajuste #9
-                    //clearModalFields();
-                    //foodAddModal.scrollTop = 0;
-                    //const modalContent = foodAddModal.querySelector('.food-modal-content');
-                    //if (modalContent) modalContent.scrollTop = 0;
-                    //Fim Ajuste #9
-                //} else {
-                    //throw new Error(result.message || 'Erro ao salvar');
-                //}
-
-                //Fim Ajuste #21.1
-
-
-            } catch (error) {
-                    // Verificar se response existe para evitar erro
-                    if (error instanceof TypeError) {
-                        // Erro de rede ou CORS provavelmente
-                        console.error('Erro de rede ou CORS:', error);
-                    } else {
-                        console.error('Erro inesperado:', error);
-                    }
-                    alert('Erro ao conectar com o servidor. Verifique o console (F12)');
-                    //Ajuste #10
-                    document.getElementById('foodModalLoader').style.display = 'none';
-                    //Fim Ajuste #10
-                }
-                //Ajuste #10
-                finally {
-                    // Ocultar loader em qualquer caso
-                    document.getElementById('foodModalLoader').style.display = 'none';
-                }
-                //Fim Ajuste #10
+        // Enviar para o servidor
+        try {
+            const response = await fetch('https://fit-plus-backend.onrender.com/api/save-food', {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(formData)
             });
-            //FIm Alterações GPT
 
-        
+            const result = await response.json();
 
-            // Carregar opções de selects (tabelas auxiliares)
-            async function loadSelectOptions() {
-            const selects = {
-                'foodPreparation': '/api/get-options?table=tbl_aux_modo_preparo',
-                'foodGroup': '/api/get-options?table=tbl_aux_grupo_alimentar',
-                'foodCategory': '/api/get-options?table=tbl_aux_categoria_nutri',
-                'foodOrigin': '/api/get-options?table=tbl_aux_origem_alimentar',
-                'foodProcessing': '/api/get-options?table=tbl_aux_processamento',
-            };
+            if (result.success) {
+                alert('Alimento salvo com sucesso!');
+                foodAddModal.style.display = 'none';
+                clearModalFields();
+                foodAddModal.scrollTop = 0;
+                const modalContent = foodAddModal.querySelector('.food-modal-content');
+                if (modalContent) modalContent.scrollTop = 0;
+            } else {
+                alert(result.message || 'Erro ao salvar');
+                document.getElementById('foodModalLoader').style.display = 'none';
+                return;
+            }
+        } catch (error) {
+            if (error instanceof TypeError) {
+                console.error('Erro de rede ou CORS:', error);
+            } else {
+                console.error('Erro inesperado:', error);
+            }
+            alert('Erro ao conectar com o servidor. Verifique o console (F12)');
+            document.getElementById('foodModalLoader').style.display = 'none';
+        } finally {
+            document.getElementById('foodModalLoader').style.display = 'none';
+        }
+    });
 
-            //Ajuste #15
-            // Carregar opções de alergênicos
-            const allergResponse = await fetch('/api/get-options?table=tbl_aux_alergicos');
-            const allergOptions = await allergResponse.json();
-            const allergSelect = document.getElementById('foodAllergs3');
+    /**
+     * Carrega opções para os selects do formulário
+     */
+    async function loadSelectOptions() {
+        const selects = {
+            'foodPreparation': '/api/get-options?table=tbl_aux_modo_preparo',
+            'foodGroup': '/api/get-options?table=tbl_aux_grupo_alimentar',
+            'foodCategory': '/api/get-options?table=tbl_aux_categoria_nutri',
+            'foodOrigin': '/api/get-options?table=tbl_aux_origem_alimentar',
+            'foodProcessing': '/api/get-options?table=tbl_aux_processamento',
+        };
 
-            allergOptions.forEach(opt => {
+        // Carregar opções de alergênicos
+        const allergResponse = await fetch('/api/get-options?table=tbl_aux_alergicos');
+        const allergOptions = await allergResponse.json();
+        const allergSelect = document.getElementById('foodAllergs3');
+
+        allergOptions.forEach(opt => {
+            const option = document.createElement('option');
+            option.value = opt.id;
+            option.textContent = opt.nome;
+            allergSelect.appendChild(option);
+        });
+
+        allergSelect.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            const option = e.target;
+            if (option.tagName.toLowerCase() === 'option') {
+                const selectElement = this;
+                const scrollTop = selectElement.scrollTop;
+                selectElement.blur();
+                option.selected = !option.selected;
+                setTimeout(() => {
+                    updateSelectedAllergens();
+                    selectElement.scrollTop = scrollTop;
+                }, 0);
+            }
+        });
+
+        // Evento para seleção de alergênicos
+        allergSelect.addEventListener('change', function() {
+            updateSelectedAllergens();
+        });
+
+        // Carregar opções para outros selects
+        for (const [id, url] of Object.entries(selects)) {
+            const response = await fetch(url);
+            const options = await response.json();
+            const select = document.getElementById(id);
+
+            select.innerHTML = '<option value="" disabled selected>Selecione uma opção</option>';
+            options.forEach(opt => {
                 const option = document.createElement('option');
                 option.value = opt.id;
                 option.textContent = opt.nome;
-                allergSelect.appendChild(option);
+                select.appendChild(option);
             });
-
-            //Ajuste #15.1
-            //Ajuste #16
-            allergSelect.addEventListener('mousedown', function(e) {
-            //Fim Ajuste #16
-                e.preventDefault(); // Evita comportamento padrão
-                const option = e.target;
-                if (option.tagName.toLowerCase() === 'option') {
-                    //Ajuste 15.2
-                    const selectElement = this;
-                    const scrollTop = selectElement.scrollTop;
-                    //Ajuste 15.2
-                    selectElement.blur();
-                    option.selected = !option.selected; // Alterna o estado
-                    setTimeout(() => {
-                        updateSelectedAllergens();
-                        // Restaura scroll depois de tudo
-                        selectElement.scrollTop = scrollTop;
-                    }, 0);
-                    //Ajuste 15.2
-                }
-            });
-
-            /*//Ajuste #16
-            allergSelect.addEventListener('click', function(e) {
-                e.preventDefault();
-                if (e.target.tagName.toLowerCase() === 'option') {
-                    const selectElement = this;
-                    const scrollTop = selectElement.scrollTop;
-                    selectElement.blur();
-                    e.target.selected = !e.target.selected;
-                    setTimeout(() => {
-                        updateSelectedAllergens();
-                        selectElement.scrollTop = scrollTop;
-                    }, 0);
-                }
-            });
-            //Fim ajuste #16
-            */
-            //Fim Ajuste #15.1
-
-            // Evento para seleção de alergênicos
-            allergSelect.addEventListener('change', function() {
-                updateSelectedAllergens();
-            });
-            //FIm Ajuste #15
-
-            for (const [id, url] of Object.entries(selects)) {
-                const response = await fetch(url);
-                const options = await response.json();
-                const select = document.getElementById(id);
-
-                // Limpa opções existentes
-                //Ajuste #8
-                select.innerHTML = '<option value="" disabled selected>Selecione uma opção</option>';
-                //Fim Ajuste #8
-                options.forEach(opt => {
-                    const option = document.createElement('option');
-                    option.value = opt.id;
-                    option.textContent = opt.nome;
-                    select.appendChild(option);
-            });
-            }
-
-            console.log('Horário enviado:', new Date().toLocaleString('pt-BR', {
-                timeZone: 'America/Sao_Paulo'
-            }));
         }
 
-        //Ajuste #22
-        // Evento de pesquisa
-        foodSearchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && foodSearchInput.value.trim()) {
-                searchFoods(foodSearchInput.value.trim());
-            }
-        });
+        console.log('Horário enviado:', new Date().toLocaleString('pt-BR', {
+            timeZone: 'America/Sao_Paulo'
+        }));
+    }
 
-        // Eventos de paginação
-        prevPageBtn.addEventListener('click', () => {
-            if (currentPage > 1) {
-                currentPage--;
-                renderTable();
-            }
-        });
-
-        nextPageBtn.addEventListener('click', () => {
-            if (currentPage * itemsPerPage < searchResults.length) {
-                currentPage++;
-                renderTable();
-            }
-        });
-
-        // Evento para abrir modal de detalhes
-        foodTableBody.addEventListener('click', (e) => {
-            const row = e.target.closest('tr');
-            if (row && row.dataset.id) {
-                const detailModal = document.getElementById('foodDetailModal');
-                detailModal.style.display = 'block';
-                // Aqui você pode implementar a lógica para carregar os detalhes
-            }
-        });
-        //Fim Ajuste #22
-
-        loadSelectOptions();
-        //FIM ALTERAÇÕES DEEPSEEK
-
-        // ========== INICIALIZAÇÃO ==========
-        loadUserData();
-        initializeEmptyTable();
-        setupCollapsibleBlocks();
-        setupPortionUnitToggle();
-        setupModalCleanup();
-        setupDetailCollapsibles();
+    // ========== EVENTOS ADICIONAIS ==========
+    // Evento de pesquisa
+    foodSearchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && foodSearchInput.value.trim()) {
+            searchFoods(foodSearchInput.value.trim());
+        }
     });
+
+    // Eventos de paginação
+    prevPageBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+        }
+    });
+
+    nextPageBtn.addEventListener('click', () => {
+        if (currentPage * itemsPerPage < searchResults.length) {
+            currentPage++;
+            renderTable();
+        }
+    });
+
+    // ========== INICIALIZAÇÃO ==========
+    loadUserData();
+    initializeEmptyTable();
+    setupCollapsibleBlocks();
+    setupModalCleanup();
+    setupDetailCollapsibles();
+    loadSelectOptions();
+});
