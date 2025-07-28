@@ -714,6 +714,76 @@ app.get('/api/food-details', authenticateToken, async (req, res) => {
 });
 //Fim Ajuste #23
 
+//Ajuste #30
+// ========== ROTA PARA VERIFICAR PERMISSÃO DE REPORTE ==========
+app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
+    try {
+        const { foodId } = req.query;
+        
+        if (!foodId) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'ID do alimento não fornecido' 
+            });
+        }
+
+        // 1. Buscar dados do alimento
+        const foodQuery = await pool.query(
+            'SELECT user_registro, tipo_registro_alimento, error_report FROM tbl_foods WHERE id = $1',
+            [foodId]
+        );
+
+        if (foodQuery.rows.length === 0) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Alimento não encontrado' 
+            });
+        }
+
+        const foodData = foodQuery.rows[0];
+        const currentUserId = req.user.userId;
+
+        // 2. Aplicar validações
+        const validations = {
+            isNotOwner: foodData.user_registro !== currentUserId,
+            isVerified: foodData.tipo_registro_alimento === 1,
+            hasNoReport: !foodData.error_report
+        };
+
+        const isValid = Object.values(validations).every(Boolean);
+
+        if (!isValid) {
+            let message = 'Você não tem permissão para reportar este alimento';
+            
+            if (!validations.isNotOwner) {
+                message = 'Você não pode reportar um alimento que você mesmo cadastrou';
+            } else if (!validations.isVerified) {
+                message = 'Só é possível reportar alimentos verificados';
+            } else if (!validations.hasNoReport) {
+                message = 'Já existe um reporte aberto para este alimento';
+            }
+
+            return res.json({ 
+                success: false, 
+                message 
+            });
+        }
+
+        // 3. Se todas as validações passarem
+        res.json({ 
+            success: true 
+        });
+
+    } catch (error) {
+        console.error('Erro ao verificar permissão:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Erro ao verificar permissão' 
+        });
+    }
+});
+//Fim Ajuste #30
+
 //FIM ALTERAÇÕES DEEPSEEK
 
 app.listen(PORT, async () => {

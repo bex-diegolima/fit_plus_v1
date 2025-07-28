@@ -429,6 +429,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!response.ok) throw new Error('Erro ao carregar detalhes');
             
             const foodData = await response.json();
+
+            //Ajuste #30
+            // Armazenar ID do alimento no modal
+            detailModal.dataset.foodId = foodData.id;
+            //Fim Ajuste #30
             
             // Esconder loader e mostrar conteúdo
             loader.style.display = 'none';
@@ -675,13 +680,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Ajuste #30
     // Configurar botão reportar erro (placeholder)
-    document.getElementById('rep-btD').addEventListener('click', function() {
-        document.getElementById('foodReportModal').style.display = 'block';
-    });
+    // ========== CONFIGURAR BOTÃO REPORTAR ERRO ==========
+    document.getElementById('rep-btD').addEventListener('click', async function() {
+        try {
+            // Obter o ID do alimento atualmente aberto
+            const foodId = document.querySelector('#foodDetailModal').dataset.foodId;
+            
+            if (!foodId) {
+                throw new Error('Nenhum alimento selecionado');
+            }
 
-    // Adicionar evento para fechar o modal de reporte
-    document.getElementById('closeReportBtn').addEventListener('click', function() {
-        document.getElementById('foodReportModal').style.display = 'none';
+            const token = localStorage.getItem('token');
+            const response = await fetch(`https://fit-plus-backend.onrender.com/api/check-report-permission?foodId=${foodId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Abrir modal de reporte se as validações passarem
+                document.getElementById('foodReportModal').style.display = 'block';
+                document.getElementById('foodReportModal').scrollTop = 0;
+            } else {
+                // Mostrar mensagem de erro se alguma validação falhar
+                alert(result.message || 'Você não tem permissão para reportar este alimento');
+            }
+
+        } catch (error) {
+            console.error('Erro ao verificar permissão:', error);
+            alert('Erro ao verificar permissão para reportar');
+        }
     });
     //Ajuste #30
     //Fim Ajuste #23
