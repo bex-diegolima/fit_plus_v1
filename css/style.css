@@ -1556,3 +1556,21 @@ Fim Ajuste Manual #1*/
     }
 }
 /*Fim Ajuste #30*/
+
+/* Adicione temporariamente para debug */
+#foodReportModal.debug {
+    border: 3px solid red !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+#foodReportModal.debug .food-report-modal-content {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255,0,0,0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(255,0,0,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,0,0,0); }
+}
