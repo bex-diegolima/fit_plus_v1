@@ -751,12 +751,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    //Ajuste #30
     // Configurar eventos dos botões
-    document.getElementById('rep-btD').addEventListener('click', function() {
-        if (currentReportFoodId) {
-            openReportForm(currentReportFoodId);
-        }
-    });
+    //document.getElementById('rep-btD').addEventListener('click', function() {
+        //if (currentReportFoodId) {
+            //openReportForm(currentReportFoodId);
+        //}
+    //});
+    //Fim Ajuste #30
 
     document.getElementById('closeReportBtn').addEventListener('click', resetReportForm);
     document.getElementById('submitReportBtn').addEventListener('click', submitReport);
