@@ -392,6 +392,9 @@ document.addEventListener('DOMContentLoaded', function() {
     //Ajuste #23.1
     //Validar #1
     async function loadFoodDetails(foodId) {
+        //Ajuste #30
+        currentReportFoodId = foodId;
+        //Fim Ajuste #30
         const modal = document.getElementById('foodDetailModal');
         const loader = document.getElementById('foodDetailLoader');
         
@@ -988,9 +991,16 @@ document.addEventListener('DOMContentLoaded', function() {
     //Fim Validar #1
 
     // Configurar botão reportar erro (placeholder)
+    //Ajuste #30
     document.getElementById('rep-btD').addEventListener('click', function() {
-        alert('Funcionalidade de reportar erro será implementada em breve.');
+        if (currentReportFoodId) {
+        openReportForm(currentReportFoodId);
+        } else {
+        console.error('ID do alimento não está definido');
+        alert('Erro: Não foi possível identificar o alimento para reporte.');
+        }
     });
+    //Fim Ajuste #30
     //Fim Ajuste #23
 
     // Atualize o evento de fechar o modal (substitua o existente):
