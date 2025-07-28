@@ -590,6 +590,30 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    //Ajuste #31
+    document.getElementById('rep-btD').addEventListener('click', async function() {
+        if (!currentReportFoodId) {
+            console.error('Nenhum alimento selecionado para reporte');
+            alert('Selecione um alimento antes de reportar erro');
+            return;
+        }
+
+        try {
+            // Verificação adicional de segurança
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Você precisa estar logado para reportar erros');
+                return;
+            }
+
+            await openReportForm(currentReportFoodId);
+        } catch (error) {
+            console.error('Erro ao abrir formulário de reporte:', error);
+            alert('Erro ao abrir formulário: ' + error.message);
+        }
+    });
+    //Fim Ajuste #31
+
     // Função para validar se pode reportar
     //Ajuste #31
     async function validateCanReport(foodId) {
@@ -777,18 +801,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    //Ajuste #30
-    // Configurar eventos dos botões
-    //document.getElementById('rep-btD').addEventListener('click', function() {
-        //if (currentReportFoodId) {
-            //openReportForm(currentReportFoodId);
-        //}
-    //});
-    //Fim Ajuste #30
-
     document.getElementById('closeReportBtn').addEventListener('click', resetReportForm);
     document.getElementById('submitReportBtn').addEventListener('click', submitReport);
-    //Fim Ajuste #30 
 
 
     function populateFoodDetails(data) {
@@ -1017,21 +1031,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     //Fim Validar #1
-
-    // Configurar botão reportar erro (placeholder)
-    //Ajuste #30
-    //Ajuste #31
-    document.getElementById('rep-btD').addEventListener('click', function() {
-        if (currentReportFoodId) {
-            openReportForm(currentReportFoodId);
-        } else {
-            console.error('ID do alimento não está definido');
-            alert('Erro: Não foi possível identificar o alimento para reporte.');
-        }
-    });
-    //Fim Ajuste #30
-    //Fim Ajuste #30
-    //Fim Ajuste #23
 
     // Atualize o evento de fechar o modal (substitua o existente):
     closeButtons.forEach(btn => {
