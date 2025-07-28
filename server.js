@@ -714,6 +714,130 @@ app.get('/api/food-details', authenticateToken, async (req, res) => {
 });
 //Fim Ajuste #23
 
+//Ajuste #30
+// ========== ROTAS PARA REPORTE DE ALIMENTOS ==========
+// Adicionar após as outras rotas em server.js
+
+// Rota para validar se pode reportar
+app.get('/api/validate-report', authenticateToken, async (req, res) => {
+    try {
+        const { foodId, userId } = req.query;
+        
+        // Verificar se o alimento existe
+        const foodResult = await pool.query('SELECT error_report, tipo_registro_alimento, user_registro FROM tbl_foods WHERE id = $1', [foodId]);
+        if (foodResult.rows.length === 0) {
+            return res.status(404).json({ canReport: false, message: 'Alimento não encontrado' });
+        }
+        
+        const food = foodResult.rows[0];
+        
+        // Validação 1: error_report = false
+        if (food.error_report) {
+            return res.json({ canReport: false, message: 'Alerta#1' });
+        }
+        
+        // Validação 2: tipo_registro_alimento = 1
+        if (food.tipo_registro_alimento !== 1) {
+            return res.json({ canReport: false, message: 'Alerta#2' });
+        }
+        
+        // Validação 3: user_registro diferente do usuário logado
+        if (food.user_registro == userId) {
+            return res.json({ canReport: false, message: 'Alerta#3' });
+        }
+        
+        return res.json({ canReport: true });
+        
+    } catch (error) {
+        console.error('Erro na validação de reporte:', error);
+        res.status(500).json({ error: 'Erro interno no servidor' });
+    }
+});
+
+// Rota para criar reporte
+app.post('/api/create-report', authenticateToken, async (req, res) => {
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+        
+        const { foodId, userId } = req.body;
+        
+        // Inserir na tbl_report
+        const result = await client.query(
+            `INSERT INTO tbl_report 
+            (id_food, id_user_report, status_report, dt_report) 
+            VALUES ($1, $2, 'open', NOW()) 
+            RETURNING id`,
+            [foodId, userId]
+        );
+        
+        await client.query('COMMIT');
+        res.json({ success: true, reportId: result.rows[0].id });
+        
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Erro ao criar reporte:', error);
+        res.status(500).json({ success: false, error: 'Erro ao criar reporte' });
+    } finally {
+        client.release();
+    }
+});
+
+// Rota para criar item de reporte
+app.post('/api/create-report-item', authenticateToken, async (req, res) => {
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+        
+        const { reportId, fieldId, suggestedValue } = req.body;
+        
+        // Inserir na tbl_report_itens
+        await client.query(
+            `INSERT INTO tbl_report_itens 
+            (id_report, id_campo, valor_sugerido, status, dt_reg) 
+            VALUES ($1, $2, $3, 'open', NOW())`,
+            [reportId, fieldId, suggestedValue]
+        );
+        
+        await client.query('COMMIT');
+        res.json({ success: true });
+        
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Erro ao criar item de reporte:', error);
+        res.status(500).json({ success: false, error: 'Erro ao criar item de reporte' });
+    } finally {
+        client.release();
+    }
+});
+
+// Rota para marcar alimento como reportado
+app.post('/api/mark-food-reported', authenticateToken, async (req, res) => {
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+        
+        const { foodId } = req.body;
+        
+        // Atualizar tbl_foods
+        await client.query(
+            `UPDATE tbl_foods SET error_report = true WHERE id = $1`,
+            [foodId]
+        );
+        
+        await client.query('COMMIT');
+        res.json({ success: true });
+        
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Erro ao marcar alimento como reportado:', error);
+        res.status(500).json({ success: false, error: 'Erro ao marcar alimento como reportado' });
+    } finally {
+        client.release();
+    }
+});
+//Fim Ajuste #30
+
 //FIM ALTERAÇÕES DEEPSEEK
 
 app.listen(PORT, async () => {

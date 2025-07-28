@@ -337,6 +337,52 @@
     <!-- Fim Ajuste Manual #2-->
     <!--Fim Ajuste #23-->
 
+    <!--Ajuste #30-->
+    <!-- Adicionar após o modal de detalhes (foodDetailModal) -->
+    <div id="foodReportModal" class="food-report-modal" style="display: none;">
+        <div class="food-report-modal-content">
+            <div class="fm-top-barrier"></div>
+            <div class="fm-cabecalho">
+                <h2 class="food-report-modal-title">Reporte de Informações Incorretas</h2>
+                <div>
+                    <button id="submitReportBtn" class="submit-report-btn">Enviar Reporte</button>
+                    <button id="closeReportBtn" class="close-report-btn">Fechar</button>
+                </div>
+            </div>
+            <div class="barraD"></div>
+
+            <div class="food-report-body">
+                <div class="report-info-group">
+                    <label>Alimento:</label>
+                    <span id="reportFoodName" class="report-value"></span>
+                </div>
+                
+                <div class="report-info-group">
+                    <label>Porção Base:</label>
+                    <span id="reportBasePortion" class="report-value"></span>
+                    <span id="reportPortionUnit" class="report-unit"></span>
+                </div>
+                
+                <div class="report-notice">
+                    <p>Todos os valores abaixo devem ser proporcionais à porção base</p>
+                </div>
+                
+                <div class="report-fields-container">
+                    <!-- Campos serão preenchidos dinamicamente via JavaScript -->
+                </div>
+            </div>
+
+            <div id="reportLoader" class="food-report-loader" style="display: none;">
+                <div class="loader-content">
+                    <i class="fas fa-spinner fa-spin fa-3x"></i>
+                    <p>Enviando reporte...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Fim Ajuste #30-->
+
+
     <!-- Modal de Cadastro -->
     <div id="foodAddModal" class="food-modal" style="display: none;">
         <div class="food-modal-content">

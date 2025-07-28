@@ -446,6 +446,320 @@ document.addEventListener('DOMContentLoaded', function() {
     //Fim Validar #1
     //Fim Ajuste #23.1
 
+    //Ajuste #30
+    // ========== FUNCIONALIDADES DE REPORTE ==========
+    // Adicionar após as outras funções em food_mod.js
+
+    // Variáveis globais para controle do reporte
+    let currentReportFoodId = null;
+    let reportFieldsConfig = [
+        { id: 1, label: "Kcal.", field: "calorias_kcal", unit: "kcal" },
+        { id: 2, label: "Proteínas (g)", field: "proteina_gr", unit: "g" },
+        { id: 3, label: "Carboidratos (g)", field: "carbo_gr", unit: "g" },
+        { id: 4, label: "Gorduras Totais (g)", field: "gorduras_totais_gr", unit: "g" },
+        { id: 5, label: "Gorduras Boas (g)", field: "gorduras_boas_gr", unit: "g" },
+        { id: 6, label: "Gorduras Ruins (g)", field: "gorduras_ruins_gr", unit: "g" },
+        { id: 7, label: "Fibras (g)", field: "fibras_gr", unit: "g" },
+        { id: 8, label: "Sódio (mg)", field: "sodio_mg", unit: "mg" },
+        { id: 9, label: "Açúcares Totais (g)", field: "acucares_gr", unit: "g" },
+        { id: 10, label: "Açúcares Adicionados (g)", field: "acucar_adicionado_gr", unit: "g" },
+        { id: 11, label: "Índice Glicêmico", field: "indice_glicemico", unit: "" },
+        { id: 12, label: "Carga Glicêmica", field: "carga_glicemica", unit: "" },
+        { id: 13, label: "Colesterol (mg)", field: "colesterol_mg", unit: "mg" },
+        { id: 14, label: "Cálcio (mg)", field: "calcio_mg", unit: "mg" },
+        { id: 15, label: "Ferro (mg)", field: "ferro_mg", unit: "mg" },
+        { id: 16, label: "Potássio (mg)", field: "potassio_mg", unit: "mg" },
+        { id: 17, label: "Magnésio (mg)", field: "magnesio_mg", unit: "mg" },
+        { id: 18, label: "Zinco (mg)", field: "zinco_mg", unit: "mg" },
+        { id: 19, label: "Vitamina A (mcg)", field: "vitamina_a_mcg", unit: "mcg" },
+        { id: 20, label: "Vitamina D (mcg)", field: "vitamina_d_mcg", unit: "mcg" },
+        { id: 21, label: "Vitamina C (mg)", field: "vitamina_c_mg", unit: "mg" },
+        { id: 22, label: "Vitamina B12 (mcg)", field: "vitamina_b12_mcg", unit: "mcg" },
+        { id: 23, label: "Vitamina E (mcg)", field: "vitamina_e_mcg", unit: "mcg" },
+        { id: 24, label: "Ômega 3 (mg)", field: "omega_tres_mg", unit: "mg" },
+        { id: 25, label: "Ácido Fólico (mcg)", field: "acido_folico_mcg", unit: "mcg" },
+        { id: 26, label: "Teor Alcoólico (%)", field: "teor_alcoolico", unit: "%" },
+        { id: 27, label: "Carga Antioxidante", field: "carga_antioxidante", unit: "" }
+    ];
+
+    // Função para abrir o formulário de reporte
+    async function openReportForm(foodId) {
+        try {
+            // Validar se pode reportar
+            const canReport = await validateCanReport(foodId);
+            if (!canReport.valid) {
+                showAlert(canReport.message);
+                return;
+            }
+
+            // Obter detalhes do alimento
+            const token = localStorage.getItem('token');
+            const response = await fetch(`https://fit-plus-backend.onrender.com/api/food-details?id=${foodId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (!response.ok) throw new Error('Erro ao carregar detalhes');
+            
+            const foodData = await response.json();
+            currentReportFoodId = foodId;
+
+            // Preencher informações básicas
+            document.getElementById('reportFoodName').textContent = foodData.item || '-';
+            document.getElementById('reportBasePortion').textContent = foodData.porcao_base || '100';
+            
+            // Definir unidade de medida
+            const unitSpan = document.getElementById('reportPortionUnit');
+            if ([10, 11].includes(parseInt(foodData.grupo_alimentar))) {
+                unitSpan.textContent = 'ml';
+            } else {
+                unitSpan.textContent = 'g';
+            }
+
+            // Preencher campos reportáveis
+            const fieldsContainer = document.querySelector('.report-fields-container');
+            fieldsContainer.innerHTML = '';
+            
+            reportFieldsConfig.forEach(field => {
+                const fieldDiv = document.createElement('div');
+                fieldDiv.className = 'report-field';
+                
+                const currentValue = foodData[field.field] || 0;
+                const formattedValue = currentValue !== '-' ? parseFloat(currentValue).toFixed(2) : '-';
+                
+                fieldDiv.innerHTML = `
+                    <div class="report-field-checkbox">
+                        <input type="checkbox" id="report-check-${field.id}" class="report-checkbox" data-id="${field.id}">
+                    </div>
+                    <div class="report-field-label">${field.label}</div>
+                    <div class="report-field-current">${formattedValue} ${field.unit}</div>
+                    <div class="report-field-suggested">
+                        <input type="number" id="report-input-${field.id}" class="report-input" step="0.01" disabled data-id="${field.id}">
+                    </div>
+                `;
+                
+                fieldsContainer.appendChild(fieldDiv);
+            });
+
+            // Configurar eventos dos checkboxes
+            document.querySelectorAll('.report-checkbox').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    const fieldId = this.getAttribute('data-id');
+                    const input = document.getElementById(`report-input-${fieldId}`);
+                    input.disabled = !this.checked;
+                    
+                    // Adicionar/remover classe ativa
+                    const fieldDiv = this.closest('.report-field');
+                    if (this.checked) {
+                        fieldDiv.classList.add('active');
+                        input.focus();
+                    } else {
+                        fieldDiv.classList.remove('active');
+                        input.value = '';
+                    }
+                });
+            });
+
+            // Mostrar modal e resetar scroll
+            const reportModal = document.getElementById('foodReportModal');
+            reportModal.style.display = 'block';
+            reportModal.scrollTop = 0;
+            reportModal.querySelector('.food-report-modal-content').scrollTop = 0;
+
+        } catch (error) {
+            console.error('Erro ao abrir formulário de reporte:', error);
+            alert('Erro ao abrir formulário de reporte: ' + error.message);
+        }
+    }
+
+    // Função para validar se pode reportar
+    async function validateCanReport(foodId) {
+        try {
+            const token = localStorage.getItem('token');
+            const userId = jwt.decode(token).userId;
+            
+            const response = await fetch(`https://fit-plus-backend.onrender.com/api/validate-report?foodId=${foodId}&userId=${userId}`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            
+            if (!response.ok) throw new Error('Erro na validação');
+            
+            const result = await response.json();
+            
+            if (!result.canReport) {
+                return { valid: false, message: result.message };
+            }
+            
+            return { valid: true };
+        } catch (error) {
+            console.error('Erro na validação:', error);
+            return { valid: false, message: 'Erro ao validar condições para reporte' };
+        }
+    }
+
+    // Função para enviar o reporte
+    async function submitReport() {
+        const loader = document.getElementById('reportLoader');
+        loader.style.display = 'flex';
+        
+        try {
+            // Validar campos
+            const checkedFields = [];
+            let isValid = true;
+            
+            document.querySelectorAll('.report-checkbox:checked').forEach(checkbox => {
+                const fieldId = checkbox.getAttribute('data-id');
+                const input = document.getElementById(`report-input-${fieldId}`);
+                
+                if (input.value === '') {
+                    isValid = false;
+                    input.style.borderColor = '#e74c3c';
+                } else {
+                    checkedFields.push({
+                        id: fieldId,
+                        suggestedValue: input.value
+                    });
+                }
+            });
+            
+            if (!isValid) {
+                showAlert("Alerta#4");
+                loader.style.display = 'none';
+                return;
+            }
+            
+            if (checkedFields.length === 0) {
+                showAlert("Alerta#4");
+                loader.style.display = 'none';
+                return;
+            }
+            
+            // Confirmar envio
+            const confirmSend = confirm("Alerta#5");
+            if (!confirmSend) {
+                resetReportForm();
+                loader.style.display = 'none';
+                return;
+            }
+            
+            // Obter token e userId
+            const token = localStorage.getItem('token');
+            const userId = jwt.decode(token).userId;
+            
+            // Funcionalidade 1: Criar registro na tbl_report
+            const reportResponse = await fetch('https://fit-plus-backend.onrender.com/api/create-report', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    foodId: currentReportFoodId,
+                    userId: userId
+                })
+            });
+            
+            if (!reportResponse.ok) throw new Error('Erro ao criar reporte');
+            
+            const reportData = await reportResponse.json();
+            const reportId = reportData.reportId;
+            
+            // Funcionalidade 2: Criar itens do reporte
+            for (const field of checkedFields) {
+                const itemResponse = await fetch('https://fit-plus-backend.onrender.com/api/create-report-item', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        reportId: reportId,
+                        fieldId: field.id,
+                        suggestedValue: field.suggestedValue
+                    })
+                });
+                
+                if (!itemResponse.ok) throw new Error('Erro ao criar item de reporte');
+            }
+            
+            // Funcionalidade 3: Enviar e-mail (será tratado no backend)
+            
+            // Funcionalidade 4: Finalizar processo
+            await fetch('https://fit-plus-backend.onrender.com/api/mark-food-reported', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    foodId: currentReportFoodId
+                })
+            });
+            
+            // Limpar e fechar
+            resetReportForm();
+            showAlert("Alerta#6");
+            
+        } catch (error) {
+            console.error('Erro ao enviar reporte:', error);
+            alert('Erro ao enviar reporte: ' + error.message);
+        } finally {
+            loader.style.display = 'none';
+        }
+    }
+
+    // Função para resetar o formulário de reporte
+    function resetReportForm() {
+        document.querySelectorAll('.report-checkbox').forEach(checkbox => {
+            checkbox.checked = false;
+            const fieldId = checkbox.getAttribute('data-id');
+            const input = document.getElementById(`report-input-${fieldId}`);
+            input.value = '';
+            input.disabled = true;
+            checkbox.closest('.report-field').classList.remove('active');
+        });
+        
+        document.getElementById('foodReportModal').style.display = 'none';
+        currentReportFoodId = null;
+    }
+
+    // Função para mostrar alertas
+    function showAlert(alertType) {
+        switch(alertType) {
+            case "Alerta#1":
+                alert("Já existe um reporte em aberto para esse item. Nosso time de suporte está revisando.");
+                break;
+            case "Alerta#2":
+                alert("Item cadastrado pelo próprio usuário. Exclua o registro e crie um novo para alterar informações.");
+                break;
+            case "Alerta#3":
+                alert("Item cadastrado pelo próprio usuário. Exclua o registro e crie um novo para alterar informações.");
+                break;
+            case "Alerta#4":
+                alert("Insira o valor sugerido do campo que deseja reportar para continuar.");
+                break;
+            case "Alerta#5":
+                // Já tratado no submitReport com confirm()
+                break;
+            case "Alerta#6":
+                alert("Seu reporte foi enviado para nosso time de suporte. Em breve você receberá um retorno no seu e-mail cadastrado.");
+                break;
+            default:
+                console.warn("Tipo de alerta desconhecido:", alertType);
+        }
+    }
+
+    // Configurar eventos dos botões
+    document.getElementById('rep-btD').addEventListener('click', function() {
+        if (currentReportFoodId) {
+            openReportForm(currentReportFoodId);
+        }
+    });
+
+    document.getElementById('closeReportBtn').addEventListener('click', resetReportForm);
+    document.getElementById('submitReportBtn').addEventListener('click', submitReport);
+    //Fim Ajuste #30 
+
+
     function populateFoodDetails(data) {
         // Alerta de verificação
 
