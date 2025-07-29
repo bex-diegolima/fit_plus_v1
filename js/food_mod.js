@@ -778,11 +778,15 @@ document.addEventListener('DOMContentLoaded', function() {
     //Ajuste #31
     // ========== FUNÇÕES DO FORMULÁRIO DE REPORTE ==========
     function setupReportForm() {
-        // Seleciona apenas elementos dentro do modal de reporte
+        console.log('Iniciando setup do formulário de reporte'); // Debug
+        
         const reportModal = document.getElementById('foodReportModal');
-        if (!reportModal) return;
+        if (!reportModal) {
+            console.error('Modal de reporte não encontrado!');
+            return;
+        }
 
-        // Fecha o modal ao clicar no botão
+        // Configuração do botão fechar
         const closeReportBtn = reportModal.querySelector('#closeReportBtn');
         if (closeReportBtn) {
             closeReportBtn.addEventListener('click', () => {
@@ -790,54 +794,57 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // Configuração robusta dos checkboxes
+        // Configuração dos checkboxes e campos
         const fieldGroups = reportModal.querySelectorAll('.report-field-group');
-        fieldGroups.forEach(group => {
+        fieldGroups.forEach((group, index) => {
+            console.log(`Processando grupo de campos ${index + 1}`); // Debug
+            
             const checkbox = group.querySelector('.report-checkbox');
             const input = group.querySelector('.suggested-input');
             
-            if (!checkbox || !input) return;
+            if (!checkbox || !input) {
+                console.warn(`Checkbox ou input não encontrado no grupo ${index + 1}`);
+                return;
+            }
 
-            // Estado inicial garantido
+            // Estado inicial
             input.disabled = true;
-            
-            // Remove qualquer evento existente para evitar duplicação
-            checkbox.removeEventListener('change', handleCheckboxChange);
-            
-            // Adiciona novo evento
-            checkbox.addEventListener('change', handleCheckboxChange);
-            
-            function handleCheckboxChange() {
-                // Força a atualização do estado disabled
-                input.disabled = !checkbox.checked;
+            console.log(`Campo ${index + 1} inicializado como desabilitado`); // Debug
+
+            // Configura evento de change
+            checkbox.addEventListener('change', function() {
+                console.log(`Checkbox ${index + 1} alterado. Novo estado:`, this.checked); // Debug
                 
-                // Atualiza visualmente (garantia extra)
-                if (checkbox.checked) {
-                    input.removeAttribute('disabled');
-                } else {
-                    input.setAttribute('disabled', 'disabled');
+                // Alterna o estado disabled do campo correspondente
+                input.disabled = !this.checked;
+                
+                // Força a renderização (solução definitiva)
+                input.style.display = 'none';
+                input.offsetHeight; // Trigger reflow
+                input.style.display = 'block';
+                
+                // Limpa o valor se desmarcado
+                if (!this.checked) {
                     input.value = '';
                 }
                 
-                // Atualiza o botão de submit
                 updateSubmitButton();
-            }
+            });
         });
 
-        // Validação numérica robusta
+        // Configura validação numérica
         const numberInputs = reportModal.querySelectorAll('.suggested-input');
         numberInputs.forEach(input => {
             input.addEventListener('input', function() {
                 this.value = this.value.replace(/[^0-9.]/g, '');
                 
-                const decimalCount = (this.value.match(/\./g) || []).length;
-                if (decimalCount > 1) {
+                if ((this.value.match(/\./g) || []).length > 1) {
                     this.value = this.value.substring(0, this.value.lastIndexOf('.'));
                 }
             });
         });
 
-        // Controle do botão de submit
+        // Configura botão de submit
         const submitReportBtn = reportModal.querySelector('#submitReportBtn');
         if (submitReportBtn) {
             submitReportBtn.disabled = true;
@@ -847,12 +854,14 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
-        // Função para atualizar o botão
+        // Função para atualizar o botão de submit
         function updateSubmitButton() {
             if (!submitReportBtn) return;
             
             const checkedBoxes = reportModal.querySelectorAll('.report-checkbox:checked');
             submitReportBtn.disabled = checkedBoxes.length === 0;
+            
+            console.log('Estado do botão submit:', !submitReportBtn.disabled); // Debug
         }
     }
     //Fim Ajuste #31

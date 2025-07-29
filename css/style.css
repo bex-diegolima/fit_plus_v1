@@ -1655,17 +1655,20 @@ button:disabled {
 
 /*Ajuste #31.1*/
 /* ===== CORREÇÃO DEFINITIVA PARA OS CAMPOS DE REPORTE ===== */
-.report-field-group .suggested-input:disabled {
+.report-field-group .suggested-input[disabled] {
     background-color: #f5f5f5 !important;
     cursor: not-allowed !important;
     opacity: 0.7 !important;
     pointer-events: none !important;
+    border-color: #ddd !important;
 }
 
-.report-field-group .suggested-input:not(:disabled) {
+.report-field-group .suggested-input:not([disabled]) {
     background-color: white !important;
     cursor: text !important;
     opacity: 1 !important;
+    pointer-events: auto !important;
+    border-color: #3498db !important;
 }
 /*Fim Ajuste #31.1*/
 
