@@ -776,50 +776,118 @@ document.addEventListener('DOMContentLoaded', function() {
     //Fim Ajuste #30.1
 
     //Ajuste #31
-    // Adicionar após a função showAlertMessage no food_mod.js
     // ========== FUNÇÕES DO FORMULÁRIO DE REPORTE ==========
     function setupReportForm() {
         const reportModal = document.getElementById('foodReportModal');
         const closeReportBtn = document.getElementById('closeReportBtn');
-        const submitReportBtn = document.getElementById('submitReportBtn');
         
         // Fechar modal
         closeReportBtn.addEventListener('click', () => {
             reportModal.style.display = 'none';
         });
         
-        // Configurar checkboxes para habilitar/desabilitar inputs
-        document.querySelectorAll('.report-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const fieldGroup = this.closest('.report-field-group');
+        // Usar event delegation para os checkboxes e inputs
+        reportModal.addEventListener('change', function(e) {
+            // Verifica se o elemento alterado é um checkbox de reporte
+            if (e.target.classList.contains('report-checkbox')) {
+                const fieldGroup = e.target.closest('.report-field-group');
                 const input = fieldGroup.querySelector('.suggested-input');
-                input.disabled = !this.checked;
+                input.disabled = !e.target.checked;
                 
                 // Verificar se pelo menos um campo está marcado para habilitar o botão
-                const atLeastOneChecked = document.querySelector('.report-checkbox:checked');
-                submitReportBtn.disabled = !atLeastOneChecked;
-            });
+                const atLeastOneChecked = reportModal.querySelector('.report-checkbox:checked');
+                document.getElementById('submitReportBtn').disabled = !atLeastOneChecked;
+            }
         });
         
         // Configurar inputs para aceitar apenas números
-        document.querySelectorAll('.suggested-input').forEach(input => {
-            input.addEventListener('input', function() {
+        reportModal.addEventListener('input', function(e) {
+            if (e.target.classList.contains('suggested-input')) {
                 // Remove qualquer caractere não numérico, exceto ponto decimal
-                this.value = this.value.replace(/[^0-9.]/g, '');
+                e.target.value = e.target.value.replace(/[^0-9.]/g, '');
                 
                 // Garante que não há múltiplos pontos decimais
-                if ((this.value.match(/\./g) || []).length > 1) {
-                    this.value = this.value.substring(0, this.value.lastIndexOf('.'));
+                if ((e.target.value.match(/\./g) || []).length > 1) {
+                    e.target.value = e.target.value.substring(0, e.target.value.lastIndexOf('.'));
                 }
-            });
+            }
         });
         
         // Configurar botão de enviar (placeholder para próxima etapa)
-        submitReportBtn.addEventListener('click', () => {
+        document.getElementById('submitReportBtn').addEventListener('click', () => {
             // Implementação será feita na etapa 5
             alert('Funcionalidade de envio será implementada na próxima etapa');
         });
     }
+
+    // Modificar a função que abre o modal de reporte para configurar os campos
+    document.getElementById('rep-btD').addEventListener('click', async function() {
+        const reportBtn = this;
+        const originalText = reportBtn.innerHTML;
+        
+        try {
+            // Feedback visual imediato
+            reportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+            reportBtn.disabled = true;
+
+            const foodId = document.querySelector('#foodDetailModal').dataset.foodId;
+            
+            if (!foodId) {
+                throw new Error('Nenhum alimento selecionado');
+            }
+
+            const token = localStorage.getItem('token');
+            const response = await fetch(`https://fit-plus-backend.onrender.com/api/check-report-permission?foodId=${foodId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Configurar os dados do alimento no formulário de reporte
+                const detailModal = document.getElementById('foodDetailModal');
+                const reportModal = document.getElementById('foodReportModal');
+                
+                // Preencher informações básicas
+                document.getElementById('reportFoodName').textContent = 
+                    document.getElementById('foodDetailName').textContent;
+                
+                document.getElementById('reportBasePortion').textContent = 
+                    document.getElementById('foodDetailBasePortion').value;
+                
+                document.getElementById('reportPortionUnit').textContent = 
+                    document.getElementById('foodDetailPortionUnit').textContent;
+                
+                // Resetar todos os campos do formulário
+                reportModal.querySelectorAll('.report-checkbox').forEach(checkbox => {
+                    checkbox.checked = false;
+                });
+                
+                reportModal.querySelectorAll('.suggested-input').forEach(input => {
+                    input.value = '';
+                    input.disabled = true;
+                });
+                
+                document.getElementById('submitReportBtn').disabled = true;
+                
+                // Abrir modal de reporte
+                reportModal.style.display = 'block';
+                reportModal.scrollTop = 0;
+            } else {
+                showAlertMessage(result.message, 'error');
+            }
+
+        } catch (error) {
+            console.error('Erro ao verificar permissão:', error);
+            showAlertMessage('Erro ao verificar permissão', 'error');
+        } finally {
+            // Restaurar botão independente do resultado
+            reportBtn.innerHTML = originalText;
+            reportBtn.disabled = false;
+        }
+    });
 
     // Chamar a função de configuração quando o DOM estiver carregado
     document.addEventListener('DOMContentLoaded', setupReportForm);
