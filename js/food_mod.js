@@ -1260,7 +1260,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Adicionar no final do arquivo food_mod.js, antes do fechamento });
         // Lista de campos que podem ser reportados
         const reportableFields = [
-            { id: 'calories_kcal', label: 'Kcal.' },
+            { id: 'calorias_kcal', label: 'Kcal.' },
             { id: 'proteina_gr', label: 'Proteinas (g)' },
             { id: 'carbo_gr', label: 'Carboidratos (g)' },
             { id: 'gorduras_totais_gr', label: 'Gorduras Totais (g)' },
