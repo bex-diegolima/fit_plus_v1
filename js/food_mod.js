@@ -681,12 +681,13 @@ document.addEventListener('DOMContentLoaded', function() {
     //Ajuste #30
     // Configurar botão reportar erro (placeholder)
     // ========== CONFIGURAR BOTÃO REPORTAR ERRO ==========
+    //Ajuste #31
+    // Substituir o evento existente do botão de reporte
     document.getElementById('rep-btD').addEventListener('click', async function() {
-        const reportBtn = this; // Guarda referência do botão
-        const originalText = reportBtn.innerHTML; // Salva texto original
+        const reportBtn = this;
+        const originalText = reportBtn.innerHTML;
         
         try {
-            // Feedback visual imediato
             reportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
             reportBtn.disabled = true;
 
@@ -709,40 +710,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Abrir modal de reporte
                 document.getElementById('foodReportModal').style.display = 'block';
                 document.getElementById('foodReportModal').scrollTop = 0;
+                
+                // Garantir que os campos são criados
+                setupReportForm();
             } else {
-                // Mostrar mensagem inline no modal
                 showAlertMessage(result.message, 'error');
             }
-
         } catch (error) {
             console.error('Erro ao verificar permissão:', error);
             showAlertMessage('Erro ao verificar permissão', 'error');
         } finally {
-            // Restaurar botão independente do resultado
             reportBtn.innerHTML = originalText;
             reportBtn.disabled = false;
         }
     });
-
-    //Ajuste #30.1
-    // Função auxiliar para mostrar mensagens (adicionar no mesmo arquivo)
-    /*function showAlertMessage(message, type = 'success') {
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `report-alert ${type}`;
-        alertDiv.innerHTML = `
-            <i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i>
-            <span>${message}</span>
-        `;
-        
-        // Insere após o botão de reporte
-        const reportBtn = document.getElementById('rep-btD');
-        reportBtn.parentNode.insertBefore(alertDiv, reportBtn.nextSibling);
-        
-        // Remove após 5 segundos
-        setTimeout(() => {
-            alertDiv.remove();
-        }, 5000);
-    }*/
+    //Fim Ajuste #31
     // Função para mostrar mensagens de alerta
     function showAlertMessage(message, type = 'error') {
         const alertModal = document.getElementById('alertModal');
@@ -1275,6 +1257,7 @@ document.addEventListener('DOMContentLoaded', function() {
         //Fim Ajuste #22
 
         //Ajuste #31
+        // Adicionar no final do arquivo food_mod.js, antes do fechamento });
         // Lista de campos que podem ser reportados
         const reportableFields = [
             { id: 'calories_kcal', label: 'Kcal.' },
@@ -1345,10 +1328,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
         }
+
+        // Chamada inicial para configurar o formulário
+        document.addEventListener('DOMContentLoaded', function() {
+            setupReportForm();
+            
             // Evento para o botão fechar (sem funcionalidade ainda)
             document.getElementById('closeReportBtn').addEventListener('click', function() {
                 document.getElementById('foodReportModal').style.display = 'none';
             });
+        });
         //Fim Ajuste #31
 
         loadSelectOptions();
