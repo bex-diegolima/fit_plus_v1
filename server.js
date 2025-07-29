@@ -756,11 +756,11 @@ app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
             let message = 'Você não tem permissão para reportar este alimento';
             
             if (!validations.isNotOwner) {
-                message = 'Você não pode reportar um alimento que você mesmo cadastrou';
+                message = 'Você não pode reportar um alimento cadastrado por você mesmo.';
             } else if (!validations.isVerified) {
-                message = 'Só é possível reportar alimentos verificados';
+                message = 'Só é possivel registrar alimentos verificados.';
             } else if (!validations.hasNoReport) {
-                message = 'Já existe um reporte aberto para este alimento';
+                message = 'Já existe um reporte aberto para este alimento.';
             }
 
             return res.json({ 

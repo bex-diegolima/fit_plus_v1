@@ -775,6 +775,56 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     //Fim Ajuste #30.1
 
+    //Ajuste #31
+    // Adicionar após a função showAlertMessage no food_mod.js
+    // ========== FUNÇÕES DO FORMULÁRIO DE REPORTE ==========
+    function setupReportForm() {
+        const reportModal = document.getElementById('foodReportModal');
+        const closeReportBtn = document.getElementById('closeReportBtn');
+        const submitReportBtn = document.getElementById('submitReportBtn');
+        
+        // Fechar modal
+        closeReportBtn.addEventListener('click', () => {
+            reportModal.style.display = 'none';
+        });
+        
+        // Configurar checkboxes para habilitar/desabilitar inputs
+        document.querySelectorAll('.report-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const fieldGroup = this.closest('.report-field-group');
+                const input = fieldGroup.querySelector('.suggested-input');
+                input.disabled = !this.checked;
+                
+                // Verificar se pelo menos um campo está marcado para habilitar o botão
+                const atLeastOneChecked = document.querySelector('.report-checkbox:checked');
+                submitReportBtn.disabled = !atLeastOneChecked;
+            });
+        });
+        
+        // Configurar inputs para aceitar apenas números
+        document.querySelectorAll('.suggested-input').forEach(input => {
+            input.addEventListener('input', function() {
+                // Remove qualquer caractere não numérico, exceto ponto decimal
+                this.value = this.value.replace(/[^0-9.]/g, '');
+                
+                // Garante que não há múltiplos pontos decimais
+                if ((this.value.match(/\./g) || []).length > 1) {
+                    this.value = this.value.substring(0, this.value.lastIndexOf('.'));
+                }
+            });
+        });
+        
+        // Configurar botão de enviar (placeholder para próxima etapa)
+        submitReportBtn.addEventListener('click', () => {
+            // Implementação será feita na etapa 5
+            alert('Funcionalidade de envio será implementada na próxima etapa');
+        });
+    }
+
+    // Chamar a função de configuração quando o DOM estiver carregado
+    document.addEventListener('DOMContentLoaded', setupReportForm);
+    //Fim Ajuste #31
+
     //Ajuste #30
     //Fim Ajuste #23
 
