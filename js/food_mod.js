@@ -778,63 +778,37 @@ document.addEventListener('DOMContentLoaded', function() {
     //Ajuste #31
     // ========== FUNÇÕES DO FORMULÁRIO DE REPORTE ==========
     function setupReportForm() {
-        console.log('Iniciando setup do formulário de reporte'); // Debug
+        console.log('Configurando formulário de reporte...');
         
-        const reportModal = document.getElementById('foodReportModal');
-        if (!reportModal) {
-            console.error('Modal de reporte não encontrado!');
-            return;
-        }
-
-        // Configuração do botão fechar
-        const closeReportBtn = reportModal.querySelector('#closeReportBtn');
-        if (closeReportBtn) {
-            closeReportBtn.addEventListener('click', () => {
-                reportModal.style.display = 'none';
-            });
-        }
-
         // Configuração dos checkboxes e campos
-        const fieldGroups = reportModal.querySelectorAll('.report-field-group');
-        fieldGroups.forEach((group, index) => {
-            console.log(`Processando grupo de campos ${index + 1}`); // Debug
-            
+        document.querySelectorAll('.report-field-group').forEach(group => {
             const checkbox = group.querySelector('.report-checkbox');
             const input = group.querySelector('.suggested-input');
             
-            if (!checkbox || !input) {
-                console.warn(`Checkbox ou input não encontrado no grupo ${index + 1}`);
-                return;
-            }
+            if (!checkbox || !input) return;
 
             // Estado inicial
             input.disabled = true;
-            console.log(`Campo ${index + 1} inicializado como desabilitado`); // Debug
-
+            
             // Configura evento de change
             checkbox.addEventListener('change', function() {
-                console.log(`Checkbox ${index + 1} alterado. Novo estado:`, this.checked); // Debug
+                console.log(`Checkbox alterado. Novo estado: ${this.checked}`);
                 
                 // Alterna o estado disabled do campo correspondente
                 input.disabled = !this.checked;
                 
                 // Força a renderização (solução definitiva)
                 input.style.display = 'none';
-                input.offsetHeight; // Trigger reflow
+                void input.offsetWidth; // Trigger reflow
                 input.style.display = 'block';
                 
-                // Limpa o valor se desmarcado
-                if (!this.checked) {
-                    input.value = '';
-                }
-                
+                // Atualiza botão de submit
                 updateSubmitButton();
             });
         });
 
         // Configura validação numérica
-        const numberInputs = reportModal.querySelectorAll('.suggested-input');
-        numberInputs.forEach(input => {
+        document.querySelectorAll('.suggested-input').forEach(input => {
             input.addEventListener('input', function() {
                 this.value = this.value.replace(/[^0-9.]/g, '');
                 
@@ -844,24 +818,13 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
-        // Configura botão de submit
-        const submitReportBtn = reportModal.querySelector('#submitReportBtn');
-        if (submitReportBtn) {
-            submitReportBtn.disabled = true;
-            
-            submitReportBtn.addEventListener('click', () => {
-                alert('Funcionalidade de envio será implementada na próxima etapa');
-            });
-        }
-
         // Função para atualizar o botão de submit
         function updateSubmitButton() {
-            if (!submitReportBtn) return;
+            const submitBtn = document.getElementById('submitReportBtn');
+            if (!submitBtn) return;
             
-            const checkedBoxes = reportModal.querySelectorAll('.report-checkbox:checked');
-            submitReportBtn.disabled = checkedBoxes.length === 0;
-            
-            console.log('Estado do botão submit:', !submitReportBtn.disabled); // Debug
+            const checkedBoxes = document.querySelectorAll('.report-checkbox:checked');
+            submitBtn.disabled = checkedBoxes.length === 0;
         }
     }
     //Fim Ajuste #31
@@ -1376,4 +1339,7 @@ document.addEventListener('DOMContentLoaded', function() {
         setupPortionUnitToggle();
         setupModalCleanup();
         setupDetailCollapsibles();
+        //Ajuste #31
+        setupReportForm();
+        //Fim Ajuste #31
     });

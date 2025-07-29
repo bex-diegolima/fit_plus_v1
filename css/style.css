@@ -1654,7 +1654,7 @@ button:disabled {
 /*Fim Ajuste #31*/
 
 /*Ajuste #31.1*/
-/* ===== CORREÇÃO DEFINITIVA PARA OS CAMPOS DE REPORTE ===== */
+/* ===== ACORREÇÃO DEFINITIVA PARA OS CAMPOS DE REPORTE ===== */
 .report-field-group .suggested-input[disabled] {
     background-color: #f5f5f5 !important;
     cursor: not-allowed !important;
