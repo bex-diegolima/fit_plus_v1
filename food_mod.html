@@ -707,6 +707,52 @@
     </div>
     <!--Fim Ajuste #30.1-->
 
+    <!--Ajuste #31-->
+    <!-- Adicionar no final do arquivo food_mod.html, antes do fechamento </body> -->
+    <div id="foodReportModal" class="food-modal" style="display: none;">
+        <div class="food-modal-content">
+            <div class="fm-top-barrier"></div>
+            <div class="fm-cabecalho">
+                <h2 class="food-modal-title">Reporte de Informações Incorretas</h2>
+                <div>
+                    <button id="closeReportBtn" class="report-close-btn">Fechar</button>
+                </div>
+            </div>
+            <div class="barraD"></div>
+            
+            <div class="report-form-container">
+                <!-- Informações do item -->
+                <div class="report-item-info">
+                    <h3 id="reportFoodName">Nome do Item</h3>
+                    <div class="report-portion-info">
+                        <span>Porção Base:</span>
+                        <span id="reportBasePortion">100</span>
+                        <span id="reportPortionUnit">g</span>
+                    </div>
+                </div>
+                
+                <!-- Texto informativo -->
+                <div class="report-info-text">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Todos os valores abaixo devem ser proporcionais à porção base.</span>
+                </div>
+                
+                <!-- Campos de reporte -->
+                <div class="report-fields-container">
+                    <!-- Os campos serão gerados dinamicamente via JavaScript -->
+                </div>
+                
+                <!-- Footer com botão de envio -->
+                <div class="report-footer">
+                    <button id="reportSubmitBtn" class="report-submit-btn" disabled>
+                        <i class="fas fa-paper-plane"></i> Enviar Reporte
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Fim Ajuste #31-->
+
     <!-- Scripts -->
     <script src="js/food_mod.js"></script>
 </body>

@@ -1274,6 +1274,89 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         //Fim Ajuste #22
 
+        //Ajuste #31
+        // Lista de campos que podem ser reportados
+        const reportableFields = [
+            { id: 'calories_kcal', label: 'Kcal.' },
+            { id: 'proteina_gr', label: 'Proteinas (g)' },
+            { id: 'carbo_gr', label: 'Carboidratos (g)' },
+            { id: 'gorduras_totais_gr', label: 'Gorduras Totais (g)' },
+            { id: 'gorduras_boas_gr', label: 'Gorduras Boas (g)' },
+            { id: 'gorduras_ruins_gr', label: 'Gorduras Ruins (g)' },
+            { id: 'fibras_gr', label: 'Fibras (g)' },
+            { id: 'sodio_mg', label: 'Sódio (mg)' },
+            { id: 'acucares_gr', label: 'Açucares Totais (g)' },
+            { id: 'acucar_adicionado_gr', label: 'Açucares Adicionados (g)' },
+            { id: 'indice_glicemico', label: 'Índice Glicêmico' },
+            { id: 'carga_glicemica', label: 'Carga Glicêmica' },
+            { id: 'colesterol_mg', label: 'Colesterol (mg)' },
+            { id: 'calcio_mg', label: 'Calcio (mg)' },
+            { id: 'ferro_mg', label: 'Ferro (mg)' },
+            { id: 'potassio_mg', label: 'Potássio (mg)' },
+            { id: 'magnesio_mg', label: 'Magnésio (mg)' },
+            { id: 'zinco_mg', label: 'Zinco (mg)' },
+            { id: 'vitamina_a_mcg', label: 'Vitamina A (mcg)' },
+            { id: 'vitamina_d_mcg', label: 'Vitamina D (mcg)' },
+            { id: 'vitamina_c_mg', label: 'Vitamina C (mg)' },
+            { id: 'vitamina_b12_mcg', label: 'Vitamina B12 (mcg)' },
+            { id: 'vitamina_e_mcg', label: 'Vitamina E (mcg)' },
+            { id: 'omega_tres_mg', label: 'Ômega 3 (mg)' },
+            { id: 'acido_folico_mcg', label: 'Ácido Fólico (mcg)' },
+            { id: 'teor_alcoolico', label: 'Teor Alcoólico (%)' },
+            { id: 'carga_antioxidante', label: 'Carga Antioxidante' }
+        ];
+
+        // Função para criar os campos de reporte
+        function setupReportForm() {
+            const fieldsContainer = document.querySelector('.report-fields-container');
+            
+            // Limpa qualquer conteúdo existente
+            fieldsContainer.innerHTML = '';
+            
+            // Cria um grupo de campo para cada item reportável
+            reportableFields.forEach(field => {
+                const fieldGroup = document.createElement('div');
+                fieldGroup.className = 'report-field-group';
+                fieldGroup.innerHTML = `
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="chk_${field.id}" data-field="${field.id}">
+                        <label for="chk_${field.id}">${field.label}</label>
+                    </div>
+                    <div class="report-field-values">
+                        <div class="report-current-value">
+                            <span>Valor Atual</span>
+                            <span class="current-value" id="current_${field.id}">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                            <span>Valor Sugerido</span>
+                            <input type="number" class="suggested-input" id="suggested_${field.id}" disabled step="any">
+                        </div>
+                    </div>
+                `;
+                
+                fieldsContainer.appendChild(fieldGroup);
+                
+                // Adiciona evento para liberar o campo quando o checkbox for marcado
+                const checkbox = fieldGroup.querySelector(`.report-checkbox`);
+                const input = fieldGroup.querySelector(`.suggested-input`);
+                
+                checkbox.addEventListener('change', function() {
+                    input.disabled = !this.checked;
+                });
+            });
+        }
+
+        // Chamada inicial para configurar o formulário
+        document.addEventListener('DOMContentLoaded', function() {
+            setupReportForm();
+            
+            // Evento para o botão fechar (sem funcionalidade ainda)
+            document.getElementById('closeReportBtn').addEventListener('click', function() {
+                document.getElementById('foodReportModal').style.display = 'none';
+            });
+        });
+        //Fim Ajuste #31
+
         loadSelectOptions();
         //FIM ALTERAÇÕES DEEPSEEK
 
@@ -1284,7 +1367,4 @@ document.addEventListener('DOMContentLoaded', function() {
         setupPortionUnitToggle();
         setupModalCleanup();
         setupDetailCollapsibles();
-        //Ajuste #31
-        setupReportForm();
-        //Fim Ajuste #31
     });
