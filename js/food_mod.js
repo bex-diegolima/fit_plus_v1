@@ -1345,16 +1345,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
         }
-
-        // Chamada inicial para configurar o formulário
-        document.addEventListener('DOMContentLoaded', function() {
-            setupReportForm();
-            
             // Evento para o botão fechar (sem funcionalidade ainda)
             document.getElementById('closeReportBtn').addEventListener('click', function() {
                 document.getElementById('foodReportModal').style.display = 'none';
             });
-        });
         //Fim Ajuste #31
 
         loadSelectOptions();
@@ -1367,4 +1361,5 @@ document.addEventListener('DOMContentLoaded', function() {
         setupPortionUnitToggle();
         setupModalCleanup();
         setupDetailCollapsibles();
+        setupReportForm();
     });
