@@ -774,37 +774,6 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
     //Fim Ajuste #30.1
-
-    //Ajuste #31
-    // ========== FUNÇÕES DO FORMULÁRIO DE REPORTE ==========
-    function setupReportForm() {
-        console.log('Configurando formulário de reporte...');
-        
-        document.querySelectorAll('.report-field-group').forEach(group => {
-            const checkbox = group.querySelector('.report-checkbox');
-            const input = group.querySelector('.suggested-input');
-            
-            if (!checkbox || !input) return;
-
-            // Estado inicial
-            input.disabled = true;
-            
-            // Configura evento de change
-            checkbox.addEventListener('change', function() {
-                console.log(`Checkbox alterado. Novo estado: ${this.checked}`);
-                
-                // Atualiza o estado do campo correspondente
-                input.disabled = !this.checked;
-                
-                // Remove estilos CSS conflitantes (se necessário)
-                input.style.pointerEvents = 'auto';
-                input.style.opacity = '1';
-                input.style.backgroundColor = '#fff';
-            });
-        });
-    }
-    //Fim Ajuste #31
-
     //Ajuste #30
     //Fim Ajuste #23
 
