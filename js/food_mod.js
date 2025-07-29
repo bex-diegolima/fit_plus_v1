@@ -780,7 +780,6 @@ document.addEventListener('DOMContentLoaded', function() {
     function setupReportForm() {
         console.log('Configurando formulário de reporte...');
         
-        // Configuração dos checkboxes e campos
         document.querySelectorAll('.report-field-group').forEach(group => {
             const checkbox = group.querySelector('.report-checkbox');
             const input = group.querySelector('.suggested-input');
@@ -794,38 +793,15 @@ document.addEventListener('DOMContentLoaded', function() {
             checkbox.addEventListener('change', function() {
                 console.log(`Checkbox alterado. Novo estado: ${this.checked}`);
                 
-                // Alterna o estado disabled do campo correspondente
+                // Atualiza o estado do campo correspondente
                 input.disabled = !this.checked;
                 
-                // Força a renderização (solução definitiva)
-                input.style.display = 'none';
-                void input.offsetWidth; // Trigger reflow
-                input.style.display = 'block';
-                
-                // Atualiza botão de submit
-                updateSubmitButton();
+                // Remove estilos CSS conflitantes (se necessário)
+                input.style.pointerEvents = 'auto';
+                input.style.opacity = '1';
+                input.style.backgroundColor = '#fff';
             });
         });
-
-        // Configura validação numérica
-        document.querySelectorAll('.suggested-input').forEach(input => {
-            input.addEventListener('input', function() {
-                this.value = this.value.replace(/[^0-9.]/g, '');
-                
-                if ((this.value.match(/\./g) || []).length > 1) {
-                    this.value = this.value.substring(0, this.value.lastIndexOf('.'));
-                }
-            });
-        });
-
-        // Função para atualizar o botão de submit
-        function updateSubmitButton() {
-            const submitBtn = document.getElementById('submitReportBtn');
-            if (!submitBtn) return;
-            
-            const checkedBoxes = document.querySelectorAll('.report-checkbox:checked');
-            submitBtn.disabled = checkedBoxes.length === 0;
-        }
     }
     //Fim Ajuste #31
 
