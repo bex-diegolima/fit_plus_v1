@@ -784,6 +784,89 @@ app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
 });
 //Fim Ajuste #30
 
+//Ajuste #32
+// ========== ROTA PARA OBTER DADOS DO ALIMENTO PARA REPORTE ==========
+app.get('/api/food-report-data', authenticateToken, async (req, res) => {
+    try {
+        const { foodId } = req.query;
+        
+        if (!foodId) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'ID do alimento não fornecido' 
+            });
+        }
+
+        // Query que busca os dados do alimento + tipo de medida
+        const query = `
+            SELECT 
+                f.*,
+                tm.nome as tipo_medida_nome
+            FROM tbl_foods f
+            LEFT JOIN tbl_aux_tipo_medida tm ON f.tipo_medida_alimento = tm.id
+            WHERE f.id = $1
+        `;
+
+        const result = await pool.query(query, [foodId]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Alimento não encontrado' 
+            });
+        }
+
+        const foodData = result.rows[0];
+        
+        // Formata os dados para o frontend
+        const responseData = {
+            item: foodData.item,
+            porcao_base: foodData.porcao_base,
+            tipo_medida: foodData.tipo_medida_nome,
+            calorias_kcal: foodData.calorias_kcal,
+            proteina_gr: foodData.proteina_gr,
+            carbo_gr: foodData.carbo_gr,
+            gorduras_totais_gr: foodData.gorduras_totais_gr,
+            gorduras_boas_gr: foodData.gorduras_boas_gr,
+            gorduras_ruins_gr: foodData.gorduras_ruins_gr,
+            fibras_gr: foodData.fibras_gr,
+            sodio_mg: foodData.sodio_mg,
+            acucares_gr: foodData.acucares_gr,
+            acucar_adicionado_gr: foodData.acucar_adicionado_gr,
+            indice_glicemico: foodData.indice_glicemico,
+            carga_glicemica: foodData.carga_glicemica,
+            colesterol_mg: foodData.colesterol_mg,
+            calcio_mg: foodData.calcio_mg,
+            ferro_mg: foodData.ferro_mg,
+            potassio_mg: foodData.potassio_mg,
+            magnesio_mg: foodData.magnesio_mg,
+            zinco_mg: foodData.zinco_mg,
+            vitamina_a_mcg: foodData.vitamina_a_mcg,
+            vitamina_d_mcg: foodData.vitamina_d_mcg,
+            vitamina_c_mg: foodData.vitamina_c_mg,
+            vitamina_b12_mcg: foodData.vitamina_b12_mcg,
+            vitamina_e_mcg: foodData.vitamina_e_mcg,
+            omega_tres_mg: foodData.omega_tres_mg,
+            acido_folico_mcg: foodData.acido_folico_mcg,
+            teor_alcoolico: foodData.teor_alcoolico,
+            carga_antioxidante: foodData.carga_antioxidante
+        };
+
+        res.json({ 
+            success: true,
+            data: responseData
+        });
+
+    } catch (error) {
+        console.error('Erro ao buscar dados para reporte:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Erro ao buscar dados para reporte' 
+        });
+    }
+});
+//Fim Ajuste #32
+
 //FIM ALTERAÇÕES DEEPSEEK
 
 app.listen(PORT, async () => {

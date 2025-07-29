@@ -1289,7 +1289,8 @@ document.addEventListener('DOMContentLoaded', function() {
             { id: 'carga_antioxidante', label: 'Carga Antioxidante' }
         ];
 
-        // Função para criar os campos de reporte
+        //Ajuste #32
+        /*// Função para criar os campos de reporte
         function setupReportForm() {
             const fieldsContainer = document.querySelector('.report-fields-container');
             
@@ -1327,7 +1328,88 @@ document.addEventListener('DOMContentLoaded', function() {
                     input.disabled = !this.checked;
                 });
             });
+        }*/
+        // Função para configurar e popular o formulário de reporte (VERSÃO CORRIGIDA)
+        async function setupReportForm() {
+            try {
+                const foodId = detailModal.dataset.foodId;
+                if (!foodId) throw new Error('ID do alimento não encontrado');
+
+                // Mostrar loader enquanto carrega os dados
+                const reportModal = document.getElementById('foodReportModal');
+                reportModal.scrollTop = 0;
+                
+                // 1. Primeiro cria a estrutura do formulário (igual ao original)
+                const fieldsContainer = document.querySelector('.report-fields-container');
+                fieldsContainer.innerHTML = '';
+                
+                reportableFields.forEach(field => {
+                    const fieldGroup = document.createElement('div');
+                    fieldGroup.className = 'report-field-group';
+                    fieldGroup.innerHTML = `
+                        <div class="report-field-header">
+                            <input type="checkbox" class="report-checkbox" id="chk_${field.id}" data-field="${field.id}">
+                            <label for="chk_${field.id}">${field.label}</label>
+                        </div>
+                        <div class="report-field-values">
+                            <div class="report-current-value">
+                                <span>Valor Atual</span>
+                                <span class="current-value" id="current_${field.id}">-</span>
+                            </div>
+                            <div class="report-suggested-value">
+                                <span>Valor Sugerido</span>
+                                <input type="number" class="suggested-input" id="suggested_${field.id}" disabled step="any">
+                            </div>
+                        </div>
+                    `;
+                    
+                    fieldsContainer.appendChild(fieldGroup);
+                    
+                    // Mantém a função de liberar campos quando checkbox é marcado
+                    const checkbox = fieldGroup.querySelector(`.report-checkbox`);
+                    const input = fieldGroup.querySelector(`.suggested-input`);
+                    
+                    checkbox.addEventListener('change', function() {
+                        input.disabled = !this.checked;
+                        if (this.checked) {
+                            input.focus(); // Melhoria UX: foca no campo quando liberado
+                        }
+                    });
+                });
+
+                // 2. Agora busca os dados do alimento para preencher os valores
+                const token = localStorage.getItem('token');
+                const response = await fetch(`https://fit-plus-backend.onrender.com/api/food-report-data?foodId=${foodId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const result = await response.json();
+                if (!result.success) throw new Error(result.message || 'Erro ao carregar dados');
+
+                const foodData = result.data;
+
+                // Preencher informações básicas
+                document.getElementById('reportFoodName').textContent = foodData.item;
+                document.getElementById('reportBasePortion').textContent = foodData.porcao_base;
+                document.getElementById('reportPortionUnit').textContent = foodData.tipo_medida;
+
+                // Preencher valores atuais nos campos
+                reportableFields.forEach(field => {
+                    const currentValueElement = document.getElementById(`current_${field.id}`);
+                    if (currentValueElement && foodData[field.id] !== null && foodData[field.id] !== undefined) {
+                        currentValueElement.textContent = foodData[field.id] || '-';
+                    }
+                });
+
+            } catch (error) {
+                console.error('Erro ao configurar formulário de reporte:', error);
+                showAlertMessage('Erro ao carregar dados do alimento', 'error');
+                document.getElementById('foodReportModal').style.display = 'none';
+            }
         }
+        //Fim Ajuste #32
 
         // Chamada inicial para configurar o formulário
         document.addEventListener('DOMContentLoaded', function() {
