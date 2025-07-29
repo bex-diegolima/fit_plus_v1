@@ -778,68 +778,61 @@ document.addEventListener('DOMContentLoaded', function() {
     //Ajuste #31
     // ========== FUNÇÕES DO FORMULÁRIO DE REPORTE ==========
     function setupReportForm() {
-        // Garantir que só atuamos no modal de reporte
         const reportModal = document.getElementById('foodReportModal');
-        if (!reportModal) return;
-
-        // Elementos específicos do modal de reporte
         const closeReportBtn = document.getElementById('closeReportBtn');
         const submitReportBtn = document.getElementById('submitReportBtn');
         
-        // Fechar modal - ação isolada
-        if (closeReportBtn) {
-            closeReportBtn.addEventListener('click', () => {
-                reportModal.style.display = 'none';
-            });
-        }
-        
-        // Configuração dos checkboxes e inputs - foco principal
-        const reportCheckboxes = document.querySelectorAll('#foodReportModal .report-checkbox');
-        reportCheckboxes.forEach(checkbox => {
+        // Fechar modal
+        closeReportBtn.addEventListener('click', () => {
+            reportModal.style.display = 'none';
+        });
+
+        // Configurar todos os checkboxes e seus campos correspondentes
+        document.querySelectorAll('.report-field-group').forEach(group => {
+            const checkbox = group.querySelector('.report-checkbox');
+            const input = group.querySelector('.suggested-input');
+            
+            // Inicialmente desabilita todos os campos
+            input.disabled = true;
+            
+            // Evento para checkbox
             checkbox.addEventListener('change', function() {
-                // Escopo limitado ao grupo de campos do reporte
-                const fieldGroup = this.closest('.report-field-group');
-                if (!fieldGroup) return;
-
-                const input = fieldGroup.querySelector('.suggested-input');
-                if (!input) return;
-
+                // Habilita/desabilita o campo baseado no checkbox
                 input.disabled = !this.checked;
                 
+                // Se desmarcado, limpa o valor
                 if (!this.checked) {
                     input.value = '';
                 }
                 
-                // Atualização do botão submit do reporte apenas
-                if (submitReportBtn) {
-                    const atLeastOneChecked = document.querySelector('#foodReportModal .report-checkbox:checked');
-                    submitReportBtn.disabled = !atLeastOneChecked;
-                }
+                // Verifica se pelo menos um checkbox está marcado
+                updateSubmitButton();
             });
-        });
-        
-        // Validação de inputs numéricos - apenas no modal de reporte
-        const suggestedInputs = document.querySelectorAll('#foodReportModal .suggested-input');
-        suggestedInputs.forEach(input => {
+            
+            // Validação para aceitar apenas números
             input.addEventListener('input', function() {
                 this.value = this.value.replace(/[^0-9.]/g, '');
                 
+                // Evita múltiplos pontos decimais
                 if ((this.value.match(/\./g) || []).length > 1) {
                     this.value = this.value.substring(0, this.value.lastIndexOf('.'));
                 }
             });
-
-            // Garantir estado inicial
-            input.disabled = true;
         });
-        
-        // Configuração do botão de submit do reporte
-        if (submitReportBtn) {
-            submitReportBtn.disabled = true;
-            submitReportBtn.addEventListener('click', () => {
-                alert('Funcionalidade de envio será implementada na próxima etapa');
-            });
+
+        // Função para atualizar o botão de envio
+        function updateSubmitButton() {
+            const atLeastOneChecked = document.querySelector('.report-checkbox:checked');
+            submitReportBtn.disabled = !atLeastOneChecked;
         }
+
+        // Configurar botão de enviar
+        submitReportBtn.addEventListener('click', () => {
+            alert('Funcionalidade de envio será implementada na próxima etapa');
+        });
+
+        // Inicialmente desabilita o botão de submit
+        submitReportBtn.disabled = true;
     }
     //Fim Ajuste #31
 
