@@ -995,10 +995,12 @@ app.post('/api/submit-food-report', authenticateToken, async (req, res) => {
 // ========== FUNÇÃO PARA ENVIAR E-MAIL DE REPORTE ==========
 async function sendReportEmail(reportId, foodId, userId) {
     try {
-        // 1. Buscar dados do reporte e itens
-        const client = await pool.connect();
+        console.log(`[Email Debug] Iniciando processo de envio para reportId: ${reportId}`);
         
-        // Buscar dados principais do reporte
+        const client = await pool.connect();
+        console.log('[Email Debug] Conexão com o banco estabelecida');
+
+        // 1. Buscar dados do reporte
         const reportQuery = await client.query(
             `SELECT r.id, r.dt_report, f.item as food_name, u.email_user as user_email
              FROM tbl_report r
@@ -1008,14 +1010,17 @@ async function sendReportEmail(reportId, foodId, userId) {
             [reportId]
         );
         
+        console.log(`[Email Debug] Query do reporte executada, ${reportQuery.rows.length} resultados`);
+        
         if (reportQuery.rows.length === 0) {
-            console.error('Reporte não encontrado para envio de e-mail');
+            console.error('[Email Error] Reporte não encontrado no banco de dados');
             return false;
         }
         
         const reportData = reportQuery.rows[0];
+        console.log('[Email Debug] Dados do reporte:', JSON.stringify(reportData, null, 2));
         
-        // Buscar itens do reporte
+        // 2. Buscar itens do reporte
         const itemsQuery = await client.query(
             `SELECT ri.id, ri.id_campo, ri.valor_sugerido, ac.nome as campo_nome
              FROM tbl_report_itens ri
@@ -1024,13 +1029,14 @@ async function sendReportEmail(reportId, foodId, userId) {
             [reportId]
         );
         
+        console.log(`[Email Debug] Itens do reporte encontrados: ${itemsQuery.rows.length}`);
         client.release();
 
-        // 2. Formatando a data
+        // 3. Formatando a data
         const reportDate = new Date(reportData.dt_report);
         const formattedDate = reportDate.toLocaleDateString('pt-BR');
 
-        // 3. Criar tabela HTML dos itens reportados
+        // 4. Criar tabela HTML dos itens reportados
         let itemsTable = `
             <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%; margin-top: 15px;">
                 <thead>
@@ -1055,7 +1061,7 @@ async function sendReportEmail(reportId, foodId, userId) {
 
         itemsTable += `</tbody></table>`;
 
-        // 4. Criar conteúdo do e-mail
+        // 5. Criar conteúdo do e-mail
         const emailContent = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
                 <h2 style="color: #2c3e50;">Reporte de Dados Incorretos em Item de Alimento</h2>
@@ -1075,7 +1081,7 @@ async function sendReportEmail(reportId, foodId, userId) {
             </div>
         `;
 
-        // 5. Enviar e-mail usando Brevo
+        // 6. Configurar e enviar e-mail
         const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
         const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
@@ -1091,16 +1097,28 @@ async function sendReportEmail(reportId, foodId, userId) {
             name: "Suporte Fit+" 
         };
 
-        await apiInstance.sendTransacEmail(sendSmtpEmail);
-        console.log(`E-mail de reporte enviado com sucesso para ID ${reportId}`);
+        console.log('[Email Debug] Configuração do e-mail completa:', JSON.stringify({
+            subject: sendSmtpEmail.subject,
+            to: sendSmtpEmail.to,
+            sender: sendSmtpEmail.sender
+        }, null, 2));
+
+        console.log('Brevo API Key:', process.env.BREVO_API_KEY ? 'Presente' : 'Faltando');
+
+        // 7. Enviar e-mail
+        const emailResponse = await apiInstance.sendTransacEmail(sendSmtpEmail);
+        console.log('[Email Success] E-mail enviado com sucesso! Resposta:', JSON.stringify(emailResponse, null, 2));
         return true;
 
     } catch (error) {
-        console.error('Erro ao enviar e-mail de reporte:', error);
+        console.error('[Email Error] Erro no processo de e-mail:', {
+            message: error.message,
+            response: error.response?.data,
+            stack: error.stack
+        });
         return false;
     }
 }
-
 //Fim Ajuste #35
 
 //FIM ALTERAÇÕES DEEPSEEK
