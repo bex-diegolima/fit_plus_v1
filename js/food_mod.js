@@ -1408,8 +1408,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 showAlertMessage('Erro ao carregar dados do alimento', 'error');
                 document.getElementById('foodReportModal').style.display = 'none';
             }
+
+            //Ajuste #33
+            setupReportSubmitButton();
+            //Fim Ajuste #33
+
         }
         //Fim Ajuste #32
+
+
 
         // Chamada inicial para configurar o formulário
         document.addEventListener('DOMContentLoaded', function() {
@@ -1422,6 +1429,85 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         //Fim Ajuste #31
 
+        //Ajuste #33
+        // ========== CONFIGURAÇÃO DO BOTÃO ENVIAR REPORTE ==========
+        function setupReportSubmitButton() {
+            const reportSubmitBtn = document.getElementById('reportSubmitBtn');
+            const checkboxes = document.querySelectorAll('.report-checkbox');
+            
+            // 1. Habilitar/desabilitar botão baseado em checkboxes marcados
+            function updateSubmitButtonState() {
+                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                reportSubmitBtn.disabled = !anyChecked;
+            }
+            
+            // Monitorar mudanças em todos os checkboxes
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateSubmitButtonState);
+            });
+            
+            // 2. Handler para clique no botão
+            reportSubmitBtn.addEventListener('click', async function() {
+                const originalText = reportSubmitBtn.innerHTML;
+                
+                try {
+                    // Ativar loader
+                    reportSubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Validando...';
+                    reportSubmitBtn.disabled = true;
+                    
+                    // Validação 1: Pelo menos um checkbox marcado
+                    const checkedBoxes = Array.from(checkboxes).filter(cb => cb.checked);
+                    if (checkedBoxes.length === 0) {
+                        throw new Error('Selecione ao menos um item para enviar o reporte.');
+                    }
+                    
+                    // Validação 2 e 3: Campos preenchidos corretamente
+                    let validationErrors = [];
+                    
+                    checkedBoxes.forEach(checkbox => {
+                        const fieldId = checkbox.dataset.field;
+                        const suggestedInput = document.getElementById(`suggested_${fieldId}`);
+                        const currentValueText = document.getElementById(`current_${fieldId}`).textContent;
+                        
+                        // Converter valores para comparação (tratar . e , como decimal)
+                        const currentValue = parseFloat(currentValueText.replace(',', '.')) || 0;
+                        const suggestedValue = parseFloat(suggestedInput.value.replace(',', '.')) || null;
+                        
+                        // Validação 2: Valor sugerido válido (>= 0)
+                        if (suggestedValue === null || suggestedValue < 0) {
+                            validationErrors.push('É obrigatório informar um valor sugerido maior ou igual a 0 (zero) para os itens selecionados.');
+                            suggestedInput.classList.add('report-field-error');
+                        } else {
+                            suggestedInput.classList.remove('report-field-error');
+                        }
+                        
+                        // Validação 3: Valor diferente do atual
+                        if (suggestedValue !== null && suggestedValue === currentValue) {
+                            validationErrors.push('O valor sugerido não pode ser igual ao valor atual.');
+                            suggestedInput.classList.add('report-field-error');
+                        }
+                    });
+                    
+                    // Se encontrou erros, exibir o primeiro
+                    if (validationErrors.length > 0) {
+                        throw new Error(validationErrors[0]);
+                    }
+                    
+                    // Se todas validações passaram:
+                    // (Aqui seria o envio real, mas na etapa 6 só validamos)
+                    
+                } catch (error) {
+                    showAlertMessage(error.message, 'error');
+                } finally {
+                    // Restaurar estado do botão
+                    reportSubmitBtn.innerHTML = originalText;
+                    reportSubmitBtn.disabled = false;
+                    updateSubmitButtonState();
+                }
+            });
+        }
+        //Fim Ajuste #33
+
         loadSelectOptions();
         //FIM ALTERAÇÕES DEEPSEEK
 
@@ -1433,4 +1519,5 @@ document.addEventListener('DOMContentLoaded', function() {
         setupModalCleanup();
         setupDetailCollapsibles();
         setupReportForm();
+        setupReportSubmitButton();
     });
