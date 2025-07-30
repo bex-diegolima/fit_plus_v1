@@ -1624,50 +1624,61 @@ document.addEventListener('DOMContentLoaded', function() {
                         throw new Error('Nenhum campo válido para envio. Corrija os erros marcados.');
                     }
                     
+                    //Ajuste #34.1
                     if (validationErrors.length > 0) {
-                        throw new Error(validationErrors.join('\n'));
-                    }
-                    
-                    // Restante do código permanece igual...
-                    if (!foodId || !foodId.match(/^\d+$/)) {
-                        throw new Error('ID do alimento inválido');
-                    }
-                    
-                    if (!token) {
-                        throw new Error('Sessão expirada. Faça login novamente.');
-                    }
-                    
-                    console.debug('Enviando reporte:', {
-                        foodId: parseInt(foodId),
-                        reportFields,
-                        timestamp: new Date().toISOString()
-                    });
-                    
-                    const response = await fetch('https://fit-plus-backend.onrender.com/api/submit-food-report', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            foodId: parseInt(foodId),
-                            reportFields: reportFields
-                        })
-                    });
-                    
-                    if (!response.ok) {
-                        const errorData = await response.json().catch(() => null);
-                        throw new Error(
-                            errorData?.message || 
-                            `Erro no servidor (${response.status})`
+                        // MOSTRAR ERROS APENAS SE FOREM DIFERENTES DA VALIDAÇÃO INICIAL
+                        const filteredErrors = validationErrors.filter(
+                            err => !err.includes('Selecione ao menos um item')
                         );
-                    }
-                    
-                    const result = await response.json();
-                    
-                    if (!result.success) {
-                        throw new Error(result.message || 'Erro ao processar o reporte');
-                    }
+                        
+                        if (filteredErrors.length > 0) {
+                            showAlertMessage(
+                                filteredErrors.join('\n'), 
+                                'error'
+                            );
+                        }
+                    } else {
+                        // Restante do código permanece EXATAMENTE IGUAL...
+                        if (!foodId || !foodId.match(/^\d+$/)) {
+                            throw new Error('ID do alimento inválido');
+                        }
+                        
+                        if (!token) {
+                            throw new Error('Sessão expirada. Faça login novamente.');
+                        }
+                        
+                        console.debug('Enviando reporte:', {
+                            foodId: parseInt(foodId),
+                            reportFields,
+                            timestamp: new Date().toISOString()
+                        });
+                        
+                        const response = await fetch('https://fit-plus-backend.onrender.com/api/submit-food-report', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                foodId: parseInt(foodId),
+                                reportFields: reportFields
+                            })
+                        });
+                        
+                        if (!response.ok) {
+                            const errorData = await response.json().catch(() => null);
+                            throw new Error(
+                                errorData?.message || 
+                                `Erro no servidor (${response.status})`
+                            );
+                        }
+                        
+                        const result = await response.json();
+                        
+                        if (!result.success) {
+                            throw new Error(result.message || 'Erro ao processar o reporte');
+                        }
+                    //Fim Ajuste #34.1
                     
                     showAlertMessage('✔ Reporte enviado com sucesso!', 'success');
                     
@@ -1680,6 +1691,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                         updateSubmitButtonState();
                     }, 2000);
+                }
                     
                 } catch (error) {
                     console.error('Erro no reporte:', error);

@@ -1790,3 +1790,70 @@ button:disabled {
     word-break: break-word;
 }
 /*Fim Ajuste #34*/
+
+/*Ajuste #34.1*/
+/* ===== ESTILOS PARA O FLUXO DE REPORTE ===== */
+.report-flow-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 20px;
+}
+
+.report-flow-step {
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    border-left: 4px solid #3498db;
+    transition: all 0.3s ease;
+}
+
+.report-flow-step.active {
+    background-color: #e3f2fd;
+    border-left-color: #1976d2;
+}
+
+.report-flow-step.completed {
+    background-color: #e8f5e9;
+    border-left-color: #4caf50;
+}
+
+.report-flow-step.error {
+    background-color: #ffebee;
+    border-left-color: #f44336;
+}
+
+.report-flow-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.report-flow-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #b0bec5;
+    transition: all 0.3s ease;
+}
+
+.report-flow-dot.active {
+    background-color: #2196f3;
+    transform: scale(1.2);
+}
+
+.report-flow-dot.completed {
+    background-color: #4caf50;
+}
+
+@media (max-width: 768px) {
+    .report-flow-container {
+        padding: 15px;
+    }
+    
+    .report-flow-step {
+        padding: 12px;
+    }
+}
+/*Fim Ajuste #34.1*/
