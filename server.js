@@ -952,6 +952,25 @@ app.post('/api/submit-food-report', authenticateToken, async (req, res) => {
             reportId: reportId
         });
 
+        //Ajuste #35
+        // Adicionar logo após o COMMIT e antes de enviar a resposta:
+        await client.query('COMMIT');
+
+        // Enviar e-mail (não afeta o fluxo principal mesmo se falhar)
+        try {
+            await sendReportEmail(reportId, foodId, req.user.userId);
+        } catch (emailError) {
+            console.error('Erro secundário no envio de e-mail:', emailError);
+            // Não interrompe o fluxo principal
+        }
+
+        res.json({ 
+            success: true, 
+            message: 'Reporte enviado com sucesso!',
+            reportId: reportId
+        });
+        //Fim Ajuste #35
+
     } catch (error) {
         await client.query('ROLLBACK');
         console.error('Erro detalhado ao processar reporte:', {
@@ -971,6 +990,118 @@ app.post('/api/submit-food-report', authenticateToken, async (req, res) => {
     }
 });
 //Fim Ajuste #34
+
+//Ajuste #35
+// ========== FUNÇÃO PARA ENVIAR E-MAIL DE REPORTE ==========
+async function sendReportEmail(reportId, foodId, userId) {
+    try {
+        // 1. Buscar dados do reporte e itens
+        const client = await pool.connect();
+        
+        // Buscar dados principais do reporte
+        const reportQuery = await client.query(
+            `SELECT r.id, r.dt_report, f.item as food_name, u.email_user as user_email
+             FROM tbl_report r
+             JOIN tbl_foods f ON r.id_food = f.id
+             JOIN tbl01_users u ON r.id_user_report = u.user_id
+             WHERE r.id = $1`,
+            [reportId]
+        );
+        
+        if (reportQuery.rows.length === 0) {
+            console.error('Reporte não encontrado para envio de e-mail');
+            return false;
+        }
+        
+        const reportData = reportQuery.rows[0];
+        
+        // Buscar itens do reporte
+        const itemsQuery = await client.query(
+            `SELECT ri.id, ri.id_campo, ri.valor_sugerido, ac.nome as campo_nome
+             FROM tbl_report_itens ri
+             LEFT JOIN tbl_aux_campos ac ON ri.id_campo = ac.id
+             WHERE ri.id_report = $1`,
+            [reportId]
+        );
+        
+        client.release();
+
+        // 2. Formatando a data
+        const reportDate = new Date(reportData.dt_report);
+        const formattedDate = reportDate.toLocaleDateString('pt-BR');
+
+        // 3. Criar tabela HTML dos itens reportados
+        let itemsTable = `
+            <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%; margin-top: 15px;">
+                <thead>
+                    <tr style="background-color: #f2f2f2;">
+                        <th>ID Item</th>
+                        <th>Campo</th>
+                        <th>Valor Sugerido</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        itemsQuery.rows.forEach(item => {
+            itemsTable += `
+                <tr>
+                    <td>${item.id}</td>
+                    <td>${item.campo_nome || `Campo ID ${item.id_campo}`}</td>
+                    <td>${item.valor_sugerido}</td>
+                </tr>
+            `;
+        });
+
+        itemsTable += `</tbody></table>`;
+
+        // 4. Criar conteúdo do e-mail
+        const emailContent = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #2c3e50;">Reporte de Dados Incorretos em Item de Alimento</h2>
+                <p><strong>Data do Reporte:</strong> ${formattedDate}</p>
+                <p><strong>ID do Report:</strong> ${reportData.id}</p>
+                <p><strong>ID do Item:</strong> ${foodId}</p>
+                <p><strong>ID do User:</strong> ${userId}</p>
+                <p><strong>Email do User:</strong> ${reportData.user_email}</p>
+                <p><strong>Item Alimentício:</strong> ${reportData.food_name}</p>
+                
+                <h3 style="color: #2c3e50; margin-top: 20px;">Campos Reportados</h3>
+                ${itemsTable}
+                
+                <p style="margin-top: 20px; font-size: 12px; color: #7f8c8d;">
+                    Este e-mail foi gerado automaticamente pelo sistema Fit+.
+                </p>
+            </div>
+        `;
+
+        // 5. Enviar e-mail usando Brevo
+        const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+        const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
+        sendSmtpEmail.subject = `Reporte de Dados Incorretos em Alimentos #${reportId}`;
+        sendSmtpEmail.htmlContent = emailContent;
+        sendSmtpEmail.sender = { 
+            email: "bex.diegolima@gmail.com", 
+            name: "Fit+ - Sistema de Reportes" 
+        };
+        sendSmtpEmail.to = [{ email: "suporte_fitmais@outlook.com" }];
+        sendSmtpEmail.replyTo = { 
+            email: "bex.diegolima@gmail.com", 
+            name: "Suporte Fit+" 
+        };
+
+        await apiInstance.sendTransacEmail(sendSmtpEmail);
+        console.log(`E-mail de reporte enviado com sucesso para ID ${reportId}`);
+        return true;
+
+    } catch (error) {
+        console.error('Erro ao enviar e-mail de reporte:', error);
+        return false;
+    }
+}
+
+//Fim Ajuste #35
 
 //FIM ALTERAÇÕES DEEPSEEK
 
