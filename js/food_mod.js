@@ -1511,152 +1511,165 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Atualizar a função setupReportSubmitButton()
         function setupReportSubmitButton() {
-            const reportSubmitBtn = document.getElementById('reportSubmitBtn');
-            const checkboxes = document.querySelectorAll('.report-checkbox');
+    const reportSubmitBtn = document.getElementById('reportSubmitBtn');
+    const checkboxes = document.querySelectorAll('.report-checkbox');
+    
+    function updateSubmitButtonState() {
+        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+        reportSubmitBtn.disabled = !anyChecked;
+    }
+    
+    updateSubmitButtonState();
+    
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateSubmitButtonState);
+    });
+    
+    reportSubmitBtn.addEventListener('click', async function() {
+        const originalText = reportSubmitBtn.innerHTML;
+        
+        try {
+            // 1. Ativar estado de carregamento
+            reportSubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            reportSubmitBtn.disabled = true;
             
-            function updateSubmitButtonState() {
-                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
-                reportSubmitBtn.disabled = !anyChecked;
+            // 2. Validar campos selecionados
+            const checkedBoxes = Array.from(checkboxes).filter(cb => cb.checked);
+            if (checkedBoxes.length === 0) {
+                throw new Error('Selecione ao menos um item para enviar o reporte.');
             }
             
-            // Atualiza estado inicial do botão
-            updateSubmitButtonState();
+            // 3. Preparar dados com validação rigorosa
+            const foodId = document.querySelector('#foodDetailModal').dataset.foodId;
+            const token = localStorage.getItem('token');
+            let validationErrors = [];
+            const reportFields = [];
             
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', updateSubmitButtonState);
-            });
-            
-            reportSubmitBtn.addEventListener('click', async function() {
-                const originalText = reportSubmitBtn.innerHTML;
-                
+            checkedBoxes.forEach(checkbox => {
                 try {
-                    // 1. Ativar estado de carregamento
-                    reportSubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-                    reportSubmitBtn.disabled = true;
+                    const fieldId = checkbox.dataset.field;
+                    const suggestedInput = document.getElementById(`suggested_${fieldId}`);
+                    const currentValueText = document.getElementById(`current_${fieldId}`).textContent;
                     
-                    // 2. Validar campos selecionados
-                    const checkedBoxes = Array.from(checkboxes).filter(cb => cb.checked);
-                    if (checkedBoxes.length === 0) {
-                        throw new Error('Selecione ao menos um item para enviar o reporte.');
+                    // Validação EXTRA do ID do campo
+                    const fieldIdNumber = parseInt(fieldId.split('_')[1]);
+                    if (isNaN(fieldIdNumber) || fieldIdNumber < 1 || fieldIdNumber > 27) {
+                        throw new Error(`ID de campo inválido: ${fieldId}`);
                     }
                     
-                    // 3. Preparar dados e validar valores
-                    const foodId = document.querySelector('#foodDetailModal').dataset.foodId;
-                    const token = localStorage.getItem('token');
-                    let validationErrors = [];
-                    const reportFields = [];
+                    // Converter valores
+                    const currentValue = parseFloat(currentValueText.replace(',', '.')) || 0;
+                    const suggestedValue = parseFloat(suggestedInput.value.replace(',', '.')) || null;
                     
-                    checkedBoxes.forEach(checkbox => {
-                        const fieldId = checkbox.dataset.field;
-                        const suggestedInput = document.getElementById(`suggested_${fieldId}`);
-                        const currentValueText = document.getElementById(`current_${fieldId}`).textContent;
-                        
-                        // Converter valores para comparação
-                        const currentValue = parseFloat(currentValueText.replace(',', '.')) || 0;
-                        const suggestedValue = parseFloat(suggestedInput.value.replace(',', '.')) || null;
-                        
-                        // Validações
-                        if (suggestedValue === null || isNaN(suggestedValue)) {
-                            validationErrors.push(`Valor inválido para ${checkbox.nextElementSibling.textContent}`);
-                            suggestedInput.classList.add('report-field-error');
-                        } 
-                        else if (suggestedValue < 0) {
-                            validationErrors.push(`O valor sugerido para ${checkbox.nextElementSibling.textContent} deve ser ≥ 0`);
-                            suggestedInput.classList.add('report-field-error');
-                        }
-                        else if (suggestedValue === currentValue) {
-                            validationErrors.push(`O valor sugerido para ${checkbox.nextElementSibling.textContent} não pode ser igual ao atual`);
-                            suggestedInput.classList.add('report-field-error');
-                        }
-                        else {
-                            suggestedInput.classList.remove('report-field-error');
-                            reportFields.push({
-                                id: parseInt(fieldId.split('_')[1]),
-                                value: suggestedValue
-                            });
-                        }
+                    // Validações
+                    if (suggestedValue === null || isNaN(suggestedValue)) {
+                        throw new Error(`Valor inválido para ${checkbox.nextElementSibling.textContent}`);
+                    }
+                    
+                    if (suggestedValue < 0) {
+                        throw new Error(`Valor deve ser ≥ 0 para ${checkbox.nextElementSibling.textContent}`);
+                    }
+                    
+                    if (suggestedValue === currentValue) {
+                        throw new Error(`Valor sugerido não pode ser igual ao atual para ${checkbox.nextElementSibling.textContent}`);
+                    }
+                    
+                    // Adicionar aos campos válidos
+                    reportFields.push({
+                        id: fieldIdNumber,
+                        value: suggestedValue
                     });
                     
-                    if (validationErrors.length > 0) {
-                        throw new Error(validationErrors.join('\n'));
-                    }
+                    suggestedInput.classList.remove('report-field-error');
                     
-                    if (!foodId) {
-                        throw new Error('ID do alimento não encontrado');
-                    }
-                    
-                    if (!token) {
-                        throw new Error('Usuário não autenticado');
-                    }
-                    
-                    // 4. Enviar dados para o servidor
-                    const response = await fetch('https://fit-plus-backend.onrender.com/api/submit-food-report', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        },
-                        body: JSON.stringify({
-                            foodId: foodId,
-                            reportFields: reportFields
-                        })
-                    });
-                    
-                    // 5. Processar resposta
-                    if (!response.ok) {
-                        const errorResponse = await response.json().catch(() => ({}));
-                        throw new Error(
-                            errorResponse.message || 
-                            `Erro no servidor: ${response.status} ${response.statusText}`
-                        );
-                    }
-                    
-                    const result = await response.json();
-                    
-                    if (!result.success) {
-                        throw new Error(result.message || 'Erro ao processar o reporte');
-                    }
-                    
-                    // 6. Feedback de sucesso
-                    showAlertMessage(result.message || 'Reporte enviado com sucesso!', 'success');
-                    
-                    // 7. Resetar formulário após 2 segundos
-                    setTimeout(() => {
-                        document.getElementById('foodReportModal').style.display = 'none';
-                        
-                        // Limpar seleções
-                        checkboxes.forEach(cb => cb.checked = false);
-                        document.querySelectorAll('.suggested-input').forEach(input => {
-                            input.value = '';
-                            input.disabled = true;
-                        });
-                        
-                        updateSubmitButtonState();
-                    }, 2000);
-                    
-                } catch (error) {
-                    // 8. Tratamento de erros detalhado
-                    console.error('Erro no reporte:', {
-                        error: error,
-                        message: error.message,
-                        stack: error.stack
-                    });
-                    
-                    // Mostrar mensagem formatada
-                    const errorMessage = error.message.includes('Erro no servidor') 
-                        ? 'Erro interno no servidor. Por favor, tente novamente mais tarde.'
-                        : error.message;
-                    
-                    showAlertMessage(errorMessage, 'error');
-                    
-                } finally {
-                    // 9. Restaurar estado do botão
-                    reportSubmitBtn.innerHTML = originalText;
-                    reportSubmitBtn.disabled = false;
-                    updateSubmitButtonState();
+                } catch (fieldError) {
+                    validationErrors.push(fieldError.message);
+                    const suggestedInput = document.getElementById(`suggested_${checkbox.dataset.field}`);
+                    suggestedInput.classList.add('report-field-error');
                 }
             });
-    }
+            
+            if (validationErrors.length > 0) {
+                throw new Error(validationErrors.join('\n'));
+            }
+            
+            // Validações extras
+            if (!foodId || !foodId.match(/^\d+$/)) {
+                throw new Error('ID do alimento inválido');
+            }
+            
+            if (!token) {
+                throw new Error('Sessão expirada. Faça login novamente.');
+            }
+            
+            // 4. DEBUG: Mostrar dados antes do envio (pode remover depois)
+            console.debug('Dados a serem enviados:', {
+                foodId,
+                reportFields,
+                timestamp: new Date().toISOString()
+            });
+            
+            // 5. Enviar para o servidor
+            const response = await fetch('https://fit-plus-backend.onrender.com/api/submit-food-report', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    foodId: parseInt(foodId),
+                    reportFields: reportFields
+                })
+            });
+            
+            // 6. Processar resposta
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => null);
+                throw new Error(
+                    errorData?.message || 
+                    `Erro no servidor (${response.status})`
+                );
+            }
+            
+            const result = await response.json();
+            
+            if (!result.success) {
+                throw new Error(result.message || 'Erro ao processar o reporte');
+            }
+            
+            // 7. Sucesso
+            showAlertMessage('✔ Reporte enviado com sucesso!', 'success');
+            
+            // 8. Resetar formulário
+            setTimeout(() => {
+                document.getElementById('foodReportModal').style.display = 'none';
+                checkboxes.forEach(cb => cb.checked = false);
+                document.querySelectorAll('.suggested-input').forEach(input => {
+                    input.value = '';
+                    input.disabled = true;
+                });
+                updateSubmitButtonState();
+            }, 2000);
+            
+        } catch (error) {
+            console.error('Erro no reporte:', {
+                error: error.message,
+                stack: error.stack
+            });
+            
+            showAlertMessage(
+                error.message.includes('\n') 
+                    ? 'Por favor, corrija os seguintes erros:\n' + error.message
+                    : error.message,
+                'error'
+            );
+            
+        } finally {
+            reportSubmitBtn.innerHTML = originalText;
+            reportSubmitBtn.disabled = false;
+        }
+    });
+}
 
         //Fim Ajuste #34
 
