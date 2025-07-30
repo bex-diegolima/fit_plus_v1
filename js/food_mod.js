@@ -1425,6 +1425,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Evento para o botão fechar (sem funcionalidade ainda)
             document.getElementById('closeReportBtn').addEventListener('click', function() {
                 document.getElementById('foodReportModal').style.display = 'none';
+                resetReportForm();
             });
         });
         //Fim Ajuste #31
@@ -1508,6 +1509,41 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         //Fim Ajuste #33*/
+
+    //Ajuste #36
+    // ========== FUNÇÃO PARA RESETAR FORMULÁRIO DE REPORTE ==========
+    function resetReportForm() {
+        // 1. Desmarcar todos os checkboxes
+        document.querySelectorAll('.report-checkbox').forEach(checkbox => {
+            checkbox.checked = false;
+            // Disparar evento change para atualizar interface
+            const event = new Event('change');
+            checkbox.dispatchEvent(event);
+        });
+
+        // 2. Limpar todos os campos de valor sugerido
+        document.querySelectorAll('.suggested-input').forEach(input => {
+            input.value = '';
+            input.disabled = true;
+            input.classList.remove('report-field-error');
+        });
+
+        // 3. Resetar scroll do modal
+        const reportModal = document.getElementById('foodReportModal');
+        if (reportModal) {
+            reportModal.scrollTop = 0;
+            const modalContent = reportModal.querySelector('.food-modal-content');
+            if (modalContent) modalContent.scrollTop = 0;
+        }
+
+        // 4. Resetar estado do botão de envio
+        const submitBtn = document.getElementById('reportSubmitBtn');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+        }
+    }
+    //Fim Ajuste #36
+
 
     // Atualizar a função setupReportSubmitButton()
     function setupReportSubmitButton() {
@@ -1680,10 +1716,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     //Fim Ajuste #34.1
                     
-                    showAlertMessage('✔ Reporte enviado com sucesso!', 'success');
-                    
+                    //Ajuste #36
+                    //showAlertMessage('✔ Reporte enviado com sucesso!', 'success');
+                    showAlertMessage('Reporte de informações incorretas enviado para o time de suporte. Nossa equipe de especialistas irá revisar os dados e em breve você receberá um parecer.', 'success');
+                    //Fim Ajuste #36
+
                     setTimeout(() => {
                         document.getElementById('foodReportModal').style.display = 'none';
+                        //Ajuste #36
+                        resetReportForm();
+                        //Fim Ajuste #36
                         checkboxes.forEach(cb => cb.checked = false);
                         document.querySelectorAll('.suggested-input').forEach(input => {
                             input.value = '';
