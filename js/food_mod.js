@@ -1546,147 +1546,157 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         
         function updateSubmitButtonState() {
-            const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
-            reportSubmitBtn.disabled = !anyChecked;
-        }
-        
-        updateSubmitButtonState();
-        
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', updateSubmitButtonState);
-        });
-        
-        reportSubmitBtn.addEventListener('click', async function() {
-            const originalText = reportSubmitBtn.innerHTML;
-            
-            try {
-                reportSubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
-                reportSubmitBtn.disabled = true;
-                
-                const checkedBoxes = Array.from(checkboxes).filter(cb => cb.checked);
-                if (checkedBoxes.length === 0) {
-                    throw new Error('Selecione ao menos um item para enviar o reporte.');
-                }
-                
-                const foodId = document.querySelector('#foodDetailModal').dataset.foodId;
-                const token = localStorage.getItem('token');
-                let validationErrors = [];
-                const reportFields = [];
-                
-                checkedBoxes.forEach(checkbox => {
-                    try {
-                        const fieldName = checkbox.dataset.field; // Agora recebe o nome direto (ex: "calorias_kcal")
-                        const fieldId = FIELD_IDS[fieldName];
-                        
-                        if (!fieldId) {
-                            throw new Error(`Campo "${fieldName}" não possui ID mapeado`);
-                        }
-                        
-                        const suggestedInput = document.getElementById(`suggested_${fieldName}`);
-                        const currentValueText = document.getElementById(`current_${fieldName}`).textContent;
-                        
-                        const currentValue = parseFloat(currentValueText.replace(',', '.')) || 0;
-                        const suggestedValue = parseFloat(suggestedInput.value.replace(',', '.')) || null;
-                        
-                        if (suggestedValue === null || isNaN(suggestedValue)) {
-                            throw new Error(`Valor inválido para ${checkbox.nextElementSibling.textContent}`);
-                        }
-                        
-                        if (suggestedValue < 0) {
-                            throw new Error(`Valor deve ser ≥ 0 para ${checkbox.nextElementSibling.textContent}`);
-                        }
-                        
-                        if (suggestedValue === currentValue) {
-                            throw new Error(`Valor sugerido não pode ser igual ao atual para ${checkbox.nextElementSibling.textContent}`);
-                        }
-                        
-                        reportFields.push({
-                            id: fieldId,
-                            value: suggestedValue
-                        });
-                        
-                        suggestedInput.classList.remove('report-field-error');
-                        
-                    } catch (fieldError) {
-                        validationErrors.push(fieldError.message);
-                        const fieldName = checkbox.dataset.field;
-                        const suggestedInput = document.getElementById(`suggested_${fieldName}`);
-                        suggestedInput.classList.add('report-field-error');
-                    }
-                });
-                
-                if (validationErrors.length > 0) {
-                    throw new Error(validationErrors.join('\n'));
-                }
-                
-                if (!foodId || !foodId.match(/^\d+$/)) {
-                    throw new Error('ID do alimento inválido');
-                }
-                
-                if (!token) {
-                    throw new Error('Sessão expirada. Faça login novamente.');
-                }
-                
-                console.debug('Enviando reporte:', {
-                    foodId: parseInt(foodId),
-                    reportFields,
-                    timestamp: new Date().toISOString()
-                });
-                
-                const response = await fetch('https://fit-plus-backend.onrender.com/api/submit-food-report', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        foodId: parseInt(foodId),
-                        reportFields: reportFields
-                    })
-                });
-                
-                if (!response.ok) {
-                    const errorData = await response.json().catch(() => null);
-                    throw new Error(
-                        errorData?.message || 
-                        `Erro no servidor (${response.status})`
-                    );
-                }
-                
-                const result = await response.json();
-                
-                if (!result.success) {
-                    throw new Error(result.message || 'Erro ao processar o reporte');
-                }
-                
-                showAlertMessage('✔ Reporte enviado com sucesso!', 'success');
-                
-                setTimeout(() => {
-                    document.getElementById('foodReportModal').style.display = 'none';
-                    checkboxes.forEach(cb => cb.checked = false);
-                    document.querySelectorAll('.suggested-input').forEach(input => {
-                        input.value = '';
-                        input.disabled = true;
-                    });
-                    updateSubmitButtonState();
-                }, 2000);
-                
-            } catch (error) {
-                console.error('Erro no reporte:', error);
-                
-                showAlertMessage(
-                    error.message.includes('\n') 
-                        ? 'Por favor, corrija os seguintes erros:\n' + error.message
-                        : error.message,
-                    'error'
-                );
-                
-            } finally {
-                reportSubmitBtn.innerHTML = originalText;
-                reportSubmitBtn.disabled = false;
+                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                reportSubmitBtn.disabled = !anyChecked;
             }
-        });
-    }
+            
+            updateSubmitButtonState();
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateSubmitButtonState);
+            });
+            
+            reportSubmitBtn.addEventListener('click', async function() {
+                const originalText = reportSubmitBtn.innerHTML;
+                
+                try {
+                    reportSubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+                    reportSubmitBtn.disabled = true;
+                    
+                    // 1. Primeiro validar se há checkboxes marcados
+                    const checkedBoxes = Array.from(checkboxes).filter(cb => cb.checked);
+                    if (checkedBoxes.length === 0) {
+                        throw new Error('Selecione ao menos um item para enviar o reporte.');
+                    }
+                    
+                    const foodId = document.querySelector('#foodDetailModal').dataset.foodId;
+                    const token = localStorage.getItem('token');
+                    let validationErrors = [];
+                    const reportFields = [];
+                    let hasValidFields = false; // Flag para controlar se há pelo menos um campo válido
+                    
+                    // 2. Validar cada campo marcado
+                    checkedBoxes.forEach(checkbox => {
+                        try {
+                            const fieldName = checkbox.dataset.field;
+                            const fieldId = FIELD_IDS[fieldName];
+                            
+                            if (!fieldId) {
+                                throw new Error(`Campo "${fieldName}" não possui ID mapeado`);
+                            }
+                            
+                            const suggestedInput = document.getElementById(`suggested_${fieldName}`);
+                            const currentValueText = document.getElementById(`current_${fieldName}`).textContent;
+                            
+                            const currentValue = parseFloat(currentValueText.replace(',', '.')) || 0;
+                            const suggestedValue = parseFloat(suggestedInput.value.replace(',', '.')) || null;
+                            
+                            if (suggestedValue === null || isNaN(suggestedValue)) {
+                                throw new Error(`Valor inválido para ${checkbox.nextElementSibling.textContent}`);
+                            }
+                            
+                            if (suggestedValue < 0) {
+                                throw new Error(`Valor deve ser ≥ 0 para ${checkbox.nextElementSibling.textContent}`);
+                            }
+                            
+                            if (suggestedValue === currentValue) {
+                                throw new Error(`Valor sugerido não pode ser igual ao atual para ${checkbox.nextElementSibling.textContent}`);
+                            }
+                            
+                            reportFields.push({
+                                id: fieldId,
+                                value: suggestedValue
+                            });
+                            
+                            suggestedInput.classList.remove('report-field-error');
+                            hasValidFields = true; // Marca que temos pelo menos um campo válido
+                            
+                        } catch (fieldError) {
+                            validationErrors.push(fieldError.message);
+                            const fieldName = checkbox.dataset.field;
+                            const suggestedInput = document.getElementById(`suggested_${fieldName}`);
+                            suggestedInput.classList.add('report-field-error');
+                        }
+                    });
+                    
+                    // 3. Verificar se após todas as validações temos campos válidos
+                    if (!hasValidFields) {
+                        throw new Error('Nenhum campo válido para envio. Corrija os erros marcados.');
+                    }
+                    
+                    if (validationErrors.length > 0) {
+                        throw new Error(validationErrors.join('\n'));
+                    }
+                    
+                    // Restante do código permanece igual...
+                    if (!foodId || !foodId.match(/^\d+$/)) {
+                        throw new Error('ID do alimento inválido');
+                    }
+                    
+                    if (!token) {
+                        throw new Error('Sessão expirada. Faça login novamente.');
+                    }
+                    
+                    console.debug('Enviando reporte:', {
+                        foodId: parseInt(foodId),
+                        reportFields,
+                        timestamp: new Date().toISOString()
+                    });
+                    
+                    const response = await fetch('https://fit-plus-backend.onrender.com/api/submit-food-report', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            foodId: parseInt(foodId),
+                            reportFields: reportFields
+                        })
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => null);
+                        throw new Error(
+                            errorData?.message || 
+                            `Erro no servidor (${response.status})`
+                        );
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (!result.success) {
+                        throw new Error(result.message || 'Erro ao processar o reporte');
+                    }
+                    
+                    showAlertMessage('✔ Reporte enviado com sucesso!', 'success');
+                    
+                    setTimeout(() => {
+                        document.getElementById('foodReportModal').style.display = 'none';
+                        checkboxes.forEach(cb => cb.checked = false);
+                        document.querySelectorAll('.suggested-input').forEach(input => {
+                            input.value = '';
+                            input.disabled = true;
+                        });
+                        updateSubmitButtonState();
+                    }, 2000);
+                    
+                } catch (error) {
+                    console.error('Erro no reporte:', error);
+                    
+                    showAlertMessage(
+                        error.message.includes('\n') 
+                            ? 'Por favor, corrija os seguintes erros:\n' + error.message
+                            : error.message,
+                        'error'
+                    );
+                    
+                } finally {
+                    reportSubmitBtn.innerHTML = originalText;
+                    reportSubmitBtn.disabled = false;
+                }
+            });
+        }
     //Fim Ajuste #34
 
     loadSelectOptions();
