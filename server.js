@@ -994,12 +994,13 @@ app.post('/api/submit-food-report', authenticateToken, async (req, res) => {
 //Ajuste #35
 // ========== FUNÇÃO PARA ENVIAR E-MAIL DE REPORTE ==========
 async function sendReportEmail(reportId, foodId, userId) {
+    let client;
     try {
-        console.log(`[Email Debug] Iniciando processo de envio para reportId: ${reportId}`);
+        console.log(`[Email Debug] Iniciando envio de e-mail para reportId: ${reportId}`);
         
-        const client = await pool.connect();
+        client = await pool.connect();
         
-        // 1. Buscar dados principais do reporte (MODIFICADO)
+        // 1. Buscar dados principais do reporte
         const reportQuery = await client.query(
             `SELECT r.id, r.dt_report, f.item as food_name, u.email_user as user_email
              FROM tbl_report r
@@ -1010,13 +1011,18 @@ async function sendReportEmail(reportId, foodId, userId) {
         );
 
         if (reportQuery.rows.length === 0) {
-            console.error('Reporte não encontrado para envio de e-mail');
+            console.error('[Email Error] Reporte não encontrado no banco de dados');
             return false;
         }
         
         const reportData = reportQuery.rows[0];
+        console.log('[Email Debug] Dados do reporte:', {
+            id: reportData.id,
+            food_name: reportData.food_name,
+            user_email: reportData.user_email
+        });
         
-        // 2. Buscar itens do reporte (MODIFICADO - REMOVIDO O JOIN COM tbl_aux_campos)
+        // 2. Buscar itens do reporte
         const itemsQuery = await client.query(
             `SELECT id, id_campo, valor_sugerido
              FROM tbl_report_itens
@@ -1025,15 +1031,12 @@ async function sendReportEmail(reportId, foodId, userId) {
         );
         
         console.log(`[Email Debug] Itens do reporte encontrados: ${itemsQuery.rows.length}`);
-        client.release();
-
-        // 3. Mapear IDs de campo para nomes (MODIFICADO)
-        // Criamos um mapeamento local em vez de usar a tabela auxiliar
+        
+        // 3. Mapeamento completo dos campos
         const fieldNames = {
             1: 'Calorias (kcal)',
             2: 'Proteínas (g)',
             3: 'Carboidratos (g)',
-            // Adicione todos os outros campos conforme sua estrutura
             4: 'Gorduras Totais (g)',
             5: 'Gorduras Boas (g)',
             6: 'Gorduras Ruins (g)',
@@ -1060,13 +1063,21 @@ async function sendReportEmail(reportId, foodId, userId) {
             27: 'Carga Antioxidante'
         };
 
-        // 4. Criar tabela HTML (MODIFICADO para usar o mapeamento local)
+        // 4. Formatando a data com fallback
+        const reportDate = reportData.dt_report ? new Date(reportData.dt_report) : new Date();
+        const formattedDate = reportDate.toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+
+        // 5. Criar tabela HTML dos itens reportados
         let itemsTable = `
-            <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%; margin-top: 15px;">
+            <table style="border-collapse: collapse; width: 100%; margin-top: 15px; font-size: 14px;">
                 <thead>
-                    <tr style="background-color: #f2f2f2;">
-                        <th>Campo</th>
-                        <th>Valor Sugerido</th>
+                    <tr style="background-color: #f8f9fa; text-align: left;">
+                        <th style="padding: 8px; border-bottom: 1px solid #ddd;">Campo</th>
+                        <th style="padding: 8px; border-bottom: 1px solid #ddd;">Valor Sugerido</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1075,39 +1086,46 @@ async function sendReportEmail(reportId, foodId, userId) {
         itemsQuery.rows.forEach(item => {
             itemsTable += `
                 <tr>
-                    <td>${fieldNames[item.id_campo] || `Campo ID ${item.id_campo}`}</td>
-                    <td>${item.valor_sugerido}</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">${fieldNames[item.id_campo] || `Campo ID ${item.id_campo}`}</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.valor_sugerido}</td>
                 </tr>
             `;
         });
 
         itemsTable += `</tbody></table>`;
 
-        // 5. Criar conteúdo do e-mail
+        // 6. Criar conteúdo do e-mail
         const emailContent = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #2c3e50;">Reporte de Dados Incorretos em Item de Alimento</h2>
-                <p><strong>Data do Reporte:</strong> ${formattedDate}</p>
-                <p><strong>ID do Report:</strong> ${reportData.id}</p>
-                <p><strong>ID do Item:</strong> ${foodId}</p>
-                <p><strong>ID do User:</strong> ${userId}</p>
-                <p><strong>Email do User:</strong> ${reportData.user_email}</p>
-                <p><strong>Item Alimentício:</strong> ${reportData.food_name}</p>
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+                <h2 style="color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                    Reporte de Dados Incorretos - Fit+
+                </h2>
                 
-                <h3 style="color: #2c3e50; margin-top: 20px;">Campos Reportados</h3>
+                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                    <h3 style="margin-top: 0; color: #2c3e50;">Informações do Reporte</h3>
+                    <p><strong>Data:</strong> ${formattedDate}</p>
+                    <p><strong>ID do Reporte:</strong> ${reportId}</p>
+                    <p><strong>ID do Item:</strong> ${foodId}</p>
+                    <p><strong>Item:</strong> ${reportData.food_name}</p>
+                    <p><strong>ID do Usuário:</strong> ${userId}</p>
+                    <p><strong>Email do Usuário:</strong> ${reportData.user_email}</p>
+                </div>
+                
+                <h3 style="color: #2c3e50;">Alterações Sugeridas</h3>
                 ${itemsTable}
                 
-                <p style="margin-top: 20px; font-size: 12px; color: #7f8c8d;">
-                    Este e-mail foi gerado automaticamente pelo sistema Fit+.
-                </p>
+                <div style="margin-top: 30px; font-size: 12px; color: #777; border-top: 1px solid #eee; padding-top: 10px;">
+                    <p>Este e-mail foi gerado automaticamente pelo sistema Fit+.</p>
+                    <p>Por favor, não responda diretamente a esta mensagem.</p>
+                </div>
             </div>
         `;
 
-        // 6. Configurar e enviar e-mail
+        // 7. Configurar e enviar e-mail
         const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
         const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
-        sendSmtpEmail.subject = `Reporte de Dados Incorretos em Alimentos #${reportId}`;
+        sendSmtpEmail.subject = `[Fit+] Reporte #${reportId} - ${reportData.food_name}`;
         sendSmtpEmail.htmlContent = emailContent;
         sendSmtpEmail.sender = { 
             email: "bex.diegolima@gmail.com", 
@@ -1119,26 +1137,41 @@ async function sendReportEmail(reportId, foodId, userId) {
             name: "Suporte Fit+" 
         };
 
-        console.log('[Email Debug] Configuração do e-mail completa:', JSON.stringify({
+        console.log('[Email Debug] Configuração do e-mail:', {
             subject: sendSmtpEmail.subject,
-            to: sendSmtpEmail.to,
-            sender: sendSmtpEmail.sender
-        }, null, 2));
+            to: sendSmtpEmail.to[0].email,
+            length: emailContent.length
+        });
 
-        console.log('Brevo API Key:', process.env.BREVO_API_KEY ? 'Presente' : 'Faltando');
+        console.log('[Email Debug] Verificando API Key...');
+        if (!process.env.BREVO_API_KEY) {
+            throw new Error('BREVO_API_KEY não está configurada');
+        }
 
-        // 7. Enviar e-mail
         const emailResponse = await apiInstance.sendTransacEmail(sendSmtpEmail);
-        console.log('[Email Success] E-mail enviado com sucesso! Resposta:', JSON.stringify(emailResponse, null, 2));
+        console.log('[Email Success] E-mail enviado com sucesso! Response:', {
+            messageId: emailResponse.messageId,
+            envelope: emailResponse.envelope
+        });
+        
         return true;
 
     } catch (error) {
-        console.error('[Email Error] Erro no processo de e-mail:', {
-            message: error.message,
-            response: error.response?.data,
-            stack: error.stack
+        console.error('[Email Error] Falha no envio do e-mail:', {
+            error: error.message,
+            stack: error.stack,
+            reportId,
+            userId
         });
         return false;
+    } finally {
+        if (client) {
+            try {
+                await client.release();
+            } catch (releaseError) {
+                console.error('[Email Error] Erro ao liberar conexão:', releaseError);
+            }
+        }
     }
 }
 //Fim Ajuste #35
