@@ -998,9 +998,8 @@ async function sendReportEmail(reportId, foodId, userId) {
         console.log(`[Email Debug] Iniciando processo de envio para reportId: ${reportId}`);
         
         const client = await pool.connect();
-        console.log('[Email Debug] Conexão com o banco estabelecida');
-
-        // 1. Buscar dados do reporte
+        
+        // 1. Buscar dados principais do reporte (MODIFICADO)
         const reportQuery = await client.query(
             `SELECT r.id, r.dt_report, f.item as food_name, u.email_user as user_email
              FROM tbl_report r
@@ -1009,39 +1008,63 @@ async function sendReportEmail(reportId, foodId, userId) {
              WHERE r.id = $1`,
             [reportId]
         );
-        
-        console.log(`[Email Debug] Query do reporte executada, ${reportQuery.rows.length} resultados`);
-        
+
         if (reportQuery.rows.length === 0) {
-            console.error('[Email Error] Reporte não encontrado no banco de dados');
+            console.error('Reporte não encontrado para envio de e-mail');
             return false;
         }
         
         const reportData = reportQuery.rows[0];
-        console.log('[Email Debug] Dados do reporte:', JSON.stringify(reportData, null, 2));
         
-        // 2. Buscar itens do reporte
+        // 2. Buscar itens do reporte (MODIFICADO - REMOVIDO O JOIN COM tbl_aux_campos)
         const itemsQuery = await client.query(
-            `SELECT ri.id, ri.id_campo, ri.valor_sugerido, ac.nome as campo_nome
-             FROM tbl_report_itens ri
-             LEFT JOIN tbl_aux_campos ac ON ri.id_campo = ac.id
-             WHERE ri.id_report = $1`,
+            `SELECT id, id_campo, valor_sugerido
+             FROM tbl_report_itens
+             WHERE id_report = $1`,
             [reportId]
         );
         
         console.log(`[Email Debug] Itens do reporte encontrados: ${itemsQuery.rows.length}`);
         client.release();
 
-        // 3. Formatando a data
-        const reportDate = new Date(reportData.dt_report);
-        const formattedDate = reportDate.toLocaleDateString('pt-BR');
+        // 3. Mapear IDs de campo para nomes (MODIFICADO)
+        // Criamos um mapeamento local em vez de usar a tabela auxiliar
+        const fieldNames = {
+            1: 'Calorias (kcal)',
+            2: 'Proteínas (g)',
+            3: 'Carboidratos (g)',
+            // Adicione todos os outros campos conforme sua estrutura
+            4: 'Gorduras Totais (g)',
+            5: 'Gorduras Boas (g)',
+            6: 'Gorduras Ruins (g)',
+            7: 'Fibras (g)',
+            8: 'Sódio (mg)',
+            9: 'Açúcares Totais (g)',
+            10: 'Açúcares Adicionados (g)',
+            11: 'Índice Glicêmico',
+            12: 'Carga Glicêmica',
+            13: 'Colesterol (mg)',
+            14: 'Cálcio (mg)',
+            15: 'Ferro (mg)',
+            16: 'Potássio (mg)',
+            17: 'Magnésio (mg)',
+            18: 'Zinco (mg)',
+            19: 'Vitamina A (mcg)',
+            20: 'Vitamina D (mcg)',
+            21: 'Vitamina C (mg)',
+            22: 'Vitamina B12 (mcg)',
+            23: 'Vitamina E (mcg)',
+            24: 'Ômega 3 (mg)',
+            25: 'Ácido Fólico (mcg)',
+            26: 'Teor Alcoólico (%)',
+            27: 'Carga Antioxidante'
+        };
 
-        // 4. Criar tabela HTML dos itens reportados
+        // 4. Criar tabela HTML (MODIFICADO para usar o mapeamento local)
         let itemsTable = `
             <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%; margin-top: 15px;">
                 <thead>
                     <tr style="background-color: #f2f2f2;">
-                        <th>ID Item</th>
                         <th>Campo</th>
                         <th>Valor Sugerido</th>
                     </tr>
@@ -1052,8 +1075,7 @@ async function sendReportEmail(reportId, foodId, userId) {
         itemsQuery.rows.forEach(item => {
             itemsTable += `
                 <tr>
-                    <td>${item.id}</td>
-                    <td>${item.campo_nome || `Campo ID ${item.id_campo}`}</td>
+                    <td>${fieldNames[item.id_campo] || `Campo ID ${item.id_campo}`}</td>
                     <td>${item.valor_sugerido}</td>
                 </tr>
             `;
