@@ -1429,7 +1429,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         //Fim Ajuste #31
 
-        //Ajuste #33
+        //Ajuste #34
+        /*//Ajuste #33
         // ========== CONFIGURAÇÃO DO BOTÃO ENVIAR REPORTE ==========
         function setupReportSubmitButton() {
             const reportSubmitBtn = document.getElementById('reportSubmitBtn');
@@ -1506,7 +1507,113 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         }
-        //Fim Ajuste #33
+        //Fim Ajuste #33*/
+
+        // Atualizar a função setupReportSubmitButton()
+        function setupReportSubmitButton() {
+            const reportSubmitBtn = document.getElementById('reportSubmitBtn');
+            const checkboxes = document.querySelectorAll('.report-checkbox');
+            
+            function updateSubmitButtonState() {
+                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                reportSubmitBtn.disabled = !anyChecked;
+            }
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateSubmitButtonState);
+            });
+            
+            reportSubmitBtn.addEventListener('click', async function() {
+                const originalText = reportSubmitBtn.innerHTML;
+                
+                try {
+                    // Ativar loader
+                    reportSubmitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+                    reportSubmitBtn.disabled = true;
+                    
+                    // Validações existentes (mantidas)
+                    const checkedBoxes = Array.from(checkboxes).filter(cb => cb.checked);
+                    if (checkedBoxes.length === 0) {
+                        throw new Error('Selecione ao menos um item para enviar o reporte.');
+                    }
+                    
+                    let validationErrors = [];
+                    let reportFields = [];
+                    
+                    checkedBoxes.forEach(checkbox => {
+                        const fieldId = checkbox.dataset.field;
+                        const suggestedInput = document.getElementById(`suggested_${fieldId}`);
+                        const currentValueText = document.getElementById(`current_${fieldId}`).textContent;
+                        
+                        const currentValue = parseFloat(currentValueText.replace(',', '.')) || 0;
+                        const suggestedValue = parseFloat(suggestedInput.value.replace(',', '.')) || null;
+                        
+                        if (suggestedValue === null || suggestedValue < 0) {
+                            validationErrors.push('É obrigatório informar um valor sugerido maior ou igual a 0 (zero) para os itens selecionados.');
+                            suggestedInput.classList.add('report-field-error');
+                        } else {
+                            suggestedInput.classList.remove('report-field-error');
+                        }
+                        
+                        if (suggestedValue !== null && suggestedValue === currentValue) {
+                            validationErrors.push('O valor sugerido não pode ser igual ao valor atual.');
+                            suggestedInput.classList.add('report-field-error');
+                        }
+                        
+                        // Preparar dados para envio (apenas se válido)
+                        if (!validationErrors.length) {
+                            reportFields.push({
+                                id: parseInt(fieldId.split('_')[1]), // Extrai o ID numérico
+                                value: suggestedValue
+                            });
+                        }
+                    });
+                    
+                    if (validationErrors.length > 0) {
+                        throw new Error(validationErrors[0]);
+                    }
+                    
+                    // ETAPA 7: Enviar dados para o servidor
+                    const foodId = document.querySelector('#foodDetailModal').dataset.foodId;
+                    const token = localStorage.getItem('token');
+                    
+                    const response = await fetch('https://fit-plus-backend.onrender.com/api/submit-food-report', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            foodId: foodId,
+                            reportFields: reportFields
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (!result.success) {
+                        throw new Error(result.message || 'Erro ao enviar reporte');
+                    }
+                    
+                    // Mostrar mensagem de sucesso
+                    showAlertMessage('Reporte enviado com sucesso!', 'success');
+                    
+                    // Fechar modal após 2 segundos
+                    setTimeout(() => {
+                        document.getElementById('foodReportModal').style.display = 'none';
+                    }, 2000);
+                    
+                } catch (error) {
+                    showAlertMessage(error.message, 'error');
+                } finally {
+                    reportSubmitBtn.innerHTML = originalText;
+                    reportSubmitBtn.disabled = false;
+                    updateSubmitButtonState();
+                }
+            });
+        }
+
+        //Fim Ajuste #34
 
         loadSelectOptions();
         //FIM ALTERAÇÕES DEEPSEEK

@@ -867,6 +867,62 @@ app.get('/api/food-report-data', authenticateToken, async (req, res) => {
 });
 //Fim Ajuste #32
 
+//Ajuste #34
+// ========== ROTA PARA PROCESSAR REPORTE ==========
+app.post('/api/submit-food-report', authenticateToken, async (req, res) => {
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+
+        // 1. Verificar dados básicos
+        const { foodId, reportFields } = req.body;
+        if (!foodId || !reportFields || !Array.isArray(reportFields)) {
+            throw new Error('Dados do reporte inválidos');
+        }
+
+        // 2. Atualizar tbl_foods (marcar como reportado)
+        await client.query(
+            'UPDATE tbl_foods SET error_report = true WHERE id = $1',
+            [foodId]
+        );
+
+        // 3. Inserir na tbl_report
+        const reportResult = await client.query(
+            `INSERT INTO tbl_report 
+             (id_food, id_user_report, status_report, dt_report)
+             VALUES ($1, $2, 'open', timezone('America/Sao_Paulo', now()))
+             RETURNING id`,
+            [foodId, req.user.userId]
+        );
+        
+        const reportId = reportResult.rows[0].id;
+
+        // 4. Inserir itens na tbl_report_itens
+        for (const field of reportFields) {
+            await client.query(
+                `INSERT INTO tbl_report_itens
+                 (id_report, id_campo, valor_sugerido, status, dt_reg)
+                 VALUES ($1, $2, $3, 'open', timezone('America/Sao_Paulo', now()))`,
+                [reportId, field.id, field.value]
+            );
+        }
+
+        await client.query('COMMIT');
+        res.json({ success: true, message: 'Reporte enviado com sucesso!' });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Erro ao processar reporte:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Erro ao processar reporte' 
+        });
+    } finally {
+        client.release();
+    }
+});
+//Fim Ajuste #34
+
 //FIM ALTERAÇÕES DEEPSEEK
 
 app.listen(PORT, async () => {
