@@ -868,25 +868,44 @@ app.get('/api/food-report-data', authenticateToken, async (req, res) => {
 //Fim Ajuste #32
 
 //Ajuste #34
-// ========== ROTA PARA PROCESSAR REPORTE ==========
+// ========== ROTA PARA PROCESSAR REPORTE (VERSÃO MELHORADA) ==========
 app.post('/api/submit-food-report', authenticateToken, async (req, res) => {
     const client = await pool.connect();
     try {
         await client.query('BEGIN');
 
-        // 1. Verificar dados básicos
+        // 1. Verificar dados básicos com mais detalhes
         const { foodId, reportFields } = req.body;
-        if (!foodId || !reportFields || !Array.isArray(reportFields)) {
-            throw new Error('Dados do reporte inválidos');
+        
+        if (!foodId) {
+            throw new Error('ID do alimento não fornecido');
+        }
+        
+        if (!reportFields || !Array.isArray(reportFields)) {
+            throw new Error('Campos do reporte inválidos ou não fornecidos');
         }
 
-        // 2. Atualizar tbl_foods (marcar como reportado)
-        await client.query(
-            'UPDATE tbl_foods SET error_report = true WHERE id = $1',
+        // 2. Verificar se o alimento existe
+        const foodCheck = await client.query(
+            'SELECT id FROM tbl_foods WHERE id = $1',
             [foodId]
         );
+        
+        if (foodCheck.rows.length === 0) {
+            throw new Error('Alimento não encontrado');
+        }
 
-        // 3. Inserir na tbl_report
+        // 3. Atualizar tbl_foods (marcar como reportado)
+        const updateFood = await client.query(
+            'UPDATE tbl_foods SET error_report = true WHERE id = $1 RETURNING id',
+            [foodId]
+        );
+        
+        if (updateFood.rows.length === 0) {
+            throw new Error('Falha ao atualizar status do alimento');
+        }
+
+        // 4. Inserir na tbl_report
         const reportResult = await client.query(
             `INSERT INTO tbl_report 
              (id_food, id_user_report, status_report, dt_report)
@@ -895,27 +914,57 @@ app.post('/api/submit-food-report', authenticateToken, async (req, res) => {
             [foodId, req.user.userId]
         );
         
+        if (reportResult.rows.length === 0) {
+            throw new Error('Falha ao criar registro do reporte');
+        }
+        
         const reportId = reportResult.rows[0].id;
 
-        // 4. Inserir itens na tbl_report_itens
+        // 5. Validar e inserir itens na tbl_report_itens
+        const validFieldIds = Array.from({length: 27}, (_, i) => i + 1); // IDs 1-27
+        
         for (const field of reportFields) {
-            await client.query(
+            if (!validFieldIds.includes(field.id)) {
+                throw new Error(`ID de campo inválido: ${field.id}`);
+            }
+            
+            if (field.value === null || field.value === undefined) {
+                throw new Error(`Valor não fornecido para o campo ${field.id}`);
+            }
+
+            const insertResult = await client.query(
                 `INSERT INTO tbl_report_itens
                  (id_report, id_campo, valor_sugerido, status, dt_reg)
-                 VALUES ($1, $2, $3, 'open', timezone('America/Sao_Paulo', now()))`,
+                 VALUES ($1, $2, $3, 'open', timezone('America/Sao_Paulo', now()))
+                 RETURNING id`,
                 [reportId, field.id, field.value]
             );
+            
+            if (insertResult.rows.length === 0) {
+                throw new Error(`Falha ao inserir item do reporte para o campo ${field.id}`);
+            }
         }
 
         await client.query('COMMIT');
-        res.json({ success: true, message: 'Reporte enviado com sucesso!' });
+        res.json({ 
+            success: true, 
+            message: 'Reporte enviado com sucesso!',
+            reportId: reportId
+        });
 
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Erro ao processar reporte:', error);
+        console.error('Erro detalhado ao processar reporte:', {
+            error: error.message,
+            stack: error.stack,
+            body: req.body,
+            user: req.user
+        });
+        
         res.status(500).json({ 
             success: false, 
-            message: 'Erro ao processar reporte' 
+            message: error.message || 'Erro detalhado ao processar reporte',
+            errorDetails: process.env.NODE_ENV === 'development' ? error.stack : undefined
         });
     } finally {
         client.release();

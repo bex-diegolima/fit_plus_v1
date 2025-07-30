@@ -1764,4 +1764,29 @@ button:disabled {
     20%, 60% { transform: translateX(-5px); }
     40%, 80% { transform: translateX(5px); }
 }
+
+/* ESTILOS ADICIONAIS PARA ERROS */
+.error-details {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    display: none;
+}
+
+.error-details.visible {
+    display: block;
+}
+
+/* Melhorias no alerta */
+.alert-modal .alert-content {
+    max-width: 90%;
+    width: 500px;
+}
+
+.alert-modal .alert-message {
+    word-break: break-word;
+}
 /*Fim Ajuste #34*/
