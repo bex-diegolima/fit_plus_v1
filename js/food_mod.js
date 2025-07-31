@@ -1680,7 +1680,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     //Fim Ajuste #34.1
                     
-                    showAlertMessage('✔ Reporte enviado com sucesso!', 'success');
+                    showAlertMessage('✔ Reporte de informações incorretas enviado para o time de suporte. Nossa equipe de especialistas irá revisar os dados e em breve você receberá um parecer.', 'success');
                     
                     setTimeout(() => {
                         document.getElementById('foodReportModal').style.display = 'none';
@@ -1708,8 +1708,37 @@ document.addEventListener('DOMContentLoaded', function() {
                     reportSubmitBtn.disabled = false;
                 }
             });
-        }
+    }
     //Fim Ajuste #34
+
+    //Ajuste #36
+    function setupReportCloseButton() {
+        const closeBtn = document.getElementById('closeReportBtn');
+        
+        closeBtn.addEventListener('click', function() {
+            // Fechar o modal
+            document.getElementById('foodReportModal').style.display = 'none';
+            
+            // Resetar todos os campos
+            document.querySelectorAll('.report-checkbox').forEach(cb => {
+                cb.checked = false;
+                const fieldId = cb.dataset.field;
+                const input = document.getElementById(`suggested_${fieldId}`);
+                if (input) {
+                    input.value = '';
+                    input.disabled = true;
+                    input.classList.remove('report-field-error');
+                }
+            });
+            
+            // Resetar scroll
+            const modal = document.getElementById('foodReportModal');
+            modal.scrollTop = 0;
+            const modalContent = modal.querySelector('.food-modal-content');
+            if (modalContent) modalContent.scrollTop = 0;
+        });
+    }
+    //Fim Ajuste #36
 
     loadSelectOptions();
     //FIM ALTERAÇÕES DEEPSEEK
@@ -1723,4 +1752,5 @@ document.addEventListener('DOMContentLoaded', function() {
     setupDetailCollapsibles();
     setupReportForm();
     setupReportSubmitButton();
+    setupReportCloseButton();
 });
