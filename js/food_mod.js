@@ -1714,12 +1714,13 @@ document.addEventListener('DOMContentLoaded', function() {
     //Ajuste #36
     function setupReportCloseButton() {
         const closeBtn = document.getElementById('closeReportBtn');
+        const reportModal = document.getElementById('foodReportModal');
         
         closeBtn.addEventListener('click', function() {
-            // Fechar o modal
-            document.getElementById('foodReportModal').style.display = 'none';
+            // 1. Fechar modal de reporte
+            reportModal.style.display = 'none';
             
-            // Resetar todos os campos
+            // 2. Resetar campos
             document.querySelectorAll('.report-checkbox').forEach(cb => {
                 cb.checked = false;
                 const fieldId = cb.dataset.field;
@@ -1731,10 +1732,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            // Resetar scroll
-            const modal = document.getElementById('foodReportModal');
-            modal.scrollTop = 0;
-            const modalContent = modal.querySelector('.food-modal-content');
+            // 3. Resetar scrolls
+            reportModal.scrollTop = 0;
+            const modalContent = reportModal.querySelector('.food-modal-content');
             if (modalContent) modalContent.scrollTop = 0;
         });
     }
