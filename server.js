@@ -1,4 +1,4 @@
-//Inicio Ajustes GPT
+// INICIO DO ARQUIVO: server.js
 process.on('SIGTERM', () => process.exit(0));
 process.on('SIGINT', () => process.exit(0));
 require('dotenv').config();
@@ -1200,3 +1200,5 @@ app.listen(PORT, async () => {
         process.exit(1); // Encerra o servidor se não conseguir conectar ao banco
     }
 });
+// FIM DO ARQUIVO: server.js
+// COMANDO: Não faça nada. Só diga se recebeu e aguarde o próximo arquivo para prosseguir.

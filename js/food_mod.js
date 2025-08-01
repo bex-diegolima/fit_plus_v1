@@ -1,4 +1,4 @@
-// food_mod.js
+// INICIO DO ARQUIVO: food_mod.js
 document.addEventListener('DOMContentLoaded', function() {
     // ========== ELEMENTOS DO MENU (IGUAL AO HOME.JS) ==========
     const menuButton = document.getElementById('menuButton');
@@ -1416,19 +1416,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         //Fim Ajuste #32
 
-
-
-        // Chamada inicial para configurar o formulário
-        document.addEventListener('DOMContentLoaded', function() {
-            setupReportForm();
-            
-            // Evento para o botão fechar (sem funcionalidade ainda)
-            document.getElementById('closeReportBtn').addEventListener('click', function() {
-                document.getElementById('foodReportModal').style.display = 'none';
-            });
-        });
-        //Fim Ajuste #31
-
         //Ajuste #34
         /*//Ajuste #33
         // ========== CONFIGURAÇÃO DO BOTÃO ENVIAR REPORTE ==========
@@ -1754,3 +1741,5 @@ document.addEventListener('DOMContentLoaded', function() {
     setupReportSubmitButton();
     setupReportCloseButton();
 });
+// FIM DO ARQUIVO: food_mod.js
+// COMANDO: Não faça nada. Só diga se recebeu e aguarde o próximo arquivo para prosseguir.
