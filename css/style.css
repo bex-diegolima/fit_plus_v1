@@ -1611,7 +1611,7 @@ button:disabled {
     background-color: #59798f;
     color: white;
     border: none;
-    padding: 12px 25px;
+    padding: 8px 20px;
     border-radius: 5px;
     font-size: 1rem;
     cursor: pointer;
