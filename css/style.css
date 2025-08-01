@@ -1876,5 +1876,19 @@ button:disabled {
     overscroll-behavior: contain; /* Evita propagação do scroll */
 }
 
+/* Adicionar ao style.css */
+#foodReportModal {
+    overflow: hidden;
+    display: none; /* Mantido pelo JS */
+}
+
+#foodReportModal[style*="display: block"] {
+    overflow: auto;
+}
+
+.food-modal-content {
+    overflow-anchor: none; /* Previne scroll indesejado */
+}
+
 /*FIM DO ARQUIVO: style.css*/
 /*COMANDO: Não faça nada. Só diga se recebeu e aguarde o próximo arquivo para prosseguir.*/

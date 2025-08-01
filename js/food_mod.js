@@ -683,6 +683,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // ========== CONFIGURAR BOTÃO REPORTAR ERRO ==========
     //Ajuste #31
     // Substituir o evento existente do botão de reporte
+    
+    //Ajuste Final
     document.getElementById('rep-btD').addEventListener('click', async function() {
         const reportBtn = this;
         const originalText = reportBtn.innerHTML;
@@ -707,12 +709,24 @@ document.addEventListener('DOMContentLoaded', function() {
             const result = await response.json();
 
             if (result.success) {
-                // Abrir modal de reporte
-                document.getElementById('foodReportModal').style.display = 'block';
-                document.getElementById('foodReportModal').scrollTop = 0;
+                // Abrir modal de reporte e resetar scrolls IMEDIATAMENTE
+                const reportModal = document.getElementById('foodReportModal');
+                reportModal.style.display = 'block';
+                
+                // Reset duplo garantido
+                reportModal.scrollTop = 0;
+                const modalContent = reportModal.querySelector('.food-modal-content');
+                if (modalContent) modalContent.scrollTop = 0;
+                
+                // Forçar renderização antes de continuar
+                await new Promise(resolve => requestAnimationFrame(resolve));
                 
                 // Garantir que os campos são criados
-                setupReportForm();
+                await setupReportForm();
+                
+                // Reset adicional após renderização
+                reportModal.scrollTop = 0;
+                if (modalContent) modalContent.scrollTop = 0;
             } else {
                 showAlertMessage(result.message, 'error');
             }
@@ -724,6 +738,9 @@ document.addEventListener('DOMContentLoaded', function() {
             reportBtn.disabled = false;
         }
     });
+    //Fim Ajuste Final
+
+
     //Fim Ajuste #31
     // Função para mostrar mensagens de alerta
     function showAlertMessage(message, type = 'error') {
@@ -1336,6 +1353,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 //Ajuste Fechar Rep
                 // Primeiro torna o modal visível
                 const reportModal = document.getElementById('foodReportModal');
+                //Ajuste Final
+                // Garantir reset antes de qualquer operação
+                reportModal.scrollTop = 0;
+                const modalContent = reportModal.querySelector('.food-modal-content');
+                if (modalContent) modalContent.scrollTop = 0;
+                //Fim Ajuste Final
                 reportModal.style.display = 'block';
                 
                 // Aguarda o próximo frame para garantir renderização
