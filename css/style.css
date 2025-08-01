@@ -1614,6 +1614,7 @@ button:disabled {
     padding: 8px 20px;
     border-radius: 5px;
     font-size: 1rem;
+    margin-left: 10px;
     cursor: pointer;
     display: flex;
     align-items: center;
