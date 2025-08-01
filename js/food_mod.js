@@ -1700,9 +1700,60 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Ajuste #36
 
-    document.getElementById('fecharRep').addEventListener('click', function() {
+    //Ajuste Manual Fechar Reporte
+    
+    /*document.getElementById('fecharRep').addEventListener('click', function() {
         document.getElementById('foodReportModal').style.display = 'none';
-    });
+        const camposRep = document.getElementById('report-form-container');
+        //Resetar todos os campos
+        document.querySelectorAll('.report-checkbox').forEach(cb => {
+            cb.checked = false;
+            const fieldId = cb.dataset.field;
+            const input = document.getElementById(`suggested_${fieldId}`);
+            if (input) {
+                input.value = '';
+                input.disabled = true;
+                input.classList.remove('report-field-error');
+            }
+        });
+        //Resetar scrolls
+        reportModal.scrollTop = 0;
+        const modalContent = reportModal.querySelector('.food-modal-content');
+        if (modalContent) modalContent.scrollTop = 0;
+        if (camposRep) camposRep.scrollTop = 0;
+
+    });*/
+
+    const fecharRep = document.getElementById('fecharRep');
+    const reportModal = document.getElementById('foodReportModal');
+
+    if (fecharRep && reportModal) {
+        fecharRep.addEventListener('click', function() {
+            // Fecha o modal
+            reportModal.style.display = 'none';
+            
+            // Resetar campos
+            const camposRep = document.getElementById('report-form-container');
+            document.querySelectorAll('.report-checkbox').forEach(cb => {
+                cb.checked = false;
+                const fieldId = cb.dataset.field;
+                const input = document.getElementById(`suggested_${fieldId}`);
+                if (input) {
+                    input.value = '';
+                    input.disabled = true;
+                    input.classList.remove('report-field-error');
+                }
+            });
+            
+            // Resetar scrolls
+            reportModal.scrollTop = 0;
+            if (camposRep) camposRep.scrollTop = 0;
+            
+            const modalContent = reportModal.querySelector('.food-modal-content');
+            if (modalContent) modalContent.scrollTop = 0;
+        });
+    }
+    //Fim Ajuste Manual Fechar Reporte
 
     // ========== INICIALIZAÇÃO ==========
     loadSelectOptions();
