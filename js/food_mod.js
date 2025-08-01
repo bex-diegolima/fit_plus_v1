@@ -1733,8 +1733,12 @@ document.addEventListener('DOMContentLoaded', function() {
             // Fecha o modal
             reportModal.style.display = 'none';
             
-            // Resetar campos
+            // Resetar scroll do modal e do container de campos
+            reportModal.scrollTop = 0;
             const camposRep = document.getElementById('report-form-container');
+            if (camposRep) camposRep.scrollTop = 0;
+
+            // Resetar campos
             document.querySelectorAll('.report-checkbox').forEach(cb => {
                 cb.checked = false;
                 const fieldId = cb.dataset.field;
@@ -1745,13 +1749,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     input.classList.remove('report-field-error');
                 }
             });
-            
-            // Resetar scrolls
-            reportModal.scrollTop = 0;
-            camposRep.scrollTop = 0;
-            
-            const modalContent = reportModal.querySelector('.food-modal-content');
-            if (modalContent) modalContent.scrollTop = 0;
         });
     }
     //Fim Ajuste Manual Fechar Reporte
