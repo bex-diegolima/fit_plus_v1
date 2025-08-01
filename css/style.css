@@ -1377,16 +1377,16 @@ Fim Ajuste Manual #1*/
     font-size: 14px;
 }
 
-.report-alert.error {
-    background-color: #fee;
-    color: #d32f2f;
-    border-left: 3px solid #f44336;
-}
-
 .report-alert.success {
     background-color: #f0fff4;
     color: #2e7d32;
     border-left: 3px solid #4caf50;
+}
+
+.report-alert.error {
+    background-color: #fee;
+    color: #d32f2f;
+    border-left: 3px solid #f44336;
 }
 
 .report-alert i {

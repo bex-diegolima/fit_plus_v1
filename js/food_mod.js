@@ -1698,7 +1698,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     //Fim Ajuste #34.1
                     
-                    showAlertMessage('✔ Reporte de informações incorretas enviado para o time de suporte. Nossa equipe de especialistas irá revisar os dados e em breve você receberá um parecer.', 'success');
+                    showAlertMessage('Reporte de informações incorretas enviado para o time de suporte. Nossa equipe de especialistas irá revisar os dados e em breve você receberá um parecer.', 'success');
                     
                     setTimeout(() => {
                         document.getElementById('foodReportModal').style.display = 'none';
