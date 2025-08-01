@@ -1699,50 +1699,10 @@ document.addEventListener('DOMContentLoaded', function() {
     //Fim Ajuste #34
 
     //Ajuste #36
-    function setupReportCloseButton() {
-        const closeBtn = document.getElementById('closeReportBtn');
-        const reportModal = document.getElementById('foodReportModal');
-        const detailModal = document.getElementById('foodDetailModal');
 
-        if (!closeBtn || !reportModal || !detailModal) return;
-
-        closeBtn.addEventListener('click', function() {
-            // 1. Fechar modal de reporte
-            reportModal.style.display = 'none';
-            
-            // 2. Resetar todos os campos
-            document.querySelectorAll('.report-checkbox').forEach(cb => {
-                cb.checked = false;
-                const fieldId = cb.dataset.field;
-                const input = document.getElementById(`suggested_${fieldId}`);
-                if (input) {
-                    input.value = '';
-                    input.disabled = true;
-                    input.classList.remove('report-field-error');
-                }
-            });
-
-            // 3. Resetar scrolls
-            reportModal.scrollTop = 0;
-            const modalContent = reportModal.querySelector('.food-modal-content');
-            if (modalContent) modalContent.scrollTop = 0;
-
-            // 4. Reabrir modal de detalhes
-            detailModal.style.display = 'block';
-        });
-    }
-
-    // Adicione esta função no final do arquivo, antes do fechamento do DOMContentLoaded
-    function setupFechaReportBtn() {
-        const closeBtn = document.getElementById('fecharRep');
-        const reportModal = document.getElementById('foodReportModal');
-
-        if (closeBtn && reportModal) {
-            closeBtn.addEventListener('click', function() {
-                reportModal.style.display = 'none';
-            });
-        }
-    }
+    document.getElementById('fecharRep').addEventListener('click', function() {
+        document.getElementById('foodReportModal').style.display = 'none';
+    });
 
     // ========== INICIALIZAÇÃO ==========
     loadSelectOptions();
