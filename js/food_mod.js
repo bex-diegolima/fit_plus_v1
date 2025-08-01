@@ -1702,12 +1702,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function setupReportCloseButton() {
         const closeBtn = document.getElementById('closeReportBtn');
         const reportModal = document.getElementById('foodReportModal');
-        
+        const detailModal = document.getElementById('foodDetailModal');
+
         closeBtn.addEventListener('click', function() {
             // 1. Fechar modal de reporte
             reportModal.style.display = 'none';
             
-            // 2. Resetar campos
+            // 2. Resetar todos os campos
             document.querySelectorAll('.report-checkbox').forEach(cb => {
                 cb.checked = false;
                 const fieldId = cb.dataset.field;
@@ -1718,19 +1719,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     input.classList.remove('report-field-error');
                 }
             });
-            
+
             // 3. Resetar scrolls
             reportModal.scrollTop = 0;
             const modalContent = reportModal.querySelector('.food-modal-content');
             if (modalContent) modalContent.scrollTop = 0;
+
+            // 4. Reabrir modal de detalhes
+            detailModal.style.display = 'block';
         });
     }
     //Fim Ajuste #36
 
-    loadSelectOptions();
-    //FIM ALTERAÇÕES DEEPSEEK
-
     // ========== INICIALIZAÇÃO ==========
+    loadSelectOptions();
     loadUserData();
     initializeEmptyTable();
     setupCollapsibleBlocks();
