@@ -1868,12 +1868,14 @@ button:disabled {
     display: flex;
     flex-direction: column;
     height: 100%;
+    overflow: hidden;
 }
 
 .report-form-container {
     flex: 1;
     overflow-y: auto;
     overscroll-behavior: contain; /* Evita propagação do scroll */
+    max-height: 70vh;
 }
 
 /* Adicionar ao style.css */
@@ -1883,11 +1885,15 @@ button:disabled {
 }
 
 #foodReportModal[style*="display: block"] {
-    overflow: auto;
+    overflow: hidden;
 }
 
 .food-modal-content {
     overflow-anchor: none; /* Previne scroll indesejado */
+}
+
+.report-header, .report-footer {
+    flex-shrink: 0; /* Evita que reduza com o scroll */
 }
 
 /*FIM DO ARQUIVO: style.css*/

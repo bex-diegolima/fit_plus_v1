@@ -1349,25 +1349,18 @@ document.addEventListener('DOMContentLoaded', function() {
         // Função para configurar e popular o formulário de reporte (VERSÃO CORRIGIDA)
         async function setupReportForm() {
             try {
-
-                //Ajuste Fechar Rep
-                // Primeiro torna o modal visível
                 const reportModal = document.getElementById('foodReportModal');
-                //Ajuste Final
-                // Garantir reset antes de qualquer operação
-                reportModal.scrollTop = 0;
-                const modalContent = reportModal.querySelector('.food-modal-content');
-                if (modalContent) modalContent.scrollTop = 0;
-                //Fim Ajuste Final
-                reportModal.style.display = 'block';
-                
                 // Aguarda o próximo frame para garantir renderização
                 await new Promise(resolve => requestAnimationFrame(resolve));
-                
+                // Remove qualquer scroll existente no modal principal
+                reportModal.style.overflow = 'hidden';
+
                 // Agora reseta os scrolls
-                reportModal.scrollTop = 0;
                 const camposRep = reportModal.querySelector('.report-fields-container');
-                if (camposRep) camposRep.scrollTop = 0;
+                if (camposRep) {
+                    camposRep.style.overflowY = 'auto';
+                    camposRep.scrollTop = 0; // Garante que começa no topo
+                }
                 //Fim Ajuste Fechar Rep
 
                 const foodId = detailModal.dataset.foodId;
@@ -1766,12 +1759,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Primeiro reseta os scrolls
         const reportModal = document.getElementById('foodReportModal');
         const camposRep = reportModal.querySelector('.report-fields-container');
-        
-        if (reportModal) {
-            reportModal.scrollTop = 0;
-            // Força o redesenho antes de fechar
-            void reportModal.offsetHeight;
-        }
         
         if (camposRep) {
             camposRep.scrollTop = 0;
