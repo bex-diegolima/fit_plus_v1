@@ -1332,11 +1332,26 @@ document.addEventListener('DOMContentLoaded', function() {
         // Função para configurar e popular o formulário de reporte (VERSÃO CORRIGIDA)
         async function setupReportForm() {
             try {
+
+                //Ajuste Fechar Rep
+                // Primeiro torna o modal visível
+                const reportModal = document.getElementById('foodReportModal');
+                reportModal.style.display = 'block';
+                
+                // Aguarda o próximo frame para garantir renderização
+                await new Promise(resolve => requestAnimationFrame(resolve));
+                
+                // Agora reseta os scrolls
+                reportModal.scrollTop = 0;
+                const camposRep = reportModal.querySelector('.report-fields-container');
+                if (camposRep) camposRep.scrollTop = 0;
+                //Fim Ajuste Fechar Rep
+
                 const foodId = detailModal.dataset.foodId;
                 if (!foodId) throw new Error('ID do alimento não encontrado');
 
                 // Mostrar loader enquanto carrega os dados
-                const reportModal = document.getElementById('foodReportModal');
+                //Ajuste Fechar rep comentado: const reportModal = document.getElementById('foodReportModal');
                 reportModal.scrollTop = 0;
                 
                 // 1. Primeiro cria a estrutura do formulário (igual ao original)
@@ -1724,33 +1739,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
     });*/
 
-    const fecharRep = document.getElementById('fecharRep');
-    const reportModal = document.getElementById('foodReportModal');
-    const camposRep = document.getElementById('report-form-container');
-
-    if (fecharRep && reportModal) {
-        fecharRep.addEventListener('click', function() {
-            // Fecha o modal
-            reportModal.style.display = 'none';
-            
-            // Resetar scroll do modal e do container de campos
+    fecharRep.addEventListener('click', function() {
+        // Primeiro reseta os scrolls
+        const reportModal = document.getElementById('foodReportModal');
+        const camposRep = reportModal.querySelector('.report-fields-container');
+        
+        if (reportModal) {
             reportModal.scrollTop = 0;
-            const camposRep = document.getElementById('report-form-container');
-            if (camposRep) camposRep.scrollTop = 0;
+            // Força o redesenho antes de fechar
+            void reportModal.offsetHeight;
+        }
+        
+        if (camposRep) {
+            camposRep.scrollTop = 0;
+            void camposRep.offsetHeight;
+        }
 
-            // Resetar campos
-            document.querySelectorAll('.report-checkbox').forEach(cb => {
-                cb.checked = false;
-                const fieldId = cb.dataset.field;
-                const input = document.getElementById(`suggested_${fieldId}`);
-                if (input) {
-                    input.value = '';
-                    input.disabled = true;
-                    input.classList.remove('report-field-error');
-                }
-            });
+        // Depois fecha o modal
+        reportModal.style.display = 'none';
+
+        // Reset dos campos (mantido do código original)
+        document.querySelectorAll('.report-checkbox').forEach(cb => {
+            cb.checked = false;
+            const fieldId = cb.dataset.field;
+            const input = document.getElementById(`suggested_${fieldId}`);
+            if (input) {
+                input.value = '';
+                input.disabled = true;
+                input.classList.remove('report-field-error');
+            }
         });
-    }
+    });
+
     //Fim Ajuste Manual Fechar Reporte
 
     // ========== INICIALIZAÇÃO ==========

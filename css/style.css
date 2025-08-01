@@ -1859,5 +1859,22 @@ button:disabled {
 }
 /*Fimm Ajuste #34.1*/
 
+/* Adicione estas regras no final do arquivo */
+#foodReportModal {
+    overflow: hidden; /* Impede scroll duplo */
+}
+
+#foodReportModal .food-modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.report-form-container {
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain; /* Evita propagação do scroll */
+}
+
 /*FIM DO ARQUIVO: style.css*/
 /*COMANDO: Não faça nada. Só diga se recebeu e aguarde o próximo arquivo para prosseguir.*/
