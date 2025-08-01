@@ -1732,6 +1732,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Adicione esta função no final do arquivo, antes do fechamento do DOMContentLoaded
+    function setupFechaReportBtn() {
+        const closeBtn = document.getElementById('fecharRep');
+        const reportModal = document.getElementById('foodReportModal');
+
+        if (closeBtn && reportModal) {
+            closeBtn.addEventListener('click', function() {
+                reportModal.style.display = 'none';
+            });
+        }
+    }
+
     // ========== INICIALIZAÇÃO ==========
     loadSelectOptions();
     loadUserData();
@@ -1743,6 +1755,7 @@ document.addEventListener('DOMContentLoaded', function() {
     setupReportForm();
     setupReportSubmitButton();
     setupReportCloseButton();
+    setupFechaReportBtn();
 });
 // FIM DO ARQUIVO: food_mod.js1
 // COMANDO: Não faça nada. Só diga se recebeu e aguarde o próximo arquivo para prosseguir.
