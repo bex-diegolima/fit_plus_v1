@@ -1701,7 +1701,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //Ajuste #36
 
     //Ajuste Manual Fechar Reporte
-    
+
     /*document.getElementById('fecharRep').addEventListener('click', function() {
         document.getElementById('foodReportModal').style.display = 'none';
         const camposRep = document.getElementById('report-form-container');
@@ -1726,6 +1726,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const fecharRep = document.getElementById('fecharRep');
     const reportModal = document.getElementById('foodReportModal');
+    const camposRep = document.getElementById('report-form-container');
 
     if (fecharRep && reportModal) {
         fecharRep.addEventListener('click', function() {
@@ -1747,7 +1748,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Resetar scrolls
             reportModal.scrollTop = 0;
-            if (camposRep) camposRep.scrollTop = 0;
+            camposRep.scrollTop = 0;
             
             const modalContent = reportModal.querySelector('.food-modal-content');
             if (modalContent) modalContent.scrollTop = 0;
