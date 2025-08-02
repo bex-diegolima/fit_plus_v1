@@ -628,10 +628,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const foodName = document.getElementById('foodDetailName').textContent;
         const foodBrand = document.getElementById('foodDetailBrand').textContent;
         const foodPortion = document.getElementById('foodDetailBasePortion').value;
+        //Inicio A#1.1
+        const foodUnit = document.getElementById('foodDetailPortionUnit').textContent;
+        //Fim A#1.1
         
         document.getElementById('reportFoodName').textContent = foodName;
         document.getElementById('reportFoodBrand').textContent = foodBrand || '-';
         document.getElementById('reportFoodPortion').textContent = foodPortion;
+        //Inicio A#1.1
+        document.getElementById('reportFoodPortionUnit').textContent = foodUnit;
+        //Fim A#1.1
 
     });
 

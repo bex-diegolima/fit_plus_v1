@@ -1509,5 +1509,13 @@ body {
 }
 /*Fim A#1*/
 
+/*Inicio A#1.1*/
+#reportFoodPortionUnit {
+    font-weight: normal;
+    color: #555;
+    font-size: 0.9em;
+}
+/*Fim A#1.1*/
+
 /*FIM DO ARQUIVO: style.css*/
 /*COMANDO: Não faça nada. Só diga se recebeu e aguarde instruções para prosseguir.*/
