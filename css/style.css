@@ -1305,5 +1305,177 @@ body {
 .food-block-toggle.collapsed {
     transform: rotate(-90deg);
 }
+
+/*Inicio A#1*/
+/* ========== ESTILOS DO MODAL DE REPORTE ========== */
+.food-report-modal {
+    display: none;
+    position: fixed;
+    z-index: 1003; /* Acima dos outros modais */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    overflow: hidden;
+}
+
+.food-report-modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 0;
+    border-radius: 8px;
+    width: 60%;
+    max-width: 700px;
+    max-height: 80vh;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Barreiras e cabeçalho fixo */
+.fmr-top-barrier {
+    position: sticky;
+    top: 0;
+    height: 16px;
+    background: #fefefe;
+    z-index: 1001;
+}
+
+.fmr-cabecalho {
+    position: sticky;
+    top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.barraRD {
+    position: sticky;
+    top: calc(16px + 64px);
+    height: 16px;
+    background: #fefefe;
+    margin-top: -16px;
+    z-index: 999;
+}
+
+.food-report-modal-title {
+    flex: 1;
+    text-align: center;
+    margin: 0;
+    padding: 0 20px;
+    font-size: 1.2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Botões do cabeçalho */
+.submit-report-btn, .close-report-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-left: 10px;
+    flex-shrink: 0;
+}
+
+.submit-report-btn {
+    background-color: #557de9;
+    color: white;
+}
+
+.submit-report-btn:hover {
+    background-color: #24449c;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.close-report-btn {
+    background-color: #ce6861;
+    color: white;
+}
+
+.close-report-btn:hover {
+    background-color: #ac2c2c;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Corpo do modal */
+.food-report-body {
+    padding: 20px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.food-report-item-name {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.food-report-group {
+    margin-bottom: 15px;
+}
+
+.food-report-group label {
+    font-weight: 600;
+    color: #555;
+}
+
+.food-report-value {
+    margin-left: 5px;
+    color: #333;
+}
+
+.food-report-info-text {
+    color: #59798f;
+    font-style: italic;
+    margin: 15px 0;
+    text-align: center;
+}
+
+/* Caixa de campos reportáveis */
+.reportable-fields-container {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #f9f9f9;
+}
+
+/* Footer vazio */
+.food-report-footer {
+    height: 20px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .food-report-modal-content {
+        width: 90%;
+        max-height: 90vh;
+    }
+    
+    .fmr-cabecalho {
+        flex-direction: column;
+        padding: 10px;
+    }
+    
+    .food-report-modal-title {
+        margin-bottom: 10px;
+    }
+}
+/*Fim A#1*/
+
 /*FIM DO ARQUIVO: style.css*/
 /*COMANDO: Não faça nada. Só diga se recebeu e aguarde instruções para prosseguir.*/

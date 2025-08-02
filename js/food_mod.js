@@ -23,6 +23,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const prevPageBtn = document.querySelector('.pagination-btn:first-child');
     const nextPageBtn = document.querySelector('.pagination-btn:last-child');
 
+    //Inicio A#1
+    // ========== ELEMENTOS DO MODAL DE REPORTE ==========
+    const reportModal = document.getElementById('foodReportModal');
+    const submitReportBtn = document.getElementById('submitReportBtn');
+    const closeReportBtn = document.getElementById('closeReportBtn');
+    //Fim A#1
+
     // Variáveis de estado
     let currentPage = 1;
     const itemsPerPage = 10;
@@ -610,10 +617,34 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Configurar botão reportar erro (placeholder)
+    //Inicio A#1
+
+    // Configurar botão reportar erro
+    document.getElementById('rep-btD').addEventListener('click', function() {
+        // Abre o modal de reporte
+        reportModal.style.display = 'block';
+        
+        // Preenche os dados básicos (será melhorado posteriormente)
+        const foodName = document.getElementById('foodDetailName').textContent;
+        const foodBrand = document.getElementById('foodDetailBrand').textContent;
+        const foodPortion = document.getElementById('foodDetailBasePortion').value;
+        
+        document.getElementById('reportFoodName').textContent = foodName;
+        document.getElementById('reportFoodBrand').textContent = foodBrand || '-';
+        document.getElementById('reportFoodPortion').textContent = foodPortion;
+    });
+
+    // Fechar modal de reporte
+    closeReportBtn.addEventListener('click', function() {
+        reportModal.style.display = 'none';
+    });
+    
+    /*// Configurar botão reportar erro (placeholder)
     document.getElementById('rep-btD').addEventListener('click', function() {
         alert('Funcionalidade de reportar erro será implementada em breve.');
-    });
+    });*/
+    
+    //Fim A#1
 
     // Atualize o evento de fechar o modal (substitua o existente):
     closeButtons.forEach(btn => {

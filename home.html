@@ -47,6 +47,47 @@
         </div>
     </div>
 
+    <!--Inicio A#1-->
+    <!-- Modal de Reporte -->
+    <div id="foodReportModal" class="food-report-modal" style="display: none;">
+        <div class="food-report-modal-content">
+            <div class="fmr-top-barrier"></div>
+            <div class="fmr-cabecalho">
+                <h2 class="food-report-modal-title">Reportar Informações Incorretas</h2>
+                <div>
+                    <button id="submitReportBtn" class="submit-report-btn">Enviar Reporte</button>
+                    <button id="closeReportBtn" class="close-report-btn">Fechar</button>
+                </div>
+            </div>
+            <div class="barraRD"></div>
+            <!-- Corpo do Modal -->
+            <div class="food-report-body">
+                <div class="food-report-item-name" id="reportFoodName">Item</div>
+                <div class="food-report-group">
+                    <label>Marca:</label>
+                    <span id="reportFoodBrand" class="food-report-value"></span>
+                </div>
+                <div class="food-report-group">
+                    <label>Porção Base (g):</label>
+                    <span id="reportFoodPortion" class="food-report-value"></span>
+                </div>
+                <div class="food-report-info-text">
+                    Todos os valores devem ser proporcionais a porção base.
+                </div>
+                <div class="food-report-info-text">
+                    Selecione abaixo os dados que deseja reportar.
+                </div>
+                <!-- Caixa de Campos Reportáveis -->
+                <div class="reportable-fields-container">
+                    <!-- Campos serão adicionados dinamicamente -->
+                </div>
+            </div>
+            <!-- Footer vazio -->
+            <div class="food-report-footer"></div>
+        </div>
+    </div>
+    <!--Fim A#1-->
+
     <!-- Scripts -->
     <script src="js/home.js"></script>
 </body>
