@@ -1,4 +1,4 @@
-// food_mod.js
+// INICIO DO ARQUIVO: food_mod.js
 document.addEventListener('DOMContentLoaded', function() {
     // ========== ELEMENTOS DO MENU (IGUAL AO HOME.JS) ==========
     const menuButton = document.getElementById('menuButton');
@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const welcomeMessage = document.getElementById('welcomeMessage');
     const userNameSpan = document.getElementById('userName');
 
-    //Ajuste #22
     // ========== ELEMENTOS DE PESQUISA ==========
     const foodSearchInput = document.querySelector('.food-search-input');
     const paginationInfo = document.querySelector('.pagination-info');
@@ -28,20 +27,16 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentPage = 1;
     const itemsPerPage = 10;
     let searchResults = [];
-    //Fim Ajuste #22
 
-    //Ajuste #22
     // Função para processar pesquisa
     async function searchFoods(searchTerm) {
 
-        //Ajuste #22.1
         // Mostrar loader
         const loaderRow = document.createElement('tr');
         loaderRow.className = 'loader-row';
         loaderRow.innerHTML = `<td colspan="7" class="search-loader">Buscando...</td>`;
         foodTableBody.innerHTML = '';
         foodTableBody.appendChild(loaderRow);
-        //Fim Ajuste #22.1
 
         try {
             const token = localStorage.getItem('token');
@@ -98,8 +93,6 @@ document.addEventListener('DOMContentLoaded', function() {
         prevPageBtn.disabled = currentPage === 1;
         nextPageBtn.disabled = currentPage === totalPages;
     }
-
-    //Fim Ajuste #22
 
     // ========== FUNÇÕES DO MENU ==========
     // Alternar visibilidade do menu
@@ -175,23 +168,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Altera unidade da porção base conforme grupo alimentar
-    //Ajuste #11
-    //function setupPortionUnitToggle() {
-        //const foodGroupSelect = document.getElementById('foodGroup');
-        //if (foodGroupSelect) {
-            //foodGroupSelect.addEventListener('change', function() {
-                //const unitSpan = document.getElementById('foodPortionUnit');
-                //if (this.value === 'bebida' || this.value === 'bebida-alcoolica') {
-                    //unitSpan.textContent = 'ml';
-                //} else {
-                    //unitSpan.textContent = 'g';
-                //}
-            //});
-        //}
-    //}
-    //Fim Ajuste #11
-
     // Limpa campos ao fechar o modal
     function setupModalCleanup() {
         document.querySelector('.food-modal-close').addEventListener('click', () => {
@@ -245,7 +221,6 @@ document.addEventListener('DOMContentLoaded', function() {
     if (addBtn) {
         addBtn.addEventListener('click', () => {
             addModal.style.display = 'block';
-            //Ajuste #9
             requestAnimationFrame(() => {
                 clearModalFields();
                 addModal.scrollTop = 0;
@@ -256,7 +231,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     setTimeout(() => { modalContent.style.overflowY = 'auto'; }, 10);
                 }
             });
-            //Fim Ajuste #9
             // Garante que todos os blocos estão visíveis ao abrir
             document.querySelectorAll('.food-block-content').forEach(content => {
                 content.style.display = 'block';
@@ -271,16 +245,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    //Ajuste #17
-    // Fechar ao clicar fora do modal
-    /*window.addEventListener('click', (event) => {
-        if (event.target.classList.contains('food-modal')) {
-            event.target.style.display = 'none';
-        }
-    });*/
-    //Fim Ajuste #17
-
-    //Ajuste #15
     // Atualizar tags de alergênicos selecionados
     function updateSelectedAllergens() {
         const select = document.getElementById('foodAllergs3');
@@ -307,11 +271,9 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-    //Fim Ajuste #15
 
     // Adicione esta função no seu arquivo:
     function clearModalFields() {
-        //Ajuste #9
         // Limpa inputs básicos
         document.querySelectorAll('#foodAddModal input[type="text"], #foodAddModal input[type="number"]').forEach(input => {
         input.value = '';
@@ -321,22 +283,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('#foodAddModal select').forEach(select => {
             select.selectedIndex = 0; // Volta para a primeira opção (placeholder)
         });
-        //Ajuste Manual #4
         document.querySelectorAll('#foodAddModal .food-block-content').forEach(content => {
             content.style.display = 'block';
         });
         document.querySelectorAll('#foodAddModal .food-block-toggle').forEach(toggle => {
             toggle.textContent = '▼';
         });
-        //Fim Ajuste Manual #4
-        //Fim Ajuste #9
         // Reseta o valor padrão da porção
         const portionInput = document.getElementById('foodBasePortion');
         if (portionInput) {
             portionInput.value = '100.00';
-            //Ajuste #11
-            //document.getElementById('foodPortionUnit').textContent = 'g';
-            //Fim Ajuste #11
         }
         
         // Limpa o input de arquivo (imagem)
@@ -370,27 +326,19 @@ document.addEventListener('DOMContentLoaded', function() {
         if (element) element.value = '';
         });
 
-        //Ajuste #8
         document.querySelectorAll('#foodAddModal select').forEach(select => {
             select.selectedIndex = 0; // Reseta para a primeira opção (placeholder)
         });
-        //Fim Ajuste #8
 
-        //Ajuste #15
         const allergSelect = document.getElementById('foodAllergs3');
         if (allergSelect) {
             allergSelect.selectedIndex = -1;
             document.getElementById('selectedAllergensTags').innerHTML = '';
         }
-        //Fim Ajuste #15
 
     }
 
-    //Ajuste #23
     //FUNÇÕES DETALHES
-    // Adicionar após as outras funções
-    //Ajuste #23.1
-    //Validar #1
     async function loadFoodDetails(foodId) {
         const modal = document.getElementById('foodDetailModal');
         const loader = document.getElementById('foodDetailLoader');
@@ -443,8 +391,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
     }
-    //Fim Validar #1
-    //Fim Ajuste #23.1
 
     function populateFoodDetails(data) {
         // Alerta de verificação
@@ -496,7 +442,6 @@ document.addEventListener('DOMContentLoaded', function() {
             allergensAlert.style.display = 'none';
         }
         
-        //Ajuste #23.1
         // Imagem do alimento
         // Substituir a parte de carregamento da imagem por:
 
@@ -582,9 +527,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         
         // Bloco 1
-        //Ajuste Manual #3
         document.getElementById('foodDetailBrand').textContent = data.marca || '-';
-        //Fim Ajuste Manual #3
         document.getElementById('foodDetailPreparation').textContent = data.modo_preparo_nome || '-';
         document.getElementById('foodDetailCalories').textContent = formatUnit(calculateValue(data.calorias_kcal), 'kcal');
         document.getElementById('foodDetailProteins').textContent = formatUnit(calculateValue(data.proteina_gr), 'g');
@@ -622,8 +565,6 @@ document.addEventListener('DOMContentLoaded', function() {
             caloricDensity === '-' ? '-' : `${caloricDensity} kcal/g`;
     }
 
-    //Validar #1
-    //Ajuste #23.1
     function setupDetailCollapsibles() {
         document.querySelectorAll('.food-block-header').forEach(header => {
             header.addEventListener('click', () => {
@@ -636,8 +577,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-    //Fim Validar #1
-    //Fim Ajuste #23.1
 
     // Configurar evento de clique na tabela
     foodTableBody.addEventListener('click', (e) => {
@@ -647,7 +586,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    //Validar #1
     // Configurar botão fechar
     document.getElementById('close-btD').addEventListener('click', function() {
         const detailModal = document.getElementById('foodDetailModal');
@@ -671,13 +609,11 @@ document.addEventListener('DOMContentLoaded', function() {
             toggle.textContent = '▼';
         });
     });
-    //Fim Validar #1
 
     // Configurar botão reportar erro (placeholder)
     document.getElementById('rep-btD').addEventListener('click', function() {
         alert('Funcionalidade de reportar erro será implementada em breve.');
     });
-    //Fim Ajuste #23
 
     // Atualize o evento de fechar o modal (substitua o existente):
     closeButtons.forEach(btn => {
@@ -687,17 +623,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    //Ajuste #17
-    /*// Atualize também o clique fora do modal:
-    window.addEventListener('click', (event) => {
-        if (event.target.classList.contains('food-modal')) {
-            event.target.style.display = 'none';
-            clearModalFields(); // Limpa os campos ao fechar
-        }
-    });*/
-    //Fim Ajuste #17
-
-    //ALTERAÇÕES DEEPSEEK
     // Elementos do DOM
         const saveBtn = document.getElementById('save-bt');
         const foodAddModal = document.getElementById('foodAddModal');
@@ -710,19 +635,12 @@ document.addEventListener('DOMContentLoaded', function() {
         // Função para salvar alimento
         saveBtn.addEventListener('click', async function() {
         
-            //Ajuste #10
             // Mostrar loader
-            //Ajuste #23.2
             const loader = document.getElementById('foodModalLoader');
             loader.style.display = 'flex';
-            //Fim Ajuste #23.2
-            //Fim Ajuste #10
-            //ajuste #16.1
             const selectedAllergens = Array.from(document.getElementById('foodAllergs3').selectedOptions)
                     .map(opt => opt.value);
-            //Fim ajuste #16.1
 
-            //Ajuste #18
             // Validação da porção base (deve ser >= 1)
             const basePortion = parseFloat(document.getElementById('foodBasePortion').value);
             if (basePortion < 1) {
@@ -730,15 +648,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('foodModalLoader').style.display = 'none'; // Remove loader se houver erro
                 return; // Interrompe o processo
             }
-            //Fim Ajuste #18
 
             // Coletar dados do formulário
             const formData = {
                 // Bloco 1
                 item: document.getElementById('foodItemName').value.trim(),
-                //Ajuste #16
                 marca: document.getElementById('foodBrand').value.trim() || '',
-                //Ajuste #16
                 modo_preparo: document.getElementById('foodPreparation').value,
                 grupo_alimentar: document.getElementById('foodGroup').value,
                 porcao_base: 100, // Valor fixo conforme regra
@@ -884,29 +799,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 carga_antioxidante: document.getElementById('foodAntioxidants').value.trim() || null,
                 observacoes: document.getElementById('foodObservations').value.trim(),
                 img_registro: await getImageBase64(),  // ← Nova função para a imagem
-                //Ajuste #15
-                //alergicos_comuns: Array.from(document.getElementById('foodAllergs3').selectedOptions)
-                    //.map(opt => opt.value).join(', ') || null
-
-                //Ajuste #16.1
-                
-
                 alergicos_comuns: selectedAllergens.length > 0 ? selectedAllergens : []
-                //Fim Ajuste #16.1
-                //Fim Ajuste #15
             };
 
-            //Inicio DeepSeek #3
                 async function getImageBase64() {
                 const file = document.getElementById('foodImage').files[0];
                 if (!file) return null;
                 
                 return new Promise((resolve) => {
-                //Inicio DeepSeek #3.1
                 if (file.size > 2 * 1024 * 1024) {
                     compressImage(file, 0.5).then(resolve);
                 } else {
-                //Fim DeepSeek #3.1
                     const reader = new FileReader();
                     reader.readAsDataURL(file);
                     reader.onload = () => {
@@ -917,9 +820,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 });
             }
-            //Fim DeepSeek #3
 
-            //Inicio DeepSeek #3.1
             function compressImage(file, quality) {
             return new Promise((resolve) => {
                 const img = new Image();
@@ -936,9 +837,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 img.src = URL.createObjectURL(file);
             });
             }
-            //Fim DeepSeek #3.1
 
-            //Inicio Alterações GPT
                 // GARANTIR TOKEN
                 const token = localStorage.getItem('token');
                 if (!token) {
@@ -946,15 +845,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     document.getElementById('foodModalLoader').style.display = 'none';
                     return;  // para não continuar o envio
                 }
-            //Fim Alterações GPT
-
-            //Ajuste #20
-            // Validar campos obrigatórios
-            //if (!formData.item || !formData.modo_preparo || !formData.grupo_alimentar || !formData.calorias_kcal || !formData.proteina_gr || !formData.carbo_gr || !formData.gorduras_totais_gr) {
-                //alert('Preencha todos os campos obrigatórios!');
-                //document.getElementById('foodModalLoader').style.display = 'none';
-                //return;
-            //}
 
             const requiredFields = {
                 item: formData.item,
@@ -974,12 +864,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
 
-            //Fim Ajuste #20
-
-
             // Enviar para o servidor
-
-            //Inicio Alterações GPT
             const API_URL = 'https://fit-plus-backend.onrender.com/api/save-food'; // URL completa
             try {
                 const response = await fetch(API_URL, {
@@ -994,38 +879,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const result = await response.json();
 
-                //Ajuste #21.1
-                //Ajuste #21 - Bloco unificado
+                //Bloco unificado
                 if (result.success) {
                     alert('Alimento salvo com sucesso!');
                     foodAddModal.style.display = 'none';
                     clearModalFields();
-                    foodAddModal.scrollTop = 0; // Ajuste #9
+                    foodAddModal.scrollTop = 0;
                     const modalContent = foodAddModal.querySelector('.food-modal-content');
-                    if (modalContent) modalContent.scrollTop = 0; // Ajuste #9
+                    if (modalContent) modalContent.scrollTop = 0;
                 } else {
                     // Exibe a mensagem do servidor SEM lançar erro
                     alert(result.message || 'Erro ao salvar');
                     document.getElementById('foodModalLoader').style.display = 'none'; // Oculta loader
                     return; // Interrompe o fluxo sem tratar como erro
                 }
-                //Fim Ajuste #21
-
-                //if (result.success) {
-                    //alert('Alimento salvo com sucesso!');
-                    //foodAddModal.style.display = 'none';
-                    //Ajuste #9
-                    //clearModalFields();
-                    //foodAddModal.scrollTop = 0;
-                    //const modalContent = foodAddModal.querySelector('.food-modal-content');
-                    //if (modalContent) modalContent.scrollTop = 0;
-                    //Fim Ajuste #9
-                //} else {
-                    //throw new Error(result.message || 'Erro ao salvar');
-                //}
-
-                //Fim Ajuste #21.1
-
 
             } catch (error) {
                     // Verificar se response existe para evitar erro
@@ -1036,20 +903,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         console.error('Erro inesperado:', error);
                     }
                     alert('Erro ao conectar com o servidor. Verifique o console (F12)');
-                    //Ajuste #10
                     document.getElementById('foodModalLoader').style.display = 'none';
-                    //Fim Ajuste #10
                 }
-                //Ajuste #10
                 finally {
                     // Ocultar loader em qualquer caso
                     document.getElementById('foodModalLoader').style.display = 'none';
                 }
-                //Fim Ajuste #10
             });
-            //FIm Alterações GPT
-
-        
 
             // Carregar opções de selects (tabelas auxiliares)
             async function loadSelectOptions() {
@@ -1061,7 +921,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 'foodProcessing': '/api/get-options?table=tbl_aux_processamento',
             };
 
-            //Ajuste #15
             // Carregar opções de alergênicos
             const allergResponse = await fetch('/api/get-options?table=tbl_aux_alergicos');
             const allergOptions = await allergResponse.json();
@@ -1074,17 +933,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 allergSelect.appendChild(option);
             });
 
-            //Ajuste #15.1
-            //Ajuste #16
             allergSelect.addEventListener('mousedown', function(e) {
-            //Fim Ajuste #16
                 e.preventDefault(); // Evita comportamento padrão
                 const option = e.target;
                 if (option.tagName.toLowerCase() === 'option') {
-                    //Ajuste 15.2
                     const selectElement = this;
                     const scrollTop = selectElement.scrollTop;
-                    //Ajuste 15.2
                     selectElement.blur();
                     option.selected = !option.selected; // Alterna o estado
                     setTimeout(() => {
@@ -1092,33 +946,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Restaura scroll depois de tudo
                         selectElement.scrollTop = scrollTop;
                     }, 0);
-                    //Ajuste 15.2
                 }
             });
-
-            /*//Ajuste #16
-            allergSelect.addEventListener('click', function(e) {
-                e.preventDefault();
-                if (e.target.tagName.toLowerCase() === 'option') {
-                    const selectElement = this;
-                    const scrollTop = selectElement.scrollTop;
-                    selectElement.blur();
-                    e.target.selected = !e.target.selected;
-                    setTimeout(() => {
-                        updateSelectedAllergens();
-                        selectElement.scrollTop = scrollTop;
-                    }, 0);
-                }
-            });
-            //Fim ajuste #16
-            */
-            //Fim Ajuste #15.1
 
             // Evento para seleção de alergênicos
             allergSelect.addEventListener('change', function() {
                 updateSelectedAllergens();
             });
-            //FIm Ajuste #15
 
             for (const [id, url] of Object.entries(selects)) {
                 const response = await fetch(url);
@@ -1126,9 +960,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const select = document.getElementById(id);
 
                 // Limpa opções existentes
-                //Ajuste #8
                 select.innerHTML = '<option value="" disabled selected>Selecione uma opção</option>';
-                //Fim Ajuste #8
                 options.forEach(opt => {
                     const option = document.createElement('option');
                     option.value = opt.id;
@@ -1142,7 +974,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }));
         }
 
-        //Ajuste #22
         // Evento de pesquisa
         foodSearchInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && foodSearchInput.value.trim()) {
@@ -1174,12 +1005,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Aqui você pode implementar a lógica para carregar os detalhes
             }
         });
-        //Fim Ajuste #22
-
-        loadSelectOptions();
-        //FIM ALTERAÇÕES DEEPSEEK
 
         // ========== INICIALIZAÇÃO ==========
+        loadSelectOptions();
         loadUserData();
         initializeEmptyTable();
         setupCollapsibleBlocks();
@@ -1187,3 +1015,5 @@ document.addEventListener('DOMContentLoaded', function() {
         setupModalCleanup();
         setupDetailCollapsibles();
     });
+// FIM DO ARQUIVO: food_mod.js
+// COMANDO: Não faça nada. Só diga se recebeu e aguarde o envio do próximo arquivo para prosseguir.

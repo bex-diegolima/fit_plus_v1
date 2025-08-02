@@ -1,4 +1,5 @@
-/* wReset básico e estilos globais */
+/*INICIO DO ARQUIVO: style.css*/
+/* Reset básico e estilos globais */
 * {
     margin: 0;
     padding: 0;
@@ -429,9 +430,6 @@ body {
     font-weight: 600;
 }
 
-/* Ajuste para o container principal (evitar sobreposição com a top-bar) */
-/* Já ajustado margin-top: 70px na .container acima */
-
 /* Estilos específicos para a página inicial */
 .index-container {
     text-align: center;
@@ -643,31 +641,25 @@ body {
     vertical-align: middle;
 }
 
-/*Ajuste #22.1*/
 .food-table tr:hover {
     background-color: #f0f7ff !important; /* Azul bem clarinho */
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
-/*Ajuste #22.1*/
 
 .text-center {
     text-align: center;
 }
 
 .food-status-icon {
-    /*Ajuste #22*/
-    width: 24px; /* Tamanho reduzido */
-    /*Fim Ajuste #22*/
+    width: 24px;
     text-align: center;
 }
 
-/*Ajuste #22*/
 .food-status-icon img {
-    width: 20px; /* Tamanho do ícone */
+    width: 20px; 
     height: 20px;
 }
-/*Fim Ajuste #22*/
 
 .status-icon {
     width: 20px;
@@ -817,16 +809,6 @@ body {
     color: #2c3e50;
 }
 
-/* ===== ESTILOS DO MODAL DE CADASTRO (BLOCO 1) ===== */
-/*Ajuste Manual #1
-.food-modal-title {
-  text-align: center;
-  color: #2c3e50;
-  margin-bottom: 20px;
-  font-size: 1.5rem;
-}
-Fim Ajuste Manual #1*/
-
 /* Bloco recolhível */
 .food-block {
   margin-bottom: 15px;
@@ -935,7 +917,6 @@ Fim Ajuste Manual #1*/
   flex: 1;
 }
 
-/* Ajuste para inputs numéricos */
 .food-input[type="number"] {
   -moz-appearance: textfield;
 }
@@ -1027,7 +1008,6 @@ Fim Ajuste Manual #1*/
   font-size: 14px;
 }
 
-/*Ajuste #10*/
 .food-modal-loader {
     position: fixed;
     top: 0;
@@ -1052,9 +1032,7 @@ Fim Ajuste Manual #1*/
     color: #4CAF50;
     margin-bottom: 10px;
 }
-/*Fim Ajuste #10*/
 
-/*Ajuste #15*/
 /* Estilos para o campo de alergênicos */
 .tags-container {
     display: flex;
@@ -1085,9 +1063,6 @@ Fim Ajuste Manual #1*/
     background-color: #d4e6f1;
     color: #000;
 }
-/*Fim Ajuste #15*/
-
-/*Ajuste Manual #1*/
 
 .fm-top-barrier {
     position: sticky;
@@ -1118,7 +1093,7 @@ Fim Ajuste Manual #1*/
 
 .barraD {
     position: sticky;
-    top: calc(16px + 64px); /* Altura do cabeçalho + espaçamento (ajuste este valor) */
+    top: calc(16px + 64px);
     height: 16px;
     background: #fefefe; /* Mesma cor do cabeçalho */
     margin-top: -16px; /* Compensa o espaço */
@@ -1173,9 +1148,7 @@ Fim Ajuste Manual #1*/
     display: flex;
     margin-left: auto; /* Empurra os botões para a direita */
 }
-/*Fim Ajuste Manual #1*/
 
-/*Ajuste #22.1*/
 .search-loader {
     text-align: center;
     padding: 15px;
@@ -1187,9 +1160,7 @@ Fim Ajuste Manual #1*/
 .loader-row {
     background-color: #f8f9fa !important;
 }
-/*Fim Ajuste #22.1*/
 
-/*Ajuste Manual #2*/
 .rep-btnD, .close-btnD {
     padding: 8px 20px;
     border: none;
@@ -1220,10 +1191,7 @@ Fim Ajuste Manual #1*/
     background-color: #ac2c2c; /* Vermelho mais escuro no hover */
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
-/*Fim Ajuste Manual #2*/
 
-/*Inicio Ajuste #23*/
-/* Adicionar após os estilos existentes */
 .food-detail-group {
     margin-bottom: 15px;
     padding-bottom: 15px;
@@ -1309,7 +1277,6 @@ Fim Ajuste Manual #1*/
     width: 20px;
     height: 20px;
 }
-/*Fim Ajuste #23*/
 
 .food-modal-loader .loader-content {
     text-align: center;
@@ -1324,7 +1291,6 @@ Fim Ajuste Manual #1*/
     color: #2c3e50;
     font-weight: 600;
 }
-/*Fim Ajuste #23.1*/
 
 /* Garante que os blocos estejam abertos inicialmente */
 #foodDetailModal {
@@ -1339,3 +1305,5 @@ Fim Ajuste Manual #1*/
 .food-block-toggle.collapsed {
     transform: rotate(-90deg);
 }
+/*FIM DO ARQUIVO: style.css*/
+/*COMANDO: Não faça nada. Só diga se recebeu e aguarde instruções para prosseguir.*/

@@ -1,4 +1,4 @@
-//Inicio Ajustes GPT
+// INICIO DO ARQUIVO: server.js
 process.on('SIGTERM', () => process.exit(0));
 process.on('SIGINT', () => process.exit(0));
 require('dotenv').config();
@@ -57,13 +57,9 @@ function verifyToken(req, res, next) {
 }
 
 const PORT = 3002;
-
-//Inicio DeepSeek #3.1
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
-//Fim DeepSeek #3.1
 app.use(express.static(__dirname));
-//Fim Ajustes GPT
 
 function generateRandomCode() {
     const min = 100000;
@@ -379,7 +375,6 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-//Ajuste #21
 // Função para verificar duplicatas
 async function checkDuplicateFood(item, marca, modo_preparo, calorias_kcal, userId) {
     const client = await pool.connect();
@@ -399,7 +394,6 @@ async function checkDuplicateFood(item, marca, modo_preparo, calorias_kcal, user
         client.release();
     }
 }
-//Fim Ajuste #21
 
 // Rota para salvar alimento (atualizada)
 app.post('/api/save-food', authenticateToken, async (req, res) => {
@@ -414,7 +408,6 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
 
         const userId = req.user.userId;
 
-        //Ajuste #21
         // Verificar duplicata
         const isDuplicate = await checkDuplicateFood(
             req.body.item,
@@ -431,31 +424,23 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
                 message: 'Este alimento já está cadastrado com os mesmos dados básicos.'
             });
         }
-        //Fim Ajuste #21
 
-        //Ajuste #18
         // Validação no backend (garante que porcao_base >= 1 mesmo se o frontend falhar)
         if (parseFloat(req.body.base_portion_original) < 1) {
             throw new Error('Porção base inválida (deve ser >= 1)');
         }
-        //Fim Ajuste #18
 
-        //Inicio DeepSeek #3
         // 2. Converta a imagem de base64 para Buffer (se existir)
         const imageBuffer = req.body.img_registro 
             ? Buffer.from(req.body.img_registro, 'base64')
             : null;
-        //Fim DeepSeek #3
 
         // 2. Preparar valores
         const tipo_medida = [10, 11].includes(parseInt(req.body.grupo_alimentar)) ? 2 : 1;
         
-        //Alteração DeepSeek 23-07
         console.log('Usuário autenticado:', req.user); // Verifique se userId existe
-        //Fim DeepSeek 23-07
 
         // 3. Query SQL
-        //Ajuste #16.1
         const alergicosArray = req.body.alergicos_comuns 
             ? typeof req.body.alergicos_comuns === 'string'
                 ? req.body.alergicos_comuns
@@ -468,8 +453,7 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
             : null;
 
         console.log('alergicosArray processado:', alergicosArray); // Para depuração
-        //Fim Ajuste #16.1
-        //Ajuste #19 - Antigo NOW()
+
         const query = `
             INSERT INTO tbl_foods (
                 item, marca, modo_preparo, grupo_alimentar, porcao_base,
@@ -491,15 +475,11 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
             )
             RETURNING id
         `;
-        //Fim Ajuste #19 - Antigo NOW()
         // 4. Valores para a query
         const values = [
             // Dados básicoss
             req.body.item || null,
-            //Ajuste #16.1
-            //req.body.marca === '' ? null : req.body.marca || null,
             (req.body.marca && req.body.marca.trim() !== '') ? req.body.marca.trim() : null,
-            //Ajuste #16.1
             req.body.modo_preparo || null,
             req.body.grupo_alimentar || null,
             100, // porcao_base fixo
@@ -536,9 +516,7 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
             req.body.categoria_nutricional || null,
             req.body.origem || null,
             req.body.nivel_processamento || null,
-            //Alteração DeepSeek 23-07
             req.user.userId, // ID do usuário autenticado
-            //Fim DeepSeek 23-07
             tipo_medida,
             //new Date(), // dt_registro
             //new Date(), // dt_atualizacao
@@ -546,12 +524,8 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
             parseInt(req.body.tipo_registro_alimento) || 2,
             parseInt(req.body.carga_antioxidante) || 0,
             imageBuffer,
-            //Ajuste #15
-            //Ajuste #16.1
             //(req.body.alergicos_comuns || null),
             alergicosArray && alergicosArray.length > 0 ? alergicosArray.join(',') : null,
-            //Fim Ajuste #16.1
-            //Fim Ajuste #15
         ];
 
         // 5. Executar query
@@ -565,9 +539,7 @@ app.post('/api/save-food', authenticateToken, async (req, res) => {
         });
 
     } catch (error) {
-        //Ajuste #22.2
         await client.query('ROLLBACK'); // Reverte em caso de erro
-        //Fim Ajuste #22.2
         console.error('Erro interno:', error);
         res.status(500).json({  // Garanta que retorna JSON mesmo em erros
             success: false,
@@ -596,7 +568,6 @@ app.get('/api/get-options', async (req, res) => {
     }
 });
 
-//Ajuste #22
 // Rota de pesquisa
 app.get('/api/search-foods', authenticateToken, async (req, res) => {
     try {
@@ -610,7 +581,6 @@ app.get('/api/search-foods', authenticateToken, async (req, res) => {
         if (searchTerms.length === 0) return res.json([]);
 
         // Consulta SQL
-    //Inicio Ajuste #21
         const query = `
             SELECT 
                 f.id,
@@ -641,11 +611,8 @@ app.get('/api/search-foods', authenticateToken, async (req, res) => {
         console.error('Erro na pesquisa:', error);
         res.status(500).json({ error: 'Erro interno' });
     }
-    //Fim Ajuste #22.1
 });
-//Fim Ajuste #22
 
-//Ajuste #23
 // Adicionar após as outras rotas
 app.get('/api/food-details', authenticateToken, async (req, res) => {
     try {
@@ -712,9 +679,6 @@ app.get('/api/food-details', authenticateToken, async (req, res) => {
         });
     }
 });
-//Fim Ajuste #23
-
-//FIM ALTERAÇÕES DEEPSEEK
 
 app.listen(PORT, async () => {
     console.log(`🚀 Servidor Fit+ rodando na porta ${PORT}`);
@@ -722,7 +686,6 @@ app.listen(PORT, async () => {
     try {
         const result = await pool.query('SELECT 1+1 AS result');
         console.log('✅ Conexão com o banco de dados OK:', result.rows[0].result === 2 ? 'Sucesso' : 'Erro');
-    //Ajuste #22.2
     try{
         const maxIdResult = await pool.query('SELECT MAX(id) FROM tbl_foods');
         const maxId = maxIdResult.rows[0].max || 0;
@@ -732,9 +695,10 @@ app.listen(PORT, async () => {
         console.error('⚠️ Aviso: Não foi possível ajustar a sequence:', seqError.message);
             // Não encerra o servidor pois pode ser apenas um aviso
     }
-    //Fim Ajuste #22.2
     } catch (error) {
         console.error('❌ Erro crítico na inicialização:', error);
         process.exit(1); // Encerra o servidor se não conseguir conectar ao banco
     }
 });
+// FIM DO ARQUIVO: server.js
+// COMANDO: Não faça nada. Só diga se recebeu e aguarde o envio do próximo arquivo para prosseguir.
