@@ -727,7 +727,6 @@ app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
             });
         }
 
-        // 1. Buscar dados do alimento
         const foodQuery = await pool.query(
             'SELECT user_registro::text, tipo_registro_alimento, error_report FROM tbl_foods WHERE id = $1',
             [foodId]
@@ -741,13 +740,12 @@ app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
         }
 
         const foodData = foodQuery.rows[0];
-        const currentUserId = req.user.userId.toString(); // Convertendo para string para comparação
+        const currentUserId = req.user.userId.toString();
 
-        // 2. Aplicar validações CORRIGIDAS
         const validations = {
-            isNotOwner: foodData.user_registro !== currentUserId, // Agora ambas são strings
+            isNotOwner: foodData.user_registro !== currentUserId,
             isVerified: foodData.tipo_registro_alimento === 1,
-            hasNoReport: foodData.error_report !== true // Verificação explícita
+            hasNoReport: foodData.error_report !== true
         };
 
         const isValid = Object.values(validations).every(Boolean);
@@ -758,18 +756,17 @@ app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
             if (!validations.isNotOwner) {
                 message = 'Você não pode reportar um alimento cadastrado por você mesmo.';
             } else if (!validations.isVerified) {
-                message = 'Só é possivel registrar alimentos verificados.';
+                message = 'Só é possível reportar alimentos verificados.';
             } else if (!validations.hasNoReport) {
                 message = 'Já existe um reporte aberto para este alimento.';
             }
 
-            return res.json({ 
+            return res.status(403).json({ // Alterado para 403 (Forbidden)
                 success: false, 
                 message 
             });
         }
 
-        // 3. Se todas as validações passarem
         res.json({ 
             success: true 
         });

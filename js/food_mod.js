@@ -693,13 +693,17 @@ document.addEventListener('DOMContentLoaded', function() {
             reportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
             reportBtn.disabled = true;
 
-            const foodId = document.querySelector('#foodDetailModal').dataset.foodId;
+            const foodId = document.querySelector('#foodDetailModal')?.dataset.foodId;
             
             if (!foodId) {
-                throw new Error('Nenhum alimento selecionado');
+                throw new Error('Nenhum alimento selecionado para reportar');
             }
 
             const token = localStorage.getItem('token');
+            if (!token) {
+                throw new Error('Sessão expirada. Faça login novamente.');
+            }
+
             const response = await fetch(`https://fit-plus-backend.onrender.com/api/check-report-permission?foodId=${foodId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -708,27 +712,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const result = await response.json();
 
-            if (result.success) {
-                // Abrir modal de reporte e resetar scrolls IMEDIATAMENTE
-                const reportModal = document.getElementById('foodReportModal');
-                reportModal.style.display = 'block';
-                
-                // Reset duplo garantido
-                reportModal.scrollTop = 0;
-                const modalContent = reportModal.querySelector('.food-modal-content');
-                if (modalContent) modalContent.scrollTop = 0;
-                
-                // Forçar renderização antes de continuar
-                await new Promise(resolve => requestAnimationFrame(resolve));
-                
-                // Garantir que os campos são criados
-                await setupReportForm();
-            } else {
-                throw new Error(result.message || 'Não foi possível reportar este alimento');
+            if (!response.ok || !result.success) {
+                const errorMessage = result.message || 'Não foi possível reportar este alimento';
+                throw new Error(errorMessage);
             }
+
+            // Se chegou aqui, pode abrir o modal de reporte
+            const reportModal = document.getElementById('foodReportModal');
+            reportModal.style.display = 'block';
+            reportModal.scrollTop = 0;
+            
+            await setupReportForm();
+
         } catch (error) {
-            console.error('Erro ao verificar permissão:', error);
-            showAlertMessage('Erro ao verificar permissão', 'error');
+            console.error('Erro no reporte:', error);
+            showAlertMessage(error.message, 'error');
         } finally {
             reportBtn.innerHTML = originalText;
             reportBtn.disabled = false;
