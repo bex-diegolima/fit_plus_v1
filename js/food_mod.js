@@ -712,18 +712,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const result = await response.json();
 
-            // Esta é a correção principal - inverter a lógica de verificação
-            if (response.ok && result.success) {
-                // Só abre o modal se todas as validações estiverem OK
-                const reportModal = document.getElementById('foodReportModal');
-                reportModal.style.display = 'block';
-                reportModal.scrollTop = 0;
-                await setupReportForm();
-            } else {
-                // Mostra mensagem de erro quando alguma validação falhar
+            // CORREÇÃO APLICADA AQUI - LÓGICA CONDICIONAL CORRIGIDA
+            if (!response.ok || !result.success) {
                 const errorMessage = result.message || 'Não foi possível reportar este alimento';
                 throw new Error(errorMessage);
             }
+
+            // Só abre o modal se todas as validações estiverem OK
+            const reportModal = document.getElementById('foodReportModal');
+            reportModal.style.display = 'block';
+            reportModal.scrollTop = 0;
+            await setupReportForm();
 
         } catch (error) {
             console.error('Erro no reporte:', error);
