@@ -758,14 +758,16 @@ document.addEventListener('DOMContentLoaded', function() {
             input.value = '';
             input.disabled = true; // Garante que fiquem desabilitados
         });
-        // 3. Resetar o scroll da área de campos
+        // 3. Limpar o campo de observações (nova linha)
+        document.getElementById('reportObservations').value = '';
+        // 4. Resetar o scroll da área de campos
         const reportableFields = document.querySelector('.reportable-fields-container');
         if (reportableFields) {
             reportableFields.scrollTop = 0;
         }
-        // 4. Fechar o modal (manter função existente)
+        // 5. Fechar o modal (manter função existente)
         reportModal.style.display = 'none';
-        // 5. Remover estado de loading se existir (manter função existente)
+        // 6. Remover estado de loading se existir (manter função existente)
         document.getElementById('rep-btD').classList.remove('loading');
     });
     
