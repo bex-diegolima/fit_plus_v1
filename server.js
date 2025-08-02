@@ -687,15 +687,26 @@ app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
         const { id } = req.query;
         const userId = req.user.userId;
 
+        if (!id || isNaN(id)) {
+            return res.status(400).json({ 
+                canReport: false,
+                message: 'ID do alimento inválido'
+            });
+        }
+
         // 1. Buscar detalhes do alimento
         const foodQuery = `
             SELECT tipo_registro_alimento, user_registro, error_reporte 
             FROM tbl_foods 
             WHERE id = $1
         `;
-        const foodResult = await pool.query(foodQuery, [id]);
+        
+        console.log('Executando query para verificar permissão:', foodQuery, [id]);
+        
+        const foodResult = await pool.query(foodQuery, [parseInt(id)]);
         
         if (foodResult.rows.length === 0) {
+            console.log('Alimento não encontrado para ID:', id);
             return res.status(404).json({ 
                 canReport: false,
                 message: 'Alimento não encontrado'
@@ -703,9 +714,11 @@ app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
         }
 
         const food = foodResult.rows[0];
+        console.log('Dados do alimento:', food);
 
         // 2. Verificar se o alimento é verificado (tipo_registro_alimento = 1)
         if (food.tipo_registro_alimento !== 1) {
+            console.log('Item não verificado - tipo_registro_alimento:', food.tipo_registro_alimento);
             return res.json({ 
                 canReport: false,
                 message: 'Não é possível reportar erro em itens não verificados'
@@ -713,7 +726,8 @@ app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
         }
 
         // 3. Verificar se o usuário não é o criador do registro
-        if (food.user_registro === userId) {
+        if (food.user_registro == userId) { // Usar == para comparar, pois podem ser string/number
+            console.log('Usuário é o criador do item - user_registro:', food.user_registro, 'userId:', userId);
             return res.json({ 
                 canReport: false,
                 message: 'Não é possível reportar erro de um item criado por você mesmo'
@@ -721,7 +735,8 @@ app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
         }
 
         // 4. Verificar se já existe reporte aberto
-        if (food.error_reporte) {
+        if (food.error_reporte === true || food.error_reporte === 'true') {
+            console.log('Já existe reporte aberto - error_reporte:', food.error_reporte);
             return res.json({ 
                 canReport: false,
                 message: 'Já existe um reporte em aberto para esse item'
@@ -729,6 +744,7 @@ app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
         }
 
         // Se todas as verificações passaram
+        console.log('Todas as verificações passaram - permitindo reporte');
         res.json({ 
             canReport: true,
             message: ''
@@ -738,7 +754,7 @@ app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
         console.error('Erro ao verificar permissão:', error);
         res.status(500).json({ 
             canReport: false,
-            message: 'Erro interno no servidor'
+            message: 'Erro ao verificar permissões. Por favor, tente novamente.'
         });
     }
 });

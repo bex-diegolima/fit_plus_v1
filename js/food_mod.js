@@ -662,26 +662,39 @@ document.addEventListener('DOMContentLoaded', function() {
         const reportBtn = this;
         const foodId = document.querySelector('#foodDetailModal').getAttribute('data-food-id');
         
+        if (!foodId) {
+            showErrorAlert('Não foi possível identificar o alimento. Recarregue a página e tente novamente.');
+            return;
+        }
+
         // Ativa estado de loading
         reportBtn.classList.add('loading');
         reportBtn.disabled = true;
 
         try {
-            // 1. Verificar se o alimento é verificado (tipo_registro_alimento = 1)
             const token = localStorage.getItem('token');
+            if (!token) {
+                showErrorAlert('Sessão expirada. Faça login novamente.');
+                return;
+            }
+
             const response = await fetch(`https://fit-plus-backend.onrender.com/api/check-report-permission?id=${foodId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
             
-            if (!response.ok) throw new Error('Erro na verificação');
+            if (!response.ok) {
+                throw new Error(`Erro na verificação: ${response.status}`);
+            }
             
             const result = await response.json();
             
-            if (!result.canReport) {
-                // Mostra mensagem de erro específica
+            if (!result.canReport && result.message) {
                 showErrorAlert(result.message);
+                return;
+            } else if (!result.canReport) {
+                showErrorAlert('Não foi possível reportar este item.');
                 return;
             }
             
@@ -703,7 +716,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
         } catch (error) {
             console.error('Erro ao verificar permissões:', error);
-            showErrorAlert('Erro ao verificar permissões. Tente novamente.');
+            showErrorAlert('Erro ao verificar permissões. Por favor, tente novamente.');
         } finally {
             // Remove estado de loading
             reportBtn.classList.remove('loading');
