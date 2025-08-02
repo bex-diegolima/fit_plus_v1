@@ -638,8 +638,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const foodBrand = document.getElementById('foodDetailBrand').textContent;
         const foodPortion = document.getElementById('foodDetailBasePortion').value;
         //Inicio A#1.1
-        const foodRow = document.querySelector('.food-table tbody tr[data-id]');
-        const foodGroupId = foodRow ? foodRow.dataset.id : null;
+        const foodGroupElement = document.getElementById('foodDetailGroup');
+        const foodGroupId = foodGroupElement ? foodGroupElement.dataset.id : null;
         // Determina a unidade (g/ml)
         const portionUnit = getPortionUnit(foodGroupId);
         //Fim A#1.1
