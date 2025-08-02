@@ -1311,7 +1311,7 @@ body {
 .food-report-modal {
     display: none;
     position: fixed;
-    z-index: 1003; /* Acima dos outros modais */
+    z-index: 1003;
     left: 0;
     top: 0;
     width: 100%;
@@ -1333,9 +1333,6 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    transform: none;
-    left: auto;
-    right: auto;
 }
 
 /* Barreiras e cabeçalho fixo */
@@ -1349,7 +1346,7 @@ body {
 
 .fmr-cabecalho {
     position: sticky;
-    top: 16px;
+    top: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1358,9 +1355,23 @@ body {
     border-bottom: 1px solid #e0e0e0;
     z-index: 1000;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin: 0 15px;
-    border-radius: 0;
+    margin: 0;
     width: 100%;
+}
+
+/* Container flexível para o título */
+.title-container {
+    flex: 1;
+    padding: 0 20px;
+    display: flex;
+    justify-content: center;
+}
+
+/* Ajuste fino nos botões */
+.header-buttons {
+    display: flex;
+    gap: 10px;
+    padding-right: 15px;
 }
 
 .barraRD {
@@ -1373,10 +1384,8 @@ body {
 }
 
 .food-report-modal-title {
-    flex: 1;
     text-align: center;
     margin: 0;
-    padding: 0 20px;
     font-size: 1.2rem;
     white-space: nowrap;
     overflow: hidden;
@@ -1485,8 +1494,15 @@ body {
         padding: 10px;
     }
     
-    .food-report-modal-title {
+    .title-container {
+        padding: 0 10px;
         margin-bottom: 10px;
+    }
+    
+    .header-buttons {
+        padding-right: 0;
+        width: 100%;
+        justify-content: center;
     }
 }
 /*Fim A#1*/
