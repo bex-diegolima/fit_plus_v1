@@ -681,6 +681,16 @@ app.get('/api/food-details', authenticateToken, async (req, res) => {
 });
 
 //Inicio A#2
+// Rota temporária para debug - remover depois
+app.get('/api/test-food-data/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await pool.query('SELECT tipo_registro_alimento, user_registro, error_reporte FROM tbl_foods WHERE id = $1', [id]);
+        res.json(result.rows[0] || {});
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
 // Rota para verificar permissão de reporte
 app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
     try {
