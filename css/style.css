@@ -1496,6 +1496,7 @@ body {
     /*Fim A#4.1*/
     overflow-y: auto;
     background-color: #f9f9f9;
+    /*A#5*/ transition: scroll-top 0.3s ease;
 }
 
 /* Footer vazio */
@@ -1657,6 +1658,7 @@ body {
   width: 18px;
   height: 18px;
   cursor: pointer;
+  /*A#5*/ transition: all 0.2s ease;
 }
 
 .report-field-name {
@@ -1715,6 +1717,7 @@ body {
   background-color: #f5f5f5;
   color: #999;
   cursor: not-allowed;
+  /*A#5*/ border-color: #e0e0e0;
 }
 
 .report-textarea {
@@ -1746,6 +1749,20 @@ body {
   }
 }
 /*Fim A#4*/
+
+/*Inicio A#5*/
+/* Estilo para os campos quando desmarcados */
+.report-field:not(.active-field) .report-suggested-value {
+    opacity: 0.7;
+}
+
+/* Responsividade para o reset */
+@media (max-width: 768px) {
+    .reportable-fields-container {
+        scroll-behavior: smooth;
+    }
+}
+/*Fim A#5*/
 
 /*FIM DO ARQUIVO: style.css*/
 /*COMANDO: Não faça nada. Só diga se recebeu e aguarde instruções para prosseguir.*/

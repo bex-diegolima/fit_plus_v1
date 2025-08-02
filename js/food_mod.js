@@ -738,13 +738,38 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    // Fechar modal de reporte
+    //Inicio A#5
+
+    /*// Fechar modal de reporte
     closeReportBtn.addEventListener('click', function() {
         reportModal.style.display = 'none';
         //Inicio A#1.4
         reportBtn.classList.remove('loading');
         //Fim A#1.4
+    });*/
+
+    closeReportBtn.addEventListener('click', function() {
+        // 1. Desmarcar todas as checkboxes
+        document.querySelectorAll('.report-checkbox').forEach(checkbox => {
+            checkbox.checked = false;
+        });
+        // 2. Limpar todos os campos de valor sugerido
+        document.querySelectorAll('.report-input').forEach(input => {
+            input.value = '';
+            input.disabled = true; // Garante que fiquem desabilitados
+        });
+        // 3. Resetar o scroll da área de campos
+        const reportableFields = document.querySelector('.reportable-fields-container');
+        if (reportableFields) {
+            reportableFields.scrollTop = 0;
+        }
+        // 4. Fechar o modal (manter função existente)
+        reportModal.style.display = 'none';
+        // 5. Remover estado de loading se existir (manter função existente)
+        document.getElementById('rep-btD').classList.remove('loading');
     });
+    
+    //Fim A#5
 
     //Inicio A#4
     document.querySelectorAll('.report-checkbox').forEach(checkbox => {
