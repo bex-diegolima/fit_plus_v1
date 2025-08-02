@@ -745,6 +745,22 @@ document.addEventListener('DOMContentLoaded', function() {
         reportBtn.classList.remove('loading');
         //Fim A#1.4
     });
+
+    //Inicio A#4
+    document.querySelectorAll('.report-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+        const inputId = this.id.replace('report', 'suggested');
+        const inputField = document.getElementById(inputId);
+        inputField.disabled = !this.checked;
+        
+        if (this.checked) {
+        inputField.focus();
+        } else {
+        inputField.value = '';
+        }
+        });
+    });
+    //Fim A#4
     
     /*// Configurar botão reportar erro (placeholder)
     document.getElementById('rep-btD').addEventListener('click', function() {

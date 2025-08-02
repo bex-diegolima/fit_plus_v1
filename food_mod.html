@@ -676,7 +676,504 @@
                 </div>
                 <!-- Caixa de Campos Reportáveis -->
                 <div class="reportable-fields-container">
-                    <!-- Campos serão adicionados dinamicamente -->
+                    <!--Inicio A#4-->
+                    <!-- Dentro da div com class="reportable-fields-container" -->
+                    <!-- Campo 1 - Kcal -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportKcal">
+                        <label for="reportKcal" class="report-field-name">Kcal.</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentKcal">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedKcal" disabled pattern="[0-9]+([,\.][0-9]+)?" title="Apenas números (use ponto ou vírgula para decimais)">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 2 - Proteínas -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportProteins">
+                        <label for="reportProteins" class="report-field-name">Proteínas</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentProteins">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedProteins" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 3 - Carboidratos -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportCarbs">
+                        <label for="reportCarbs" class="report-field-name">Carboidratos</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentCarbs">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedCarbs" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 4 - Gorduras Totais -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportFats">
+                        <label for="reportFats" class="report-field-name">Gorduras Totais</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentFats">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedFats" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 5 - Gorduras Boas -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportGoodFats">
+                        <label for="reportGoodFats" class="report-field-name">Gorduras Boas</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentGoodFats">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedGoodFats" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 6 - Gorduras Ruins -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportBadFats">
+                        <label for="reportBadFats" class="report-field-name">Gorduras Ruins</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentBadFats">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedBadFats" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 7 - Fibras -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportFiber">
+                        <label for="reportFiber" class="report-field-name">Fibras</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentFiber">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedFiber" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 8 - Sódio -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportSodium">
+                        <label for="reportSodium" class="report-field-name">Sódio</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentSodium">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedSodium" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 9 - Açúcares Totais -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportSugar">
+                        <label for="reportSugar" class="report-field-name">Açúcares Totais</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentSugar">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedSugar" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 10 - Açúcares Adicionados -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportSugarAdd">
+                        <label for="reportSugarAdd" class="report-field-name">Açúcares Adicionados</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentSugarAdd">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedSugarAdd" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 11 - Índice Glicêmico -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportGlycemicIndex">
+                        <label for="reportGlycemicIndex" class="report-field-name">Índice Glicêmico</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentGlycemicIndex">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedGlycemicIndex" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 12 - Carga Glicêmica -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportGlycemicLoad">
+                        <label for="reportGlycemicLoad" class="report-field-name">Carga Glicêmica</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentGlycemicLoad">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedGlycemicLoad" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 13 - Colesterol -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportCholesterol">
+                        <label for="reportCholesterol" class="report-field-name">Colesterol</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentCholesterol">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedCholesterol" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 14 - Cálcio -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportCalcium">
+                        <label for="reportCalcium" class="report-field-name">Cálcio</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentCalcium">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedCalcium" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 15 - Ferro -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportIron">
+                        <label for="reportIron" class="report-field-name">Ferro</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentIron">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedIron" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 16 - Potássio -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportPotassium">
+                        <label for="reportPotassium" class="report-field-name">Potássio</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentPotassium">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedPotassium" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 17 - Magnésio -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportMagnesium">
+                        <label for="reportMagnesium" class="report-field-name">Magnésio</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentMagnesium">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedMagnesium" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 18 - Zinco -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportZinc">
+                        <label for="reportZinc" class="report-field-name">Zinco</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentZinc">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedZinc" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 19 - Vitamina A -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportVitaminA">
+                        <label for="reportVitaminA" class="report-field-name">Vitamina A</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentVitaminA">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedVitaminA" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 20 - Vitamina D -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportVitaminD">
+                        <label for="reportVitaminD" class="report-field-name">Vitamina D</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentVitaminD">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedVitaminD" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 21 - Vitamina C -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportVitaminC">
+                        <label for="reportVitaminC" class="report-field-name">Vitamina C</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentVitaminC">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedVitaminC" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 22 - Vitamina B12 -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportVitaminB12">
+                        <label for="reportVitaminB12" class="report-field-name">Vitamina B12</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentVitaminB12">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedVitaminB12" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 23 - Vitamina E -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportVitaminE">
+                        <label for="reportVitaminE" class="report-field-name">Vitamina E</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentVitaminE">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedVitaminE" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 24 - Ômega 3 -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportOmega3">
+                        <label for="reportOmega3" class="report-field-name">Ômega 3</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentOmega3">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedOmega3" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 25 - Ácido Fólico -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportFolicAcid">
+                        <label for="reportFolicAcid" class="report-field-name">Ácido Fólico</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentFolicAcid">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedFolicAcid" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 26 - Teor Alcoólico -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportAlcohol">
+                        <label for="reportAlcohol" class="report-field-name">Teor Alcoólico</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentAlcohol">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedAlcohol" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 27 - Carga Antioxidante -->
+                    <div class="report-field">
+                    <div class="report-field-header">
+                        <input type="checkbox" class="report-checkbox" id="reportAntioxidants">
+                        <label for="reportAntioxidants" class="report-field-name">Carga Antioxidante</label>
+                    </div>
+                    <div class="report-field-group">
+                        <div class="report-current-value">
+                        <label>Valor Atual:</label>
+                        <span id="currentAntioxidants">-</span>
+                        </div>
+                        <div class="report-suggested-value">
+                        <label>Valor Sugerido:</label>
+                        <input type="text" class="report-input" id="suggestedAntioxidants" disabled pattern="[0-9]+([,\.][0-9]+)?">
+                        </div>
+                    </div>
+                    </div>
+
+                    <!-- Campo 28 - Observações (sem checkbox) -->
+                    <div class="report-field">
+                    <div class="report-field-group full-width">
+                        <div class="report-observations">
+                        <label for="reportObservations">Observações:</label>
+                        <textarea id="reportObservations" class="report-textarea" placeholder="Informe aqui quaisquer outros assuntos que julgue necessário reportar ao time de Suporte"></textarea>
+                        </div>
+                    </div>
+                    </div>
+                    <!--Fim A#4-->
                 </div>
             </div>
             <!-- Footer vazio -->
