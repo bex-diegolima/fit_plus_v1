@@ -17,18 +17,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const welcomeMessage = document.getElementById('welcomeMessage');
     const userNameSpan = document.getElementById('userName');
 
-    // ========== ELEMENTOS DE PESQUISA ==========
-    const foodSearchInput = document.querySelector('.food-search-input');
-    const paginationInfo = document.querySelector('.pagination-info');
-    const prevPageBtn = document.querySelector('.pagination-btn:first-child');
-    const nextPageBtn = document.querySelector('.pagination-btn:last-child');
-
     //Inicio A#1
     // ========== ELEMENTOS DO MODAL DE REPORTE ==========
     const reportModal = document.getElementById('foodReportModal');
     const submitReportBtn = document.getElementById('submitReportBtn');
     const closeReportBtn = document.getElementById('closeReportBtn');
     //Fim A#1
+
+    // ========== ELEMENTOS DE PESQUISA ==========
+    const foodSearchInput = document.querySelector('.food-search-input');
+    const paginationInfo = document.querySelector('.pagination-info');
+    const prevPageBtn = document.querySelector('.pagination-btn:first-child');
+    const nextPageBtn = document.querySelector('.pagination-btn:last-child');
 
     // Variáveis de estado
     let currentPage = 1;
