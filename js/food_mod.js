@@ -617,21 +617,44 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    //Inicio A#1.1
+    function getPortionUnit(foodGroupId) {
+        // Grupos alimentares que usam ml (líquidos) - IDs 10 e 11 conforme seu código
+        return [10, 11].includes(parseInt(foodGroupId)) ? 'ml' : 'g';
+    }
+    //Fim A#1.1
+
     //Inicio A#1
 
     // Configurar botão reportar erro
     document.getElementById('rep-btD').addEventListener('click', function() {
         // Abre o modal de reporte
-        reportModal.style.display = 'block';
+        //Inicio A#1.1
+        /*reportModal.style.display = 'block';*/
+        //Fim A#1.1
         
         // Preenche os dados básicos (será melhorado posteriormente)
         const foodName = document.getElementById('foodDetailName').textContent;
         const foodBrand = document.getElementById('foodDetailBrand').textContent;
         const foodPortion = document.getElementById('foodDetailBasePortion').value;
+        //Inicio A#1.1
+        const foodGroup = document.querySelector('#foodDetailGroup').textContent;
+        //Fim A#1.1
+        // Determina a unidade (g/ml)
+        const portionUnit = getPortionUnit(foodGroup);
         
         document.getElementById('reportFoodName').textContent = foodName;
         document.getElementById('reportFoodBrand').textContent = foodBrand || '-';
         document.getElementById('reportFoodPortion').textContent = foodPortion;
+
+        //Inicio A#1.1
+        // Atualiza o label da porção base dinamicamente
+        const portionLabel = document.querySelector('.food-report-group label[for="reportFoodPortion"]');
+        portionLabel.textContent = `Porção Base (${portionUnit}):`;
+    
+        reportModal.style.display = 'block';
+        //Fim A#1.1
+
     });
 
     // Fechar modal de reporte
