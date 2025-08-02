@@ -621,29 +621,50 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Configurar botão reportar erro
     document.getElementById('rep-btD').addEventListener('click', function() {
-        // Abre o modal de reporte
-        reportModal.style.display = 'block';
         
-        // Preenche os dados básicos (será melhorado posteriormente)
-        const foodName = document.getElementById('foodDetailName').textContent;
-        const foodBrand = document.getElementById('foodDetailBrand').textContent;
-        const foodPortion = document.getElementById('foodDetailBasePortion').value;
-        //Inicio A#1.1
-        const foodUnit = document.getElementById('foodDetailPortionUnit').textContent;
-        //Fim A#1.1
+        //Inicio A#1.4
+        const reportBtn = this;
+        // Ativa estado de loading
+        reportBtn.classList.add('loading');
+        reportBtn.disabled = true;
+
+        // Simula validações/processamentos (substituir pelo código real depois)
+        setTimeout(() => {
+        //Fim A#1.4
         
-        document.getElementById('reportFoodName').textContent = foodName;
-        document.getElementById('reportFoodBrand').textContent = foodBrand || '-';
-        document.getElementById('reportFoodPortion').textContent = foodPortion;
-        //Inicio A#1.1
-        document.getElementById('reportFoodPortionUnit').textContent = foodUnit;
-        //Fim A#1.1
+            // Abre o modal de reporte
+            reportModal.style.display = 'block';
+            
+            // Preenche os dados básicos (será melhorado posteriormente)
+            const foodName = document.getElementById('foodDetailName').textContent;
+            const foodBrand = document.getElementById('foodDetailBrand').textContent;
+            const foodPortion = document.getElementById('foodDetailBasePortion').value;
+            //Inicio A#1.1
+            const foodUnit = document.getElementById('foodDetailPortionUnit').textContent;
+            //Fim A#1.1
+            
+            document.getElementById('reportFoodName').textContent = foodName;
+            document.getElementById('reportFoodBrand').textContent = foodBrand || '-';
+            document.getElementById('reportFoodPortion').textContent = foodPortion;
+            //Inicio A#1.1
+            document.getElementById('reportFoodPortionUnit').textContent = foodUnit;
+            //Fim A#1.1
+
+            //Inicio A#1.4
+            // Remove estado de loading
+            reportBtn.classList.remove('loading');
+            reportBtn.disabled = false;
+        }, 800); // Tempo simulado - remover no código final
+        //Fim A#1.4
 
     });
 
     // Fechar modal de reporte
     closeReportBtn.addEventListener('click', function() {
         reportModal.style.display = 'none';
+        //Inicio A#1.4
+        reportBtn.classList.remove('loading');
+        //Fim A#1.4
     });
     
     /*// Configurar botão reportar erro (placeholder)
