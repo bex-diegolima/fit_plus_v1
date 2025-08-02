@@ -1355,8 +1355,10 @@ body {
     border-bottom: 1px solid #e0e0e0;
     z-index: 1000;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin: 0;
-    width: 100%;
+    margin: 0 10px;
+    width: calc(100% - 20px);
+    box-sizing: border-box;
+    border-radius: 8px;
 }
 
 /* Container flexível para o título */
