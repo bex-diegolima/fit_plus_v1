@@ -348,6 +348,10 @@ document.addEventListener('DOMContentLoaded', function() {
     //FUNÇÕES DETALHES
     async function loadFoodDetails(foodId) {
         const modal = document.getElementById('foodDetailModal');
+        //Inicio A#2
+        // Adicionar esta linha após abrir o modal:
+        modal.setAttribute('data-food-id', foodId);
+        //Fim A#2
         const loader = document.getElementById('foodDetailLoader');
         
         // Garantir que o modal está visível antes de manipular o scroll
@@ -617,24 +621,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    //Inicio A#1
+    //Inicio A#2
 
-    // Configurar botão reportar erro
+    //Inicio A#1
+    /*// Configurar botão reportar erro
     document.getElementById('rep-btD').addEventListener('click', function() {
-        
         //Inicio A#1.4
         const reportBtn = this;
         // Ativa estado de loading
         reportBtn.classList.add('loading');
         reportBtn.disabled = true;
-
         // Simula validações/processamentos (substituir pelo código real depois)
         setTimeout(() => {
         //Fim A#1.4
-        
             // Abre o modal de reporte
             reportModal.style.display = 'block';
-            
             // Preenche os dados básicos (será melhorado posteriormente)
             const foodName = document.getElementById('foodDetailName').textContent;
             const foodBrand = document.getElementById('foodDetailBrand').textContent;
@@ -642,22 +643,87 @@ document.addEventListener('DOMContentLoaded', function() {
             //Inicio A#1.1
             const foodUnit = document.getElementById('foodDetailPortionUnit').textContent;
             //Fim A#1.1
-            
             document.getElementById('reportFoodName').textContent = foodName;
             document.getElementById('reportFoodBrand').textContent = foodBrand || '-';
             document.getElementById('reportFoodPortion').textContent = foodPortion;
             //Inicio A#1.1
             document.getElementById('reportFoodPortionUnit').textContent = foodUnit;
             //Fim A#1.1
-
             //Inicio A#1.4
             // Remove estado de loading
             reportBtn.classList.remove('loading');
             reportBtn.disabled = false;
         }, 800); // Tempo simulado - remover no código final
         //Fim A#1.4
+    });*/
 
+    // Configurar botão reportar erro
+    document.getElementById('rep-btD').addEventListener('click', async function() {
+        const reportBtn = this;
+        const foodId = document.querySelector('#foodDetailModal').getAttribute('data-food-id');
+        
+        // Ativa estado de loading
+        reportBtn.classList.add('loading');
+        reportBtn.disabled = true;
+
+        try {
+            // 1. Verificar se o alimento é verificado (tipo_registro_alimento = 1)
+            const token = localStorage.getItem('token');
+            const response = await fetch(`https://fit-plus-backend.onrender.com/api/check-report-permission?id=${foodId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (!response.ok) throw new Error('Erro na verificação');
+            
+            const result = await response.json();
+            
+            if (!result.canReport) {
+                // Mostra mensagem de erro específica
+                showErrorAlert(result.message);
+                return;
+            }
+            
+            // Se todas as validações passaram, abre o modal de reporte
+            const reportModal = document.getElementById('foodReportModal');
+            
+            // Preenche os dados básicos
+            const foodName = document.getElementById('foodDetailName').textContent;
+            const foodBrand = document.getElementById('foodDetailBrand').textContent;
+            const foodPortion = document.getElementById('foodDetailBasePortion').value;
+            const foodUnit = document.getElementById('foodDetailPortionUnit').textContent;
+            
+            document.getElementById('reportFoodName').textContent = foodName;
+            document.getElementById('reportFoodBrand').textContent = foodBrand || '-';
+            document.getElementById('reportFoodPortion').textContent = foodPortion;
+            document.getElementById('reportFoodPortionUnit').textContent = foodUnit;
+
+            reportModal.style.display = 'block';
+            
+        } catch (error) {
+            console.error('Erro ao verificar permissões:', error);
+            showErrorAlert('Erro ao verificar permissões. Tente novamente.');
+        } finally {
+            // Remove estado de loading
+            reportBtn.classList.remove('loading');
+            reportBtn.disabled = false;
+        }
     });
+
+    // Função para mostrar mensagem de erro
+    function showErrorAlert(message) {
+        const errorContainer = document.getElementById('errorAlertContainer');
+        const errorMessage = document.getElementById('errorAlertMessage');
+        
+        errorMessage.textContent = message;
+        errorContainer.style.display = 'flex';
+        
+        // Configurar botão OK
+        document.getElementById('errorAlertButton').onclick = function() {
+            errorContainer.style.display = 'none';
+        };
+    }
 
     // Fechar modal de reporte
     closeReportBtn.addEventListener('click', function() {
@@ -671,8 +737,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('rep-btD').addEventListener('click', function() {
         alert('Funcionalidade de reportar erro será implementada em breve.');
     });*/
-    
     //Fim A#1
+
+    //Fim A#2
 
     // Atualize o evento de fechar o modal (substitua o existente):
     closeButtons.forEach(btn => {

@@ -680,6 +680,70 @@ app.get('/api/food-details', authenticateToken, async (req, res) => {
     }
 });
 
+//Inicio A#2
+// Rota para verificar permissão de reporte
+app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
+    try {
+        const { id } = req.query;
+        const userId = req.user.userId;
+
+        // 1. Buscar detalhes do alimento
+        const foodQuery = `
+            SELECT tipo_registro_alimento, user_registro, error_reporte 
+            FROM tbl_foods 
+            WHERE id = $1
+        `;
+        const foodResult = await pool.query(foodQuery, [id]);
+        
+        if (foodResult.rows.length === 0) {
+            return res.status(404).json({ 
+                canReport: false,
+                message: 'Alimento não encontrado'
+            });
+        }
+
+        const food = foodResult.rows[0];
+
+        // 2. Verificar se o alimento é verificado (tipo_registro_alimento = 1)
+        if (food.tipo_registro_alimento !== 1) {
+            return res.json({ 
+                canReport: false,
+                message: 'Não é possível reportar erro em itens não verificados'
+            });
+        }
+
+        // 3. Verificar se o usuário não é o criador do registro
+        if (food.user_registro === userId) {
+            return res.json({ 
+                canReport: false,
+                message: 'Não é possível reportar erro de um item criado por você mesmo'
+            });
+        }
+
+        // 4. Verificar se já existe reporte aberto
+        if (food.error_reporte) {
+            return res.json({ 
+                canReport: false,
+                message: 'Já existe um reporte em aberto para esse item'
+            });
+        }
+
+        // Se todas as verificações passaram
+        res.json({ 
+            canReport: true,
+            message: ''
+        });
+
+    } catch (error) {
+        console.error('Erro ao verificar permissão:', error);
+        res.status(500).json({ 
+            canReport: false,
+            message: 'Erro interno no servidor'
+        });
+    }
+});
+//Fim A#2
+
 app.listen(PORT, async () => {
     console.log(`🚀 Servidor Fit+ rodando na porta ${PORT}`);
     console.log(`🔑 Chave Brevo: ${apiKey.apiKey.substring(0, 6)}...${apiKey.apiKey.substring(apiKey.apiKey.length - 4)}`);
