@@ -723,12 +723,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Garantir que os campos são criados
                 await setupReportForm();
-                
-                // Reset adicional após renderização
-                reportModal.scrollTop = 0;
-                if (modalContent) modalContent.scrollTop = 0;
             } else {
-                showAlertMessage(result.message, 'error');
+                throw new Error(result.message || 'Não foi possível reportar este alimento');
             }
         } catch (error) {
             console.error('Erro ao verificar permissão:', error);
