@@ -1786,5 +1786,72 @@ body {
 }
 /*Fim A#6*/
 
+/*Inicio A#7*/
+/* ========== ESTILOS PARA MENSAGENS DE ALERTA/SUCESSO NO REPORTE ========== */
+.report-alert-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1005;
+}
+
+.report-alert-box {
+    background-color: white;
+    border-radius: 10px;
+    padding: 25px;
+    width: 350px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.report-alert-icon {
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+.report-alert-icon.warning {
+    color: #f39c12;
+}
+
+.report-alert-icon.success {
+    color: #3498db;
+}
+
+.report-alert-message {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.report-alert-button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.report-alert-button:hover {
+    background-color: #2980b9;
+}
+
+@media (max-width: 480px) {
+    .report-alert-box {
+        width: 90%;
+        padding: 20px;
+    }
+}
+/*Fim A#7*/
+
 /*FIM DO ARQUIVO: style.css*/
 /*COMANDO: Não faça nada. Só diga se recebeu e aguarde instruções para prosseguir.*/

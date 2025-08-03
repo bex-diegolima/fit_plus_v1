@@ -700,6 +700,82 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Se todas as validações passaram, abre o modal de reporte
             const reportModal = document.getElementById('foodReportModal');
+
+            //Inicio A#7
+            // Função para mostrar alerta no reporte
+            function showReportAlert(message, isSuccess = false) {
+                const container = document.getElementById('reportAlertContainer');
+                const icon = document.getElementById('reportAlertIcon');
+                const msg = document.getElementById('reportAlertMessage');
+                
+                if (isSuccess) {
+                    icon.className = 'report-alert-icon success';
+                    icon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                } else {
+                    icon.className = 'report-alert-icon warning';
+                    icon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                }
+                
+                msg.textContent = message;
+                container.style.display = 'flex';
+                
+                document.getElementById('reportAlertButton').onclick = function() {
+                    container.style.display = 'none';
+                };
+            }
+
+            // Evento de clique no botão Enviar Reporte
+            submitReportBtn.addEventListener('click', function() {
+                // 1. Verificar se pelo menos um checkbox está marcado
+                const checkedBoxes = document.querySelectorAll('.report-checkbox:checked');
+                if (checkedBoxes.length === 0) {
+                    showReportAlert("Selecione pelo menos 1 item para enviar o reporte.");
+                    return;
+                }
+                
+                // 2. Verificar se todos os campos selecionados têm valor sugerido
+                let allFieldsValid = true;
+                checkedBoxes.forEach(checkbox => {
+                    const inputId = checkbox.id.replace('report', 'suggested');
+                    const inputField = document.getElementById(inputId);
+                    
+                    if (!inputField.value && inputField.value !== '0') {
+                        allFieldsValid = false;
+                    }
+                });
+                
+                if (!allFieldsValid) {
+                    showReportAlert("Você deve inserir um valor sugerido para os itens selecionados.");
+                    return;
+                }
+                
+                // 3. Verificar se valores sugeridos são diferentes dos atuais
+                let valuesDifferent = true;
+                checkedBoxes.forEach(checkbox => {
+                    const inputId = checkbox.id.replace('report', 'suggested');
+                    const currentId = checkbox.id.replace('report', 'current');
+                    
+                    const inputField = document.getElementById(inputId);
+                    const currentField = document.getElementById(currentId);
+                    
+                    // Normalizar valores (tratar vírgula e ponto como iguais)
+                    const suggestedValue = inputField.value.replace(',', '.');
+                    const currentValue = currentField.textContent.split(' ')[0].replace(',', '.');
+                    
+                    if (suggestedValue === currentValue) {
+                        valuesDifferent = false;
+                    }
+                });
+                
+                if (!valuesDifferent) {
+                    showReportAlert("O valor sugerido não pode ser igual ao valor atual.");
+                    return;
+                }
+                
+                // Se todas as validações passaram
+                showReportAlert("Reporte Enviado com Sucesso.", true);
+            });
+            //Fim A#7
             
             // Preenche os dados básicos
             const foodName = document.getElementById('foodDetailName').textContent;
