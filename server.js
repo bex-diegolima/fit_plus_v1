@@ -88,7 +88,7 @@ async function sendValidationEmail(email, code) {
 
 //Inicio A#9
 // ========== FUNÇÃO PARA ENVIO DE E-MAIL DE REPORTE ==========
-async function sendReportEmail(reportId, foodId, userId, reportItems) {
+async function sendReportEmail(reportId, foodId, userId, reportItems, observations) {
     try {
         const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
         const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
@@ -104,34 +104,57 @@ async function sendReportEmail(reportId, foodId, userId, reportItems) {
             minute: '2-digit'
         });
 
-        // Criar tabela de itens reportados
-        let itemsTable = '';
+        // Criar tabela HTML para os itens reportados
+        let itemsTable = `
+        <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+            <thead>
+                <tr style="background-color: #f2f2f2;">
+                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">ID Campo</th>
+                    <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Valor Sugerido</th>
+                </tr>
+            </thead>
+            <tbody>`;
+
         reportItems.forEach(item => {
-            itemsTable += `${item.fieldId}, ${item.suggestedValue}\n`;
+            itemsTable += `
+                <tr>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${item.fieldId}</td>
+                    <td style="padding: 8px; border: 1px solid #ddd;">${item.suggestedValue}</td>
+                </tr>`;
         });
+
+        itemsTable += `</tbody></table>`;
 
         sendSmtpEmail.subject = `Reporte de Erro ID#${reportId}`;
         sendSmtpEmail.htmlContent = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #2c3e50;">Informações do Reporte</h2>
-                <hr style="border-top: 2px solid #3498db;">
-                <p><strong>ID do Reporte</strong> = ${reportId}</p>
-                <p><strong>ID do Item</strong> = ${foodId}</p>
-                <p><strong>ID do Usuário</strong> = ${userId}</p>
-                <p><strong>Data do Reporte</strong> = ${formattedDate}</p>
-                <hr style="border-top: 1px dashed #ccc;">
-                <h3 style="color: #2c3e50;">Itens Reportados - Alterações Sugeridas</h3>
-                <pre style="background: #f5f5f5; padding: 10px; border-radius: 5px; overflow-x: auto;">
-ID Campo, Valor Sugerido
------------------------------
-${itemsTable}
-                </pre>
-                <hr style="border-top: 2px solid #3498db;">
-                <p style="font-size: 12px; color: #7f8c8d;">
-                    Este e-mail foi gerado automaticamente pelo sistema Fit+.
-                </p>
+        <div style="font-family: Arial, sans-serif; max-width: 700px; margin: 0 auto; color: #333;">
+            <h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;">
+                Informações do Reporte
+            </h2>
+            
+            <div style="margin-bottom: 20px;">
+                <p><strong>ID do Reporte:</strong> ${reportId}</p>
+                <p><strong>ID do Item:</strong> ${foodId}</p>
+                <p><strong>ID do Usuário:</strong> ${userId}</p>
+                <p><strong>Data do Reporte:</strong> ${formattedDate}</p>
             </div>
-        `;
+
+            <h3 style="color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                Itens Reportados - Alterações Sugeridas
+            </h3>
+            ${itemsTable}
+
+            <h3 style="color: #2c3e50; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 25px;">
+                Observações inseridas pelo usuário:
+            </h3>
+            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; border-left: 4px solid #3498db;">
+                ${observations || 'Nenhuma observação foi registrada'}
+            </div>
+
+            <div style="margin-top: 30px; font-size: 12px; color: #7f8c8d; text-align: center; border-top: 1px solid #eee; padding-top: 10px;">
+                Este e-mail foi gerado automaticamente pelo sistema Fit+.
+            </div>
+        </div>`;
         
         sendSmtpEmail.sender = { 
             email: "bex.diegolima@gmail.com", 
@@ -950,7 +973,8 @@ app.post('/api/save-food-report', authenticateToken, async (req, res) => {
                 reportId,      // ID do reporte criado
                 foodId,        // ID do alimento
                 userId,        // ID do usuário
-                reportItems    // Itens reportados
+                reportItems,    // Itens reportados
+                observations   // Observações do usuário (novo parâmetro)
             );
             
             if (!emailSent) {
