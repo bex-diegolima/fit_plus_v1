@@ -86,6 +86,74 @@ async function sendValidationEmail(email, code) {
     }
 }
 
+//Inicio A#9
+// ========== FUNÇÃO PARA ENVIO DE E-MAIL DE REPORTE ==========
+async function sendReportEmail(reportId, foodId, userId, reportItems) {
+    try {
+        const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+        const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
+        // Formatar a data atual
+        const now = new Date();
+        const formattedDate = now.toLocaleString('pt-BR', {
+            timeZone: 'America/Sao_Paulo',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        // Criar tabela de itens reportados
+        let itemsTable = '';
+        reportItems.forEach(item => {
+            itemsTable += `${item.fieldId}, ${item.suggestedValue}\n`;
+        });
+
+        sendSmtpEmail.subject = `Reporte de Erro ID#${reportId}`;
+        sendSmtpEmail.htmlContent = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2 style="color: #2c3e50;">Informações do Reporte</h2>
+                <hr style="border-top: 2px solid #3498db;">
+                <p><strong>ID do Reporte</strong> = ${reportId}</p>
+                <p><strong>ID do Item</strong> = ${foodId}</p>
+                <p><strong>ID do Usuário</strong> = ${userId}</p>
+                <p><strong>Data do Reporte</strong> = ${formattedDate}</p>
+                <hr style="border-top: 1px dashed #ccc;">
+                <h3 style="color: #2c3e50;">Itens Reportados - Alterações Sugeridas</h3>
+                <pre style="background: #f5f5f5; padding: 10px; border-radius: 5px; overflow-x: auto;">
+ID Campo, Valor Sugerido
+-----------------------------
+${itemsTable}
+                </pre>
+                <hr style="border-top: 2px solid #3498db;">
+                <p style="font-size: 12px; color: #7f8c8d;">
+                    Este e-mail foi gerado automaticamente pelo sistema Fit+.
+                </p>
+            </div>
+        `;
+        
+        sendSmtpEmail.sender = { 
+            email: "bex.diegolima@gmail.com", 
+            name: "Fit+ - Sistema de Reportes" 
+        };
+        sendSmtpEmail.to = [{ 
+            email: "suporte_fitmais@outlook.com" 
+        }];
+        sendSmtpEmail.replyTo = { 
+            email: "bex.diegolima@gmail.com", 
+            name: "Suporte Fit+" 
+        };
+
+        await apiInstance.sendTransacEmail(sendSmtpEmail);
+        return true;
+    } catch (error) {
+        console.error('Erro no envio do e-mail de reporte:', error);
+        return false;
+    }
+}
+//Fim A#9
+
 app.post('/api/register', async (req, res) => {
     try {
         const { email, firstName, lastName, birthDate, gender, phone, password } = req.body;
@@ -757,7 +825,9 @@ app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
 });
 //Fim A#2
 
-//Inicio A#8
+//Inicio A#9
+
+/*//Inicio A#8
 //Rota para salvar reporte no banco de dados
 app.post('/api/save-food-report', authenticateToken, async (req, res) => {
     const client = await pool.connect();
@@ -808,6 +878,7 @@ app.post('/api/save-food-report', authenticateToken, async (req, res) => {
         }
 
         await client.query('COMMIT');
+
         res.json({ success: true, message: 'Reporte registrado com sucesso' });
     } catch (error) {
         await client.query('ROLLBACK');
@@ -820,7 +891,95 @@ app.post('/api/save-food-report', authenticateToken, async (req, res) => {
         client.release();
     }
 });
-//Fim A#8
+//Fim A#8*/
+
+//Rota para salvar reporte no banco de dados
+app.post('/api/save-food-report', authenticateToken, async (req, res) => {
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+        
+        const { foodId, reportItems, observations } = req.body;
+        const userId = req.user.userId;
+
+        // Verificar se já existe um reporte aberto para este alimento
+        const existingReport = await client.query(
+            `SELECT id FROM tbl_report 
+             WHERE id_food = $1 AND id_user_report = $2 AND status_report = 'open'`,
+            [foodId, userId]
+        );
+
+        if (existingReport.rows.length > 0) {
+            await client.query('ROLLBACK');
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Já existe um reporte em aberto para este alimento' 
+            });
+        }
+
+        // 1. Atualizar tbl_foods
+        await client.query(
+            `UPDATE tbl_foods SET error_report = true WHERE id = $1`,
+            [foodId]
+        );
+
+        // 2. Inserir em tbl_report
+        const reportResult = await client.query(
+            `INSERT INTO tbl_report 
+            (id_food, id_user_report, status_report) 
+            VALUES ($1, $2, 'open') RETURNING id`,
+            [foodId, userId]
+        );
+        const reportId = reportResult.rows[0].id;
+
+        // 3. Inserir itens em tbl_report_itens
+        for (const item of reportItems) {
+            await client.query(
+                `INSERT INTO tbl_report_itens 
+                (id_report, id_campo, valor_sugerido, status) 
+                VALUES ($1, $2, $3, 'open')`,
+                [reportId, item.fieldId, item.suggestedValue]
+            );
+        }
+
+        await client.query('COMMIT');
+
+        // 4. Enviar e-mail de notificação para o suporte
+        try {
+            const emailSent = await sendReportEmail(
+                reportId,      // ID do reporte criado
+                foodId,        // ID do alimento
+                userId,        // ID do usuário
+                reportItems    // Itens reportados
+            );
+            
+            if (!emailSent) {
+                console.error('E-mail de reporte não enviado, mas registro salvo');
+            }
+        } catch (emailError) {
+            console.error('Erro ao enviar e-mail de reporte:', emailError);
+        }
+
+        // Única resposta para o frontend
+        res.json({ 
+            success: true,
+            message: 'Reporte registrado com sucesso',
+            reportId: reportId  // Importante manter para possível uso futuro
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Erro ao salvar reporte:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Erro ao registrar reporte' 
+        });
+    } finally {
+        client.release();
+    }
+});
+
+//Fim A#9
 
 app.listen(PORT, async () => {
     console.log(`🚀 Servidor Fit+ rodando na porta ${PORT}`);
