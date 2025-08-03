@@ -1062,10 +1062,29 @@ document.addEventListener('DOMContentLoaded', function() {
         if (reportableFields) {
             reportableFields.scrollTop = 0;
         }
-        // 5. Fechar o modal (manter função existente)
+
+        //Inicio A#8.1
+        // 5. Resetar o botão de envio
+        const submitBtn = document.getElementById('submitReportBtn');
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('loading', 'processing', 'completed');
+        
+        // 6. Remover marcações de campos salvos
+        document.querySelectorAll('.report-field.saved').forEach(field => {
+            field.classList.remove('saved');
+        });
+        //Fim A#8.1
+
+        // 7. Fechar o modal (manter função existente)
         reportModal.style.display = 'none';
-        // 6. Remover estado de loading se existir (manter função existente)
+        // 8. Remover estado de loading se existir (manter função existente)
         document.getElementById('rep-btD').classList.remove('loading');
+
+        //Inicio A#8.1
+        // 9. Forçar redesenho do modal para garantir que tudo foi resetado
+        void reportModal.offsetHeight;
+        //Fim A#8.1
+
     });
     
     //Fim A#5

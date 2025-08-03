@@ -1932,5 +1932,28 @@ body {
 }
 /*Fim A#8*/
 
+/*Inicio A#8.1*/
+/*Estilos para o reset completo do modal*/
+.report-modal-reset {
+    animation: fadeReset 0.5s ease;
+}
+
+@keyframes fadeReset {
+    0% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.submit-report-btn:disabled {
+    background-color: #95a5a6 !important;
+    cursor: not-allowed;
+}
+
+.report-field.reset {
+    background-color: transparent;
+    border-color: #e0e0e0;
+    transition: all 0.3s ease;
+}
+/*Fim A#8.1*/
+
 /*FIM DO ARQUIVO: style.css*/
 /*COMANDO: Não faça nada. Só diga se recebeu e aguarde instruções para prosseguir.*/
