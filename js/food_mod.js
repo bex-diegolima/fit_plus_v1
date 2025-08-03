@@ -712,6 +712,73 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('reportFoodPortion').textContent = foodPortion;
             document.getElementById('reportFoodPortionUnit').textContent = foodUnit;
 
+            //Inicio A#6
+            try {
+                const detailResponse = await fetch(`https://fit-plus-backend.onrender.com/api/food-details?id=${foodId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!detailResponse.ok) throw new Error('Erro ao carregar detalhes');
+                
+                const foodData = await detailResponse.json();
+                
+                // Função auxiliar para formatar valores
+                const formatValue = (value, unit = '') => {
+                    if (value === null || value === undefined || value === '') return '-';
+                    return `${value} ${unit}`.trim();
+                };
+                
+                // Mapeamento de campos
+                const fieldMap = {
+                    // Formato: [ID do campo, campo no BD, unidade]
+                    currentKcal: ['calorias_kcal', 'kcal'],
+                    currentProteins: ['proteina_gr', 'g'],
+                    currentCarbs: ['carbo_gr', 'g'],
+                    currentFats: ['gorduras_totais_gr', 'g'],
+                    currentGoodFats: ['gorduras_boas_gr', 'g'],
+                    currentBadFats: ['gorduras_ruins_gr', 'g'],
+                    currentFiber: ['fibras_gr', 'g'],
+                    currentSodium: ['sodio_mg', 'mg'],
+                    currentSugar: ['acucares_gr', 'g'],
+                    currentSugarAdd: ['acucar_adicionado_gr', 'g'],
+                    currentGlycemicIndex: ['indice_glicemico', ''],
+                    currentGlycemicLoad: ['carga_glicemica', ''],
+                    currentCholesterol: ['colesterol_mg', 'mg'],
+                    currentCalcium: ['calcio_mg', 'mg'],
+                    currentIron: ['ferro_mg', 'mg'],
+                    currentPotassium: ['potassio_mg', 'mg'],
+                    currentMagnesium: ['magnesio_mg', 'mg'],
+                    currentZinc: ['zinco_mg', 'mg'],
+                    currentVitaminA: ['vitamina_a_mcg', 'mcg'],
+                    currentVitaminD: ['vitamina_d_mcg', 'mcg'],
+                    currentVitaminC: ['vitamina_c_mg', 'mg'],
+                    currentVitaminB12: ['vitamina_b12_mcg', 'mcg'],
+                    currentVitaminE: ['vitamina_e_mcg', 'mcg'],
+                    currentOmega3: ['omega_tres_mg', 'mg'],
+                    currentFolicAcid: ['acido_folico_mcg', 'mcg'],
+                    currentAlcohol: ['teor_alcoolico', '%'],
+                    currentAntioxidants: ['carga_antioxidante', '']
+                };
+
+                // Preencher todos os campos
+                Object.entries(fieldMap).forEach(([fieldId, [dbField, unit]]) => {
+                    const element = document.getElementById(fieldId);
+                    if (element) {
+                        element.textContent = formatValue(foodData[dbField], unit);
+                    }
+                });
+
+            } catch (error) {
+                console.error('Erro ao carregar valores para reporte:', error);
+                // Define todos os valores como '-' em caso de erro
+                document.querySelectorAll('[id^="current"]').forEach(el => {
+                    el.textContent = '-';
+                });
+            }
+            //Fim A#6
+            
             reportModal.style.display = 'block';
             
         } catch (error) {
