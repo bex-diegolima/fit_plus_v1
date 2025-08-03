@@ -1853,5 +1853,50 @@ body {
 }
 /*Fim A#7*/
 
+/*Inicio A#8*/
+/*Estilos para o processo de envio do reporte*/
+.report-processing {
+    position: relative;
+    color: transparent !important;
+}
+
+.report-processing::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.report-success-badge {
+    background-color: #27ae60;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    margin-left: 5px;
+    font-weight: normal;
+}
+
+.report-field.saved {
+    background-color: #f8fff8;
+    border-color: #c8e6c9;
+}
+
+.report-field.saved .report-field-header {
+    background-color: #e8f5e9;
+}
+/*Fim A#8*/
+
 /*FIM DO ARQUIVO: style.css*/
 /*COMANDO: Não faça nada. Só diga se recebeu e aguarde instruções para prosseguir.*/
