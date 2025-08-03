@@ -767,6 +767,21 @@ app.post('/api/save-food-report', authenticateToken, async (req, res) => {
         const { foodId, reportItems, observations } = req.body;
         const userId = req.user.userId;
 
+        // Verificar se já existe um reporte aberto para este alimento
+        const existingReport = await client.query(
+            `SELECT id FROM tbl_report 
+             WHERE id_food = $1 AND id_user_report = $2 AND status_report = 'open'`,
+            [foodId, userId]
+        );
+
+        if (existingReport.rows.length > 0) {
+            await client.query('ROLLBACK');
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Já existe um reporte em aberto para este alimento' 
+            });
+        }
+
         // 1. Atualizar tbl_foods
         await client.query(
             `UPDATE tbl_foods SET error_report = true WHERE id = $1`,

@@ -1896,6 +1896,40 @@ body {
 .report-field.saved .report-field-header {
     background-color: #e8f5e9;
 }
+
+/*Estilos adicionais para prevenção de duplo clique*/
+.submit-report-btn.processing {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.submit-report-btn.completed {
+    background-color: #27ae60 !important;
+}
+
+.submit-report-btn.completed:hover {
+    background-color: #27ae60 !important;
+    cursor: not-allowed;
+}
+
+.submit-report-btn.completed i {
+    display: none;
+}
+
+.submit-report-btn.completed::after {
+    content: "✓";
+    margin-left: 5px;
+}
+
+.report-field.saved .report-checkbox {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.report-field.saved .report-input {
+    background-color: #f5f5f5;
+    color: #666;
+}
 /*Fim A#8*/
 
 /*FIM DO ARQUIVO: style.css*/

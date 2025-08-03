@@ -786,55 +786,59 @@ document.addEventListener('DOMContentLoaded', function() {
             //Fim A#7
             */
 
-            //Evento de clique no botão Enviar Reporte (atualizado)
+            //Evento de clique no botão Enviar Reporte (com prevenção de duplo clique)
             submitReportBtn.addEventListener('click', async function() {
-                // 1. Verificar se pelo menos um checkbox está marcado
-                const checkedBoxes = document.querySelectorAll('.report-checkbox:checked');
-                if (checkedBoxes.length === 0) {
-                    showReportAlert("Selecione pelo menos 1 item para enviar o reporte.");
-                    return;
-                }
+                // Prevenir múltiplos cliques
+                if (this.classList.contains('processing')) return;
+                this.classList.add('processing');
                 
-                // 2. Verificar se todos os campos selecionados têm valor sugerido
-                let allFieldsValid = true;
-                checkedBoxes.forEach(checkbox => {
-                    const inputId = checkbox.id.replace('report', 'suggested');
-                    const inputField = document.getElementById(inputId);
-                    
-                    if (!inputField.value && inputField.value !== '0') {
-                        allFieldsValid = false;
-                    }
-                });
-                
-                if (!allFieldsValid) {
-                    showReportAlert("Você deve inserir um valor sugerido para os itens selecionados.");
-                    return;
-                }
-                
-                // 3. Verificar se valores sugeridos são diferentes dos atuais
-                let valuesDifferent = true;
-                checkedBoxes.forEach(checkbox => {
-                    const inputId = checkbox.id.replace('report', 'suggested');
-                    const currentId = checkbox.id.replace('report', 'current');
-                    
-                    const inputField = document.getElementById(inputId);
-                    const currentField = document.getElementById(currentId);
-                    
-                    const suggestedNum = parseFloat(inputField.value.replace(',', '.'));
-                    const currentNum = parseFloat(currentField.textContent.split(' ')[0].replace(',', '.'));
-                    
-                    if (!isNaN(suggestedNum) && !isNaN(currentNum) && suggestedNum === currentNum) {
-                        valuesDifferent = false;
-                    }
-                });
-                
-                if (!valuesDifferent) {
-                    showReportAlert("O valor sugerido não pode ser igual ao valor atual.");
-                    return;
-                }
-                
-                // Se todas as validações passaram, preparar dados para enviar ao servidor
                 try {
+                    // 1. Verificar se pelo menos um checkbox está marcado
+                    const checkedBoxes = document.querySelectorAll('.report-checkbox:checked');
+                    if (checkedBoxes.length === 0) {
+                        showReportAlert("Selecione pelo menos 1 item para enviar o reporte.");
+                        return;
+                    }
+                    
+                    // 2. Verificar se todos os campos selecionados têm valor sugerido
+                    let allFieldsValid = true;
+                    checkedBoxes.forEach(checkbox => {
+                        const inputId = checkbox.id.replace('report', 'suggested');
+                        const inputField = document.getElementById(inputId);
+                        
+                        if (!inputField.value && inputField.value !== '0') {
+                            allFieldsValid = false;
+                        }
+                    });
+                    
+                    if (!allFieldsValid) {
+                        showReportAlert("Você deve inserir um valor sugerido para os itens selecionados.");
+                        return;
+                    }
+                    
+                    // 3. Verificar se valores sugeridos são diferentes dos atuais
+                    let valuesDifferent = true;
+                    checkedBoxes.forEach(checkbox => {
+                        const inputId = checkbox.id.replace('report', 'suggested');
+                        const currentId = checkbox.id.replace('report', 'current');
+                        
+                        const inputField = document.getElementById(inputId);
+                        const currentField = document.getElementById(currentId);
+                        
+                        const suggestedNum = parseFloat(inputField.value.replace(',', '.'));
+                        const currentNum = parseFloat(currentField.textContent.split(' ')[0].replace(',', '.'));
+                        
+                        if (!isNaN(suggestedNum) && !isNaN(currentNum) && suggestedNum === currentNum) {
+                            valuesDifferent = false;
+                        }
+                    });
+                    
+                    if (!valuesDifferent) {
+                        showReportAlert("O valor sugerido não pode ser igual ao valor atual.");
+                        return;
+                    }
+                    
+                    // Se todas as validações passaram, preparar dados para enviar ao servidor
                     const token = localStorage.getItem('token');
                     const foodId = document.querySelector('#foodDetailModal').getAttribute('data-food-id');
                     const observations = document.getElementById('reportObservations').value;
@@ -882,6 +886,9 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                     });
                     
+                    // Adicionar estado de loading
+                    this.classList.add('loading');
+                    
                     // Enviar para o servidor
                     const response = await fetch('https://fit-plus-backend.onrender.com/api/save-food-report', {
                         method: 'POST',
@@ -900,12 +907,25 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     if (result.success) {
                         showReportAlert("Reporte Enviado com Sucesso.", true);
+                        
+                        // Desabilitar o botão após envio bem-sucedido
+                        this.disabled = true;
+                        this.classList.add('completed');
+                        
+                        // Marcar campos como enviados
+                        checkedBoxes.forEach(checkbox => {
+                            const fieldContainer = checkbox.closest('.report-field');
+                            fieldContainer.classList.add('saved');
+                        });
                     } else {
-                        showReportAlert("Erro ao enviar reporte. Tente novamente.");
+                        showReportAlert(result.message || "Erro ao enviar reporte. Tente novamente.");
                     }
                 } catch (error) {
                     console.error('Erro ao enviar reporte:', error);
                     showReportAlert("Erro ao conectar com o servidor.");
+                } finally {
+                    // Remover estados de loading e processing
+                    this.classList.remove('loading', 'processing');
                 }
             });
 
