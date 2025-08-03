@@ -701,6 +701,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Se todas as validações passaram, abre o modal de reporte
             const reportModal = document.getElementById('foodReportModal');
 
+            //Inicio A#8
+
+            /*
             //Inicio A#7
             // Função para mostrar alerta no reporte
             function showReportAlert(message, isSuccess = false) {
@@ -767,7 +770,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     /*if (suggestedValue === currentValue) {
                         valuesDifferent = false;
                     }*/
-
+                    /*
                     const suggestedNum = parseFloat(suggestedValue);
                     const currentNum = parseFloat(currentValue);
                     if (!isNaN(suggestedNum) && !isNaN(currentNum) && suggestedNum === currentNum) {
@@ -786,6 +789,157 @@ document.addEventListener('DOMContentLoaded', function() {
                 showReportAlert("Reporte Enviado com Sucesso.", true);
             });
             //Fim A#7
+            */
+            
+            // Função para mostrar alerta no reporte
+            function showReportAlert(message, isSuccess = false) {
+                const container = document.getElementById('reportAlertContainer');
+                const icon = document.getElementById('reportAlertIcon');
+                const msg = document.getElementById('reportAlertMessage');
+                
+                if (isSuccess) {
+                    icon.className = 'report-alert-icon success';
+                    icon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                } else {
+                    icon.className = 'report-alert-icon warning';
+                    icon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                }
+                
+                msg.textContent = message;
+                container.style.display = 'flex';
+                
+                document.getElementById('reportAlertButton').onclick = function() {
+                    container.style.display = 'none';
+                };
+            }
+
+            // Mapeamento de IDs de campo
+            const fieldIdMap = {
+                suggestedKcal: 1,
+                suggestedProteins: 2,
+                suggestedCarbs: 3,
+                suggestedFats: 4,
+                suggestedGoodFats: 5,
+                suggestedBadFats: 6,
+                suggestedFiber: 7,
+                suggestedSodium: 8,
+                suggestedSugar: 9,
+                suggestedSugarAdd: 10,
+                suggestedGlycemicIndex: 11,
+                suggestedGlycemicLoad: 12,
+                suggestedCholesterol: 13,
+                suggestedCalcium: 14,
+                suggestedIron: 15,
+                suggestedPotassium: 16,
+                suggestedMagnesium: 17,
+                suggestedZinc: 18,
+                suggestedVitaminA: 19,
+                suggestedVitaminD: 20,
+                suggestedVitaminC: 21,
+                suggestedVitaminB12: 22,
+                suggestedVitaminE: 23,
+                suggestedOmega3: 24,
+                suggestedFolicAcid: 25,
+                suggestedAlcohol: 26,
+                suggestedAntioxidants: 27
+            };
+
+            // Evento de clique no botão Enviar Reporte
+            submitReportBtn.addEventListener('click', async function() {
+                // 1. Verificar se pelo menos um checkbox está marcado
+                const checkedBoxes = document.querySelectorAll('.report-checkbox:checked');
+                if (checkedBoxes.length === 0) {
+                    showReportAlert("Selecione pelo menos 1 item para enviar o reporte.");
+                    return;
+                }
+                
+                // 2. Verificar se todos os campos selecionados têm valor sugerido
+                let allFieldsValid = true;
+                checkedBoxes.forEach(checkbox => {
+                    const inputId = checkbox.id.replace('report', 'suggested');
+                    const inputField = document.getElementById(inputId);
+                    
+                    if (!inputField.value && inputField.value !== '0') {
+                        allFieldsValid = false;
+                    }
+                });
+                
+                if (!allFieldsValid) {
+                    showReportAlert("Você deve inserir um valor sugerido para os itens selecionados.");
+                    return;
+                }
+                
+                // 3. Verificar se valores sugeridos são diferentes dos atuais
+                let valuesDifferent = true;
+                checkedBoxes.forEach(checkbox => {
+                    const inputId = checkbox.id.replace('report', 'suggested');
+                    const currentId = checkbox.id.replace('report', 'current');
+                    
+                    const inputField = document.getElementById(inputId);
+                    const currentField = document.getElementById(currentId);
+                    
+                    const suggestedValue = inputField.value.replace(',', '.');
+                    const currentValue = currentField.textContent.split(' ')[0].replace(',', '.');
+                    
+                    const suggestedNum = parseFloat(suggestedValue);
+                    const currentNum = parseFloat(currentValue);
+                    if (!isNaN(suggestedNum) && !isNaN(currentNum) && suggestedNum === currentNum) {
+                        valuesDifferent = false;
+                    }
+                });
+                
+                if (!valuesDifferent) {
+                    showReportAlert("O valor sugerido não pode ser igual ao valor atual.");
+                    return;
+                }
+                
+                // Se todas as validações passaram
+                try {
+                    // Preparar dados para envio
+                    const reportItems = [];
+                    checkedBoxes.forEach(checkbox => {
+                        const inputId = checkbox.id.replace('report', 'suggested');
+                        const inputField = document.getElementById(inputId);
+                        reportItems.push({
+                            fieldId: fieldIdMap[inputId],
+                            suggestedValue: inputField.value.replace(',', '.')
+                        });
+                    });
+                    
+                    const foodId = document.querySelector('#foodDetailModal').getAttribute('data-food-id');
+                    const token = localStorage.getItem('token');
+                    const userId = jwt_decode(token).userId;
+                    const observations = document.getElementById('reportObservations').value;
+                    
+                    // Enviar para o servidor
+                    const response = await fetch('https://fit-plus-backend.onrender.com/api/submit-food-report', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            foodId,
+                            userId,
+                            reportItems,
+                            observations
+                        })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        showReportAlert("Reporte Enviado com Sucesso.", true);
+                    } else {
+                        showReportAlert("Erro ao enviar reporte. Tente novamente.");
+                    }
+                } catch (error) {
+                    console.error('Erro ao enviar reporte:', error);
+                    showReportAlert("Erro ao enviar reporte. Tente novamente.");
+                }
+            });
+
+            //Fim A#8
             
             // Preenche os dados básicos
             const foodName = document.getElementById('foodDetailName').textContent;
