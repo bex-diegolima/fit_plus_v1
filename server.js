@@ -762,15 +762,19 @@ app.get('/api/check-report-permission', authenticateToken, async (req, res) => {
 app.post('/api/submit-food-report', authenticateToken, async (req, res) => {
     const client = await pool.connect();
     try {
+        console.log('[SUBMIT-FOOD-REPORT] Iniciando processamento...');
+        console.log('[SUBMIT-FOOD-REPORT] Dados recebidos:', req.body);
+        
         await client.query('BEGIN');
         
         const { foodId, userId, reportItems, observations } = req.body;
         
         // 1. Atualizar tbl_foods
-        await client.query(
-            'UPDATE tbl_foods SET error_report = true WHERE id = $1',
+        const updateFood = await client.query(
+            'UPDATE tbl_foods SET error_report = true WHERE id = $1 RETURNING id',
             [foodId]
         );
+        console.log('[SUBMIT-FOOD-REPORT] tbl_foods atualizada:', updateFood.rows[0].id);
         
         // 2. Inserir em tbl_report
         const reportResult = await client.query(
@@ -781,25 +785,30 @@ app.post('/api/submit-food-report', authenticateToken, async (req, res) => {
             [foodId, userId]
         );
         const reportId = reportResult.rows[0].id;
+        console.log('[SUBMIT-FOOD-REPORT] Reporte principal criado ID:', reportId);
         
         // 3. Inserir itens em tbl_report_itens
+        console.log('[SUBMIT-FOOD-REPORT] Inserindo itens...');
         for (const item of reportItems) {
-            await client.query(
+            const itemInsert = await client.query(
                 `INSERT INTO tbl_report_itens 
                  (id_report, id_campo, valor_sugerido, status) 
-                 VALUES ($1, $2, $3, 'open')`,
+                 VALUES ($1, $2, $3, 'open') 
+                 RETURNING id`,
                 [reportId, item.fieldId, item.suggestedValue]
             );
+            console.log(`[SUBMIT-FOOD-REPORT] Item inserido ID: ${itemInsert.rows[0].id} (Campo: ${item.fieldId})`);
         }
         
         await client.query('COMMIT');
+        console.log('[SUBMIT-FOOD-REPORT] Transação concluída com sucesso');
         res.json({ success: true, message: 'Reporte enviado com sucesso' });
     } catch (error) {
         await client.query('ROLLBACK');
-        console.error('Erro ao processar reporte:', error);
+        console.error('[SUBMIT-FOOD-REPORT] Erro:', error);
         res.status(500).json({ 
             success: false, 
-            message: 'Erro ao processar reporte' 
+            message: error.message || 'Erro ao processar reporte' 
         });
     } finally {
         client.release();

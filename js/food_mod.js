@@ -893,7 +893,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
                 
-                // Se todas as validações passaram
+                //Inicio A#8.1
+                /*// Se todas as validações passaram
                 try {
                     // Preparar dados para envio
                     const reportItems = [];
@@ -936,7 +937,70 @@ document.addEventListener('DOMContentLoaded', function() {
                 } catch (error) {
                     console.error('Erro ao enviar reporte:', error);
                     showReportAlert("Erro ao enviar reporte. Tente novamente.");
+                }*/
+
+                // Se todas as validações passaram
+                try {
+                    // Preparar dados para envio
+                    const reportItems = [];
+                    checkedBoxes.forEach(checkbox => {
+                        const inputId = checkbox.id.replace('report', 'suggested');
+                        const inputField = document.getElementById(inputId);
+                        reportItems.push({
+                            fieldId: fieldIdMap[inputId],
+                            suggestedValue: inputField.value.replace(',', '.')
+                        });
+                    });
+
+                    const foodId = document.querySelector('#foodDetailModal').getAttribute('data-food-id');
+                    const token = localStorage.getItem('token');
+                    
+                    // Obter userId do token (modificação principal)
+                    const tokenParts = token.split('.');
+                    const encodedPayload = tokenParts[1];
+                    const decodedPayload = atob(encodedPayload.replace(/-/g, '+').replace(/_/g, '/'));
+                    const payload = JSON.parse(decodedPayload);
+                    const userId = payload.userId;
+
+                    if (!userId) {
+                        throw new Error('Não foi possível identificar o usuário');
+                    }
+
+                    const observations = document.getElementById('reportObservations').value;
+                    
+                    // Enviar para o servidor
+                    const response = await fetch('https://fit-plus-backend.onrender.com/api/submit-food-report', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            foodId,
+                            userId,
+                            reportItems,
+                            observations
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Erro no servidor');
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        showReportAlert("Reporte Enviado com Sucesso.", true);
+                    } else {
+                        throw new Error(result.message || 'Erro ao processar reporte');
+                    }
+                } catch (error) {
+                    console.error('Erro ao enviar reporte:', error);
+                    showReportAlert(error.message || "Erro ao enviar reporte. Tente novamente.");
                 }
+                
+                //Fim A#8.1
             });
 
             //Fim A#8
