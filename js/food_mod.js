@@ -762,9 +762,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     const suggestedValue = inputField.value.replace(',', '.');
                     const currentValue = currentField.textContent.split(' ')[0].replace(',', '.');
                     
-                    if (suggestedValue === currentValue) {
+                    //Inicio A#7.1
+
+                    /*if (suggestedValue === currentValue) {
+                        valuesDifferent = false;
+                    }*/
+
+                    const suggestedNum = parseFloat(suggestedValue);
+                    const currentNum = parseFloat(currentValue);
+                    if (!isNaN(suggestedNum) && !isNaN(currentNum) && suggestedNum === currentNum) {
                         valuesDifferent = false;
                     }
+                    
+                    //Fim A#7.1
                 });
                 
                 if (!valuesDifferent) {
