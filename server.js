@@ -730,22 +730,29 @@ app.get('/api/search-foods', authenticateToken, async (req, res) => {
             `LOWER(f.key_words) LIKE '%${term}%'`
         ).join(' OR ');
 
-        const query = `
-            SELECT 
-                f.id,
-                f.item,
-                f.marca,
-                f.modo_preparo,
-                f.porcao_base,
-                f.calorias_kcal,
-                f.tipo_medida_alimento,
-                f.tipo_registro_alimento,
-                mp.nome as modo_preparo_nome,
-                ga.nome as grupo_alimentar_nome,
-                tm.nome as tipo_medida_nome,
-                ${searchTerms.map(term => 
-                    `(CASE WHEN LOWER(f.key_words) LIKE '%${term}%' THEN 1 ELSE 0 END)`
-                ).join(' + ')} as match_count
+const query = `
+    SELECT 
+        f.id,
+        f.item,
+        f.marca,
+        f.modo_preparo,
+        f.porcao_base,
+        f.calorias_kcal,
+        f.tipo_medida_alimento,
+        f.tipo_registro_alimento,
+        mp.nome as modo_preparo_nome,
+        ga.nome as grupo_alimentar_nome,
+        tm.nome as tipo_medida_nome,
+        ${searchTerms.map((_, i) => `
+            (CASE WHEN 
+                REGEXP_REPLACE(LOWER(f.key_words), '[áàâãä]', 'a') LIKE $${i + 1} OR
+                REGEXP_REPLACE(LOWER(f.key_words), '[éèêë]', 'e') LIKE $${i + 1} OR
+                REGEXP_REPLACE(LOWER(f.key_words), '[íìîï]', 'i') LIKE $${i + 1} OR
+                REGEXP_REPLACE(LOWER(f.key_words), '[óòôõö]', 'o') LIKE $${i + 1} OR
+                REGEXP_REPLACE(LOWER(f.key_words), '[úùûü]', 'u') LIKE $${i + 1} OR
+                REGEXP_REPLACE(LOWER(f.key_words), '[ç]', 'c') LIKE $${i + 1}
+            THEN 1 ELSE 0 END)
+        `).join(' + ')} as match_count
             FROM tbl_foods f
             LEFT JOIN tbl_aux_modo_preparo mp ON f.modo_preparo = mp.id
             LEFT JOIN tbl_aux_grupo_alimentar ga ON f.grupo_alimentar = ga.id
