@@ -2130,13 +2130,32 @@ body {
 
 /* Loader */
 .delete-loader {
-    margin-top: 15px;
-    color: #3498db;
-    font-size: 14px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1007;
+    color: #2c3e50; /* Texto mais escuro */
+    font-size: 18px;
+    font-weight: 600;
 }
 
 .delete-loader i {
-    margin-right: 8px;
+    color: #e74c3c; /* Vermelho para combinar com o botão */
+    font-size: 40px;
+    margin-bottom: 15px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 /* Responsividade */

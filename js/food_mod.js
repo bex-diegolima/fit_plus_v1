@@ -421,8 +421,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     const foodId = document.querySelector('#foodDetailModal').getAttribute('data-food-id');
                     const loader = document.createElement('div');
                     loader.className = 'delete-loader';
-                    loader.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo Registro...';
-                    deleteConfirmModal.appendChild(loader);
+                    loader.innerHTML = `
+                        <i class="fas fa-spinner"></i>
+                        <div>Excluindo registro...</div>
+                    `;
+                    document.body.appendChild(loader); // Agora fica sobre toda a tela
                     
                     try {
                         await inactivateFood(foodId);
