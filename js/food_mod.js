@@ -415,7 +415,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     deleteConfirmModal.style.display = 'none';
                 });
             }
-
+            
             if (confirmDeleteBtn) {
                 confirmDeleteBtn.addEventListener('click', async () => {
                     const foodId = document.querySelector('#foodDetailModal').getAttribute('data-food-id');
@@ -425,16 +425,23 @@ document.addEventListener('DOMContentLoaded', function() {
                         <i class="fas fa-spinner"></i>
                         <div>Excluindo registro...</div>
                     `;
-                    document.body.appendChild(loader); // Agora fica sobre toda a tela
+                    document.body.appendChild(loader);
                     
                     try {
                         await inactivateFood(foodId);
+                        // Remove o loader antes de outras ações
+                        if (document.body.contains(loader)) {
+                            document.body.removeChild(loader);
+                        }
+                        
                         deleteConfirmModal.style.display = 'none';
-                        document.getElementById('close-btD').click(); // Fecha o modal de detalhes
+                        document.getElementById('close-btD').click();
                         deleteSuccessModal.style.display = 'flex';
                     } catch (error) {
                         console.error('Erro:', error);
-                        deleteConfirmModal.removeChild(loader);
+                        if (document.body.contains(loader)) {
+                            document.body.removeChild(loader);
+                        }
                         alert('Erro ao excluir o alimento');
                     }
                 });

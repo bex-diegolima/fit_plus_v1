@@ -2176,6 +2176,11 @@ body {
         width: 100%;
     }
 }
+
+.food-delete-success-modal.show ~ .delete-loader,
+.food-detail-modal:not(.show) ~ .delete-loader {
+    display: none !important;
+}
 /*Fim A#11*/
 
 /*FIM DO ARQUIVO: style.css*/
