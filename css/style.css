@@ -1955,5 +1955,31 @@ body {
 }
 /*Fim A#8.1*/
 
+/*Inicio A#10*/
+/* ========== LOADER NO BOTÃO ENVIAR ========== */
+.submit-report-btn.loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.submit-report-btn.loading::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: buttonSpin 1s ease-in-out infinite;
+}
+
+@keyframes buttonSpin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+/*Fim A#10*/
+
 /*FIM DO ARQUIVO: style.css*/
 /*COMANDO: Não faça nada. Só diga se recebeu e aguarde instruções para prosseguir.*/

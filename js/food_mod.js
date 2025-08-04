@@ -701,7 +701,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Se todas as validações passaram, abre o modal de reporte
             const reportModal = document.getElementById('foodReportModal');
 
-            //Inicio A#7
+            //Inicio A#10
+
+            /*//Inicio A#7
             // Função para mostrar alerta no reporte
             function showReportAlert(message, isSuccess = false) {
                 const container = document.getElementById('reportAlertContainer');
@@ -722,7 +724,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('reportAlertButton').onclick = function() {
                     container.style.display = 'none';
                 };
+            }*/
+
+            function showReportAlert(message, isSuccess = false) {
+                const container = document.getElementById('reportAlertContainer');
+                const icon = document.getElementById('reportAlertIcon');
+                const msg = document.getElementById('reportAlertMessage');
+                const closeReportBtn = document.getElementById('closeReportBtn');
+                
+                if (isSuccess) {
+                    icon.className = 'report-alert-icon success';
+                    icon.innerHTML = '<i class="fas fa-check-circle"></i>';
+                } else {
+                    icon.className = 'report-alert-icon warning';
+                    icon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+                }
+                
+                msg.textContent = message;
+                container.style.display = 'flex';
+                
+                document.getElementById('reportAlertButton').onclick = function() {
+                    container.style.display = 'none';
+                    // Fechar o modal automaticamente apenas para mensagens de sucesso
+                    if (isSuccess) {
+                        closeReportBtn.click();
+                    }
+                };
             }
+
+            //Fim A#10
             
             //Inicio A#8
             /*
@@ -791,6 +821,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Prevenir múltiplos cliques
                 if (this.classList.contains('processing')) return;
                 this.classList.add('processing');
+                //Inicio A#10
+                submitReportBtn.classList.add('loading');
+                closeReportBtn.disabled = true;
+                //Fim A#10
                 
                 try {
                     // 1. Verificar se pelo menos um checkbox está marcado
@@ -906,8 +940,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     const result = await response.json();
                     
                     if (result.success) {
-                        showReportAlert("Reporte Enviado com Sucesso.", true);
-                        
+                        //Inicio A#10
+                        /*showReportAlert("Reporte Enviado com Sucesso.", true);*/
+                        showReportAlert("Seu reporte foi enviado para nosso time de suporte. Em breve você será notificado com o parecer da analise.", true);
+                        //Fim A#10
                         // Desabilitar o botão após envio bem-sucedido
                         this.disabled = true;
                         this.classList.add('completed');
@@ -926,6 +962,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 } finally {
                     // Remover estados de loading e processing
                     this.classList.remove('loading', 'processing');
+                    //Inicio A#10
+                    submitReportBtn.classList.remove('loading');
+                    closeReportBtn.disabled = false;
+                    //Fim A#10
                 }
             });
 
