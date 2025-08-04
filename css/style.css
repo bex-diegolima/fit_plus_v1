@@ -1981,5 +1981,183 @@ body {
 }
 /*Fim A#10*/
 
+/*Inicio A#11*/
+/* ========== ESTILOS PARA EXCLUSÃO DE ALIMENTOS ========== */
+
+/* Footer do modal de detalhes */
+.food-detail-footer {
+    padding: 15px 20px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e0e0e0;
+    text-align: right;
+    margin-top: 20px;
+}
+
+/* Botão de exclusão */
+#deleteFoodBtn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: #95a5a6;
+    color: white;
+}
+
+#deleteFoodBtn.enabled {
+    background-color: #e74c3c;
+}
+
+#deleteFoodBtn.enabled:hover {
+    background-color: #c0392b;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Modal de confirmação */
+.food-delete-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1006;
+    justify-content: center;
+    align-items: center;
+}
+
+.food-delete-modal-content {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.food-delete-icon {
+    color: #f39c12;
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+.food-delete-message {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.food-delete-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.food-delete-confirm-btn, 
+.food-delete-cancel-btn,
+.food-delete-ok-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.food-delete-confirm-btn {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.food-delete-confirm-btn:hover {
+    background-color: #c0392b;
+}
+
+.food-delete-cancel-btn {
+    background-color: #95a5a6;
+    color: white;
+}
+
+.food-delete-cancel-btn:hover {
+    background-color: #7f8c8d;
+}
+
+/* Modal de sucesso */
+.food-delete-success-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1006;
+    justify-content: center;
+    align-items: center;
+}
+
+.food-delete-success-content {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.food-delete-success-icon {
+    color: #3498db;
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+.food-delete-success-message {
+    font-size: 16px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.food-delete-ok-btn {
+    background-color: #3498db;
+    color: white;
+}
+
+.food-delete-ok-btn:hover {
+    background-color: #2980b9;
+}
+
+/* Loader */
+.delete-loader {
+    margin-top: 15px;
+    color: #3498db;
+    font-size: 14px;
+}
+
+.delete-loader i {
+    margin-right: 8px;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .food-delete-modal-content,
+    .food-delete-success-content {
+        padding: 20px;
+    }
+    
+    .food-delete-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .food-delete-confirm-btn, 
+    .food-delete-cancel-btn,
+    .food-delete-ok-btn {
+        width: 100%;
+    }
+}
+/*Fim A#11*/
+
 /*FIM DO ARQUIVO: style.css*/
 /*COMANDO: Não faça nada. Só diga se recebeu e aguarde instruções para prosseguir.*/

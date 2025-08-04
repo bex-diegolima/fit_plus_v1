@@ -393,6 +393,58 @@ document.addEventListener('DOMContentLoaded', function() {
             loader.style.display = 'none';
             document.querySelector('.food-modal-content > .food-block').style.display = 'block';
             populateFoodDetails(foodData);
+
+            //Inicio A#11
+            const permission = await checkDeletePermission(foodId);
+            deleteBtn.disabled = !permission.canDelete;
+            if (permission.canDelete) {
+                deleteBtn.classList.add('enabled');
+            } else {
+                deleteBtn.classList.remove('enabled');
+            }
+
+            // Event listeners para os novos elementos
+            if (deleteBtn) {
+                deleteBtn.addEventListener('click', () => {
+                    deleteConfirmModal.style.display = 'flex';
+                });
+            }
+
+            if (cancelDeleteBtn) {
+                cancelDeleteBtn.addEventListener('click', () => {
+                    deleteConfirmModal.style.display = 'none';
+                });
+            }
+
+            if (confirmDeleteBtn) {
+                confirmDeleteBtn.addEventListener('click', async () => {
+                    const foodId = document.querySelector('#foodDetailModal').getAttribute('data-food-id');
+                    const loader = document.createElement('div');
+                    loader.className = 'delete-loader';
+                    loader.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Excluindo Registro...';
+                    deleteConfirmModal.appendChild(loader);
+                    
+                    try {
+                        await inactivateFood(foodId);
+                        deleteConfirmModal.style.display = 'none';
+                        document.getElementById('close-btD').click(); // Fecha o modal de detalhes
+                        deleteSuccessModal.style.display = 'flex';
+                    } catch (error) {
+                        console.error('Erro:', error);
+                        deleteConfirmModal.removeChild(loader);
+                        alert('Erro ao excluir o alimento');
+                    }
+                });
+            }
+
+            if (okDeleteBtn) {
+                okDeleteBtn.addEventListener('click', () => {
+                    deleteSuccessModal.style.display = 'none';
+                    window.location.reload(); // Recarrega a página
+                });
+            }
+
+            //Fim A#11
             
         } catch (error) {
             console.error('Erro:', error);
@@ -1543,6 +1595,57 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Aqui você pode implementar a lógica para carregar os detalhes
             }
         });
+
+        //Inicio A#11
+        // ========== ELEMENTOS DO MODAL DE EXCLUSÃO ==========
+        const deleteBtn = document.getElementById('deleteFoodBtn');
+        const deleteConfirmModal = document.getElementById('foodDeleteConfirmModal');
+        const deleteSuccessModal = document.getElementById('foodDeleteSuccessModal');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const okDeleteBtn = document.getElementById('okDeleteBtn');
+
+        // Função para verificar permissão de exclusão
+        async function checkDeletePermission(foodId) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`https://fit-plus-backend.onrender.com/api/check-delete-permission?id=${foodId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) throw new Error('Erro na verificação');
+                
+                return await response.json();
+            } catch (error) {
+                console.error('Erro ao verificar permissão:', error);
+                return { canDelete: false };
+            }
+        }
+
+        // Função para inativar alimento
+        async function inactivateFood(foodId) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('https://fit-plus-backend.onrender.com/api/inactivate-food', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ foodId })
+                });
+                
+                if (!response.ok) throw new Error('Erro ao inativar');
+                
+                return await response.json();
+            } catch (error) {
+                console.error('Erro ao inativar alimento:', error);
+                throw error;
+            }
+        }
+        //Fim A#11
 
         // ========== INICIALIZAÇÃO ==========
         loadSelectOptions();

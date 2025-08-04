@@ -312,6 +312,12 @@
                 </div>
             </div>
 
+            <!--Inicio A#11-->
+            <div class="food-detail-footer">
+                <button id="deleteFoodBtn" class="food-delete-btn" disabled>Excluir Alimento</button>
+            </div>
+            <!--Fim A#11-->
+
             <div id="foodDetailLoader" class="food-modal-loader" style="display: none;">
                 <div class="loader-content">
                     <i class="fas fa-spinner fa-spin fa-3x"></i>
@@ -1207,6 +1213,33 @@
         </div>
     </div>
     <!--Fim A#7-->
+
+    <!--Inicio A#11-->
+    <!-- Modal de Confirmação de Exclusão -->
+    <div id="foodDeleteConfirmModal" class="food-delete-modal" style="display: none;">
+        <div class="food-delete-modal-content">
+            <div class="food-delete-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="food-delete-message">Tem certeza que deseja excluir o registro desse item?</div>
+            <div class="food-delete-buttons">
+                <button id="confirmDeleteBtn" class="food-delete-confirm-btn">Sim</button>
+                <button id="cancelDeleteBtn" class="food-delete-cancel-btn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Sucesso -->
+    <div id="foodDeleteSuccessModal" class="food-delete-success-modal" style="display: none;">
+        <div class="food-delete-success-content">
+            <div class="food-delete-success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="food-delete-success-message">Alimento excluído.</div>
+            <button id="okDeleteBtn" class="food-delete-ok-btn">OK</button>
+        </div>
+    </div>
+    <!--Fim A#11-->
     
     <!-- Scripts -->
     <script src="js/food_mod.js"></script>

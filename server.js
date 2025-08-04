@@ -1005,6 +1005,104 @@ app.post('/api/save-food-report', authenticateToken, async (req, res) => {
 
 //Fim A#9
 
+//Inicio A#11
+// Adicionar no server.js, após as outras rotas de alimentos
+
+// Rota para verificar permissão de exclusão
+app.get('/api/check-delete-permission', authenticateToken, async (req, res) => {
+    try {
+        const { id } = req.query;
+        const userId = req.user.userId;
+
+        const result = await pool.query(
+            `SELECT user_registro, tipo_registro_alimento 
+             FROM tbl_foods 
+             WHERE id = $1`,
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ 
+                canDelete: false,
+                message: 'Alimento não encontrado'
+            });
+        }
+
+        const food = result.rows[0];
+        const canDelete = food.user_registro == userId && food.tipo_registro_alimento != 1;
+
+        res.json({ 
+            canDelete,
+            message: canDelete ? '' : 'Você não tem permissão para excluir este alimento'
+        });
+    } catch (error) {
+        console.error('Erro ao verificar permissão:', error);
+        res.status(500).json({ 
+            canDelete: false,
+            message: 'Erro ao verificar permissão'
+        });
+    }
+});
+
+// Rota para inativar alimento
+app.post('/api/inactivate-food', authenticateToken, async (req, res) => {
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+        const { foodId } = req.body;
+        const userId = req.user.userId;
+
+        // Verificar novamente as permissões
+        const checkResult = await client.query(
+            `SELECT user_registro, tipo_registro_alimento 
+             FROM tbl_foods 
+             WHERE id = $1`,
+            [foodId]
+        );
+
+        if (checkResult.rows.length === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ 
+                success: false,
+                message: 'Alimento não encontrado'
+            });
+        }
+
+        const food = checkResult.rows[0];
+        if (food.user_registro != userId || food.tipo_registro_alimento == 1) {
+            await client.query('ROLLBACK');
+            return res.status(403).json({ 
+                success: false,
+                message: 'Você não tem permissão para excluir este alimento'
+            });
+        }
+
+        // Atualizar status
+        await client.query(
+            `UPDATE tbl_foods 
+             SET status_registro = 4 
+             WHERE id = $1`,
+            [foodId]
+        );
+
+        await client.query('COMMIT');
+        res.json({ 
+            success: true,
+            message: 'Alimento inativado com sucesso'
+        });
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Erro ao inativar alimento:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'Erro ao inativar alimento'
+        });
+    } finally {
+        client.release();
+    }
+});
+//Fim A#11
+
 app.listen(PORT, async () => {
     console.log(`🚀 Servidor Fit+ rodando na porta ${PORT}`);
     console.log(`🔑 Chave Brevo: ${apiKey.apiKey.substring(0, 6)}...${apiKey.apiKey.substring(apiKey.apiKey.length - 4)}`);
