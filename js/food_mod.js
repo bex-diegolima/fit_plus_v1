@@ -47,11 +47,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`https://fit-plus-backend.onrender.com/api/search-foods?term=${encodeURIComponent(searchTerm)}`, {
+            //Inicio A#12
+
+            /*const response = await fetch(`https://fit-plus-backend.onrender.com/api/search-foods?term=${encodeURIComponent(searchTerm)}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });*/
+
+            const response = await fetch(`https://fit-plus-backend.onrender.com/api/search-foods?term=${encodeURIComponent(searchTerm)}&ignoreAccents=true`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             });
+
+            //Fim A#12
             
             if (!response.ok) throw new Error('Erro na pesquisa');
             
