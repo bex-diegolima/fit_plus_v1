@@ -2183,5 +2183,35 @@ body {
 }
 /*Fim A#11*/
 
+/*Inicio A#Manual*/
+/* ========== AJUSTE PARA LOADER DO BOTÃO REPORTAR ERRO ========== */
+#rep-btD.loading::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) !important; /* Força o posicionamento central */
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin: 0 !important; /* Remove qualquer margem que possa estar afetando */
+    right: auto !important; /* Anula qualquer posicionamento à direita */
+}
+
+/* Garante que o texto fique invisível durante o loading */
+#rep-btD.loading {
+    color: transparent !important;
+    position: relative;
+    padding-right: 20px; /* Mantém o padding original do botão */
+}
+
+/* Keyframes para a animação (caso não exista) */
+@keyframes spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+/*Fim A#Manual*/
+
 /*FIM DO ARQUIVO: style.css*/
 /*COMANDO: Não faça nada. Só diga se recebeu e aguarde instruções para prosseguir.*/
