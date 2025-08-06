@@ -1462,7 +1462,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;  // para não continuar o envio
                 }
 
-            const requiredFields = {
+            //Inicio E#2
+            /*const requiredFields = {
                 item: formData.item,
                 modo_preparo: formData.modo_preparo,
                 grupo_alimentar: formData.grupo_alimentar,
@@ -1470,7 +1471,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 proteina_gr: formData.proteina_gr,
                 carbo_gr: formData.carbo_gr,
                 gorduras_totais_gr: formData.gorduras_totais_gr
+            };*/
+
+            const requiredFields = {
+                item: document.getElementById('foodItemName').value.trim(),
+                modo_preparo: document.getElementById('foodPreparation').value,
+                grupo_alimentar: document.getElementById('foodGroup').value,
+                calorias_kcal: document.getElementById('foodCalories').value,
+                proteina_gr: document.getElementById('foodProteins').value,
+                carbo_gr: document.getElementById('foodCarbs').value,
+                gorduras_totais_gr: document.getElementById('foodFats').value
             };
+
+            //Fim E#2
 
             for (const [field, value] of Object.entries(requiredFields)) {
                 if (value === undefined || value === null || value === '') {
