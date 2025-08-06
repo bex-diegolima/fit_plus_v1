@@ -5,32 +5,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fit+ | Receitas</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/style2.css">
+    <link rel="stylesheet" href="css/style2.css"> <!-- Novo arquivo CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Top-bar fixa (idêntica à home.html e food_mod.html) -->
     <header class="top-bar">
         <img src="images/logo_fit_plus.png" alt="Fit+ Logo" class="logo">
+        <h1 class="module-title">Receitas</h1> <!-- Título centralizado -->
         <button id="menuButton" class="menu-button">
             <i class="fas fa-bars"></i>
         </button>
     </header>
-    <!-- Painel do menu (inicialmente oculto) -->
+
+    <!-- Painel do menu (cópia do home.html) -->
     <div id="menuPanel" class="menu-panel">
         <div class="menu-content">
-            <!-- Foto de perfil -->
             <img id="profilePic" src="images/user-pd.png" alt="Foto do usuário" class="profile-pic">
-            <!-- Botão para alterar foto -->
             <button id="changePicBtn" class="btn-change-photo">Alterar Foto</button>
             <input type="file" id="profilePicInput" accept="image/*" style="display:none;">
-            <!-- Mensagem de boas-vindas -->
             <h3 id="welcomeMessage">Bem-vindo, <span id="userName">Usuário</span></h3>
-            <!-- Botão Sair -->
             <button id="logoutBtn" class="btn-logout">Sair</button>
         </div>
     </div>
-    <!-- Scripts -->
-    <script src="js/recipes_mod.js"></script>
+
+    <!-- Corpo vazio (será preenchido nas etapas seguintes) -->
+    <div class="container">
+        <div class="content">
+            <!-- Conteúdo futuro aqui -->
+        </div>
+    </div>
+
+    <!-- Scripts (mesmos que home.html) -->
+    <script src="js/home.js"></script> <!-- Reutiliza a lógica do menu -->
 </body>
 </html>
+<!--FIM DO ARQUIVO: recepis_mod.html-->
+<!--COMANDO: Não faça nada. Só diga se recebeu e aguarde o envio do próximo arquivo para prosseguir.-->
