@@ -5,32 +5,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fit+ | Receitas</title>
+    <link rel="stylesheet" href="css/style.css"> <!-- Novo arquivo CSS -->
     <link rel="stylesheet" href="css/style2.css"> <!-- Novo arquivo CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <!-- Top-bar fixa (idêntica à home.html e food_mod.html) -->
-    <header class="top-bar">
-        <img src="images/logo_fit_plus.png" alt="Fit+ Logo" class="logo">
-        <h1 class="module-title">Receitas</h1> <!-- Título centralizado -->
-        <button id="menuButton" class="menu-button">
+    <!-- Top-bar -->
+    <header class="recipe-top-bar">
+        <img src="images/logo_fit_plus.png" alt="Fit+ Logo" class="recipe-logo">
+        <h1 class="recipe-module-title">Receitas</h1>
+        <button id="menuButton" class="recipe-menu-button">
             <i class="fas fa-bars"></i>
         </button>
     </header>
 
-    <!-- Painel do menu (cópia do home.html) -->
-    <div id="menuPanel" class="menu-panel">
-        <div class="menu-content">
-            <img id="profilePic" src="images/user-pd.png" alt="Foto do usuário" class="profile-pic">
-            <button id="changePicBtn" class="btn-change-photo">Alterar Foto</button>
+    <!-- Menu Panel -->
+    <div id="menuPanel" class="recipe-menu-panel">
+        <div class="recipe-menu-content">
+            <img id="profilePic" src="images/user-pd.png" alt="Foto do usuário" class="recipe-profile-pic">
+            <button id="changePicBtn" class="recipe-btn-change-photo">Alterar Foto</button>
             <input type="file" id="profilePicInput" accept="image/*" style="display:none;">
             <h3 id="welcomeMessage">Bem-vindo, <span id="userName">Usuário</span></h3>
-            <button id="logoutBtn" class="btn-logout">Sair</button>
+            <button id="logoutBtn" class="recipe-btn-logout">Sair</button>
         </div>
     </div>
 
-    <!-- Corpo vazio (será preenchido nas etapas seguintes) -->
-    <div class="container">
+    <!-- Container -->
+    <div class="recipe-container">
         <div class="content">
             <!-- Conteúdo futuro aqui -->
         </div>
