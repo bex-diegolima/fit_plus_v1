@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fit+ | Módulo de Receitas</title>
+    <link rel="stylesheet" href="css/style2.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body>
+    <!-- Top-bar fixo -->
+    <header class="recipes-top-bar">
+        <img src="images/logo_fit_plus.png" alt="Logo Fit+" class="recipes-logo" />
+        <h1 class="recipes-title">Módulo de Receitas</h1>
+        <button id="recipesMenuButton" class="recipes-menu-button">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
+    <!-- Painel do Menu -->
+    <div id="recipesMenuPanel" class="recipes-menu-panel">
+        <div class="recipes-menu-content">
+            <img id="recipesProfilePic" src="images/user-pd.png" alt="Foto do usuário" class="recipes-profile-pic" />
+            <button id="recipesChangePicBtn" class="recipes-btn-change-photo">Alterar Foto</button>
+            <input type="file" id="recipesProfilePicInput" accept="image/*" style="display: none;" />
+            <h3>Bem-vindo, <span id="recipesUserName">Usuário</span></h3>
+            <button id="recipesLogoutBtn" class="recipes-btn-logout">Sair</button>
+        </div>
+    </div>
+
+    <!-- Corpo (vazio por enquanto) -->
+    <div class="recipes-container">
+        <!-- Conteúdo será adicionado futuramente -->
+    </div>
+
+    <!-- Footer (vazio por enquanto) -->
+    <footer class="recipes-footer">
+        <!-- Rodapé futuro -->
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/home.js"></script>
+</body>
+</html>
