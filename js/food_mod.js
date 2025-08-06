@@ -1398,13 +1398,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 parseFloat(document.getElementById('foodVitaminE').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
                 ),
-                
-                //Inicio E#1
-                carga_antioxidante: calculateProportion(
-                    parseFloat(document.getElementById('foodAntioxidants').value) || 0,
-                    parseFloat(document.getElementById('foodBasePortion').value) || 100
-                ),
-                //FIm E#1
 
                 // ... (repetir para todos os campos nutricionais)
                 
@@ -1413,7 +1406,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 origem: document.getElementById('foodOrigin').value,
                 nivel_processamento: document.getElementById('foodProcessing').value,
                 glutem: document.getElementById('foodGluten').value === 'true',
-                carga_antioxidante: document.getElementById('foodAntioxidants').value.trim() || null,
+                //Inicio E#1
+                //carga_antioxidante: document.getElementById('foodAntioxidants').value.trim() || null,
+                carga_antioxidante: calculateProportion(
+                    parseFloat(document.getElementById('foodAntioxidants').value) || 0,
+                    parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+                //FIm E#1
                 observacoes: document.getElementById('foodObservations').value.trim(),
                 img_registro: await getImageBase64(),  // ← Nova função para a imagem
                 alergicos_comuns: selectedAllergens.length > 0 ? selectedAllergens : []
