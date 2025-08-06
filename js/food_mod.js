@@ -1398,6 +1398,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 parseFloat(document.getElementById('foodVitaminE').value) || 0,
                 parseFloat(document.getElementById('foodBasePortion').value) || 100
                 ),
+                
+                //Inicio E#1
+                carga_antioxidante: calculateProportion(
+                    parseFloat(document.getElementById('foodAntioxidants').value) || 0,
+                    parseFloat(document.getElementById('foodBasePortion').value) || 100
+                ),
+                //FIm E#1
 
                 // ... (repetir para todos os campos nutricionais)
                 
